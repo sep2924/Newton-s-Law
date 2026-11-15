@@ -131,16 +131,47 @@ h2{font-size:22px;margin-bottom:6px}.lead{color:var(--mute);margin-bottom:16px;l
 .intro{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px}
 .intro div{background:#f6f8fa;border-radius:10px;padding:10px 12px;font-size:13.5px}
 .intro b{display:block;color:var(--blue);margin-bottom:2px}
+
+/* ===== classic 1998 course-page theme ===== */
+.card,.lv,.mbox,.opt,.fbtn,.slot,.tile,.btn,.nt,.tk,.chip,.bin,.bsel,.numrow input,.notes textarea,#ncv,.fb,.fbdwrap svg,.formula,.pv,.toast,.checklist li,.checklist li:before,.pill,.hbtn,.ptext,.phase,.bar,.intro div,.ms,.lv .n,.sgn{border-radius:0!important;box-shadow:none!important}
+.hbtn,.btn,.nt,.tile{font-family:inherit}
+body{font-family:"Times New Roman",Times,serif;background:#fff;color:#000;font-size:17px}
+header{background:#c0c0c0;color:#000;border-bottom:2px solid #000;padding:6px 14px;position:static}
+.logo{color:#000;font-size:24px}.logo span{color:#000080}
+.pill{background:#fff;border:1px solid #000;color:#000}
+.hbtn,.btn,.btn.g,.btn.gr,.nt,.tile,.sgn{background:#c0c0c0;color:#000;border:2px outset #eee;font-weight:normal;font-size:16px}
+.card,.lv{border:1px solid #000;background:#fff}
+h2{color:#000080;font-size:26px}.ptitle,.lv .t{color:#000;font-size:19px}
+.lead,.lv .d,.small,.mt{color:#333}
+.lv .n{background:#fff;color:#000;border:1px solid #000}.lv.done .n{background:#ccffcc}
+.ms{color:#0000ee;text-decoration:underline;font-size:16px;padding:4px 8px}.ms:hover{background:#ffffcc}
+.bar{background:#fff;border:1px solid #000;height:8px}.bar i{background:#008000}
+.intro div{background:#fff;border:1px solid #000}.intro b{color:#000080}
+.ptext{background:#ffffcc;border:1px solid #000}.ptext.hunt{outline:2px dashed #000}
+.w.cl{background:#ffff00;border-bottom:1px solid #000}.w.hid{background:#ffcccc;border-bottom:1px solid #000}
+.phase{background:none;color:#000;font-weight:bold;padding:0;text-decoration:underline;font-size:15px}
+.opt,.fbtn{border:1px solid #000;background:#fff;font-size:16px}.opt:hover{background:#ffffcc;border-color:#000}
+.opt.sel,.fbtn.sel{background:#ffffcc;border:2px solid #000080}.opt.ok,.fbtn.ok,.bin.ok,.bsel.ok{background:#ccffcc;border-color:#000}.opt.bad,.fbtn.bad,.bin.bad,.bsel.bad{background:#ffcccc;border-color:#000;color:#000}
+.tk{border:1px solid #000;background:#fff;color:#000;font-size:13px}.tk.on{background:#000080;color:#fff;border-color:#000}.tk.ok{background:#ccffcc;color:#000;border-color:#000}.tk.ok.on{background:#ffff00;color:#000}
+.slot{border:1px solid #000;background:#fff}.slot.f{background:#ffffcc}
+.chip{border:1px solid #000;background:#fff}.chip.u{border-color:#c00;color:#c00}
+.checklist li.on{background:#ffffcc}.checklist li:before{background:#c0c0c0;color:#000}.checklist li.on:before{background:#000080}
+.board h4,.checklist h4{color:#000;font-size:15px;letter-spacing:0;text-decoration:underline}
+.fb.ok{background:#ccffcc;border:1px solid #000}.fb.bad{background:#ffcccc;border:1px solid #000}.fb.hint{background:#ffffcc;border:1px solid #000}
+.fbdwrap svg,#ncv,.notes textarea,.numrow input,.bin,.bsel{border:1px solid #000;background-color:#fff}
+a{color:#0000ee}.pv{border:2px solid #000;background:#fff}
+.ptext{margin-top:10px}
+.rnd{font-size:12px;color:#555;text-decoration:none;display:inline-block}
 </style>
 </head>
 <body>
 <header>
  <div class="logo" onclick="showMap()">Physics <span>Detective</span></div>
  <div class="sp"></div>
- <div class="pill" id="xp">⭐ 0 XP</div>
- <div class="pill" id="streak">🔥 0</div>
- <button class="hbtn g" onclick="openNotebook()">📒 Formula Notebook</button>
- <button class="hbtn" onclick="showMap()">🗺 Map</button>
+ <div class="pill" id="xp"> 0 XP</div>
+ <div class="pill" id="streak"> 0</div>
+ <button class="hbtn g" onclick="openNotebook()"> Formula Notebook</button>
+ <button class="hbtn" onclick="showMap()"> Map</button>
 </header>
 <main id="app"></main>
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div class="mbox" id="mbox"></div></div>
@@ -159,7 +190,7 @@ const o = (t,ok,why='') => ({t, ok:!!ok, why});
 const sinD = d => Math.sin(d*Math.PI/180), cosD = d => Math.cos(d*Math.PI/180);
 function shuffle(a){ a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 function toast(t){ const el=document.getElementById('toast'); el.textContent=t; el.classList.add('show'); clearTimeout(toast.h); toast.h=setTimeout(()=>el.classList.remove('show'),2600); }
-function hud(){ document.getElementById('xp').textContent = `⭐ ${S.xp} XP`; document.getElementById('streak').textContent = `🔥 ${S.streak} streak`; }
+function hud(){ document.getElementById('xp').textContent = ` ${S.xp} XP`; document.getElementById('streak').textContent = ` ${S.streak} streak`; }
 
 /* ================= SVG figure helpers ================= */
 const COL = {R:'#d63c4a', K:'#333', B:'#2a7ab0', O:'#e08a1e', G:'#2e9e5b'};
@@ -272,7 +303,7 @@ function figSleds(){
   s += `<rect x="20" y="48" width="86" height="32" rx="5" ${BLK}/>` + tx(63,69,'100 kg','text-anchor="middle" font-size="13"') + tx(63,40,'A','text-anchor="middle" font-size="14"');
   s += `<line x1="106" y1="64" x2="150" y2="64" ${ROPE}/>` + tx(128,56,'1','text-anchor="middle" font-size="13"');
   s += `<rect x="150" y="48" width="74" height="32" rx="5" ${BLK}/>` + tx(187,69,'80 kg','text-anchor="middle" font-size="13"') + tx(187,40,'B','text-anchor="middle" font-size="14"');
-  s += `<line x1="224" y1="64" x2="272" y2="64" ${ROPE}/>` + tx(248,56,'2','text-anchor="middle" font-size="13"') + tx(276,70,'🐕','font-size="26"') + ar(250,28,300,28,'O') + tx(306,33,'a',IT('O'));
+  s += `<line x1="224" y1="64" x2="272" y2="64" ${ROPE}/>` + tx(248,56,'2','text-anchor="middle" font-size="13"') + tx(276,69,'dog','font-size="14" font-style="italic"') + ar(250,28,300,28,'O') + tx(306,33,'a',IT('O'));
   return svg(340,108,s);
 }
 function figPushPair(){
@@ -523,12 +554,12 @@ const MS = [
  fig: figIncline({th:28, ab:true, blocks:[{d:150,w:110,h:26,l:'A'},{d:140,w:60,h:28,l:'B'}]}),
  steps:[
   {type:'multi', ph:'system', prompt:'Which pairs are action/reaction pairs? Select all that apply.', opts:[
-   o('(f_k)_A on B and (f_k)_B on A',1,'Friction between A and B: swap the names and you get the other force. ✔'),
+   o('(f_k)_A on B and (f_k)_B on A',1,'Friction between A and B: swap the names and you get the other force. ✓'),
    o('(f_k)_A and (f_k)_A on B',0,'(f_k)_A is the incline on A, which involves different objects.'),
    o('n_A and n_A on B',0,'n_A is the incline on A. Its partner is A on the incline.'),
    o('(F_G)_A and (F_G)_B',0,"Two different weights. Each one's partner is the block pulling on Earth."),
-   o('n_A on B and n_B on A',1,'The contact push between A and B. ✔'),
-   o('T_A on B and T_B on A',1,'Treated as an interaction between A and B through the rope. ✔')]},
+   o('n_A on B and n_B on A',1,'The contact push between A and B. ✓'),
+   o('T_A on B and T_B on A',1,'Treated as an interaction between A and B through the rope. ✓')]},
   {type:'mcq', ph:'system', prompt:'What is the real partner of (F_G)_A, the weight of A?', opts:[o('A pulls up on the Earth',1,'Earth on A ↔ A on Earth.'),o('n_A',0,"Different type (contact), and on the same object."),o('(F_G)_B',0,'Different object.')]}
  ]})},
 {id:'5c', lv:5, title:'Horse & Cart Paradox', make:()=>({
@@ -921,9 +952,9 @@ function drawInner(s){
 }
 function stepDraw(s, box, head){
   s.vec = s.vec || {}; if(s.act===undefined) s.act = null;
-  box.innerHTML = `${head}<div class="q">✍️ ${s.prompt}</div><div class="small" style="margin:-6px 0 10px"><b>1.</b> Click a force in the list. <b>2.</b> Drag on the grid, away from the black dot, to draw its arrow. Both the <b>direction</b> and the <b>length</b> are graded: a longer arrow means a bigger force. Not every force in the list belongs.</div>
+  box.innerHTML = `${head}<div class="q"> ${s.prompt}</div><div class="small" style="margin:-6px 0 10px"><b>1.</b> Click a force in the list. <b>2.</b> Drag on the grid, away from the black dot, to draw its arrow. Both the <b>direction</b> and the <b>length</b> are graded: a longer arrow means a bigger force. Not every force in the list belongs.</div>
   <div class="fbdwrap"><svg id="dsvg" viewBox="0 0 320 300" width="320" height="300" style="touch-action:none;cursor:crosshair;max-width:100%;height:auto">${drawInner(s)}</svg>
-  <div class="forces">${s.forces.map((f,i)=>`<button class="fbtn ${s.act===i?'sel':''} ${s.vec[i]?'ok':''}" data-i="${i}" onclick="pickForce(${i})">${s.vec[i]?'✓':'✏️'} <b class="m">${f.id}</b>: ${f.l}</button>`).join('')}<button class="nt" onclick="eraseForce()">🧽 Erase the selected arrow</button></div></div>
+  <div class="forces">${s.forces.map((f,i)=>`<button class="fbtn ${s.act===i?'sel':''} ${s.vec[i]?'ok':''}" data-i="${i}" onclick="pickForce(${i})">${s.vec[i]?'✓':''} <b class="m">${f.id}</b>: ${f.l}</button>`).join('')}<button class="nt" onclick="eraseForce()"> Erase the selected arrow</button></div></div>
   <div class="hz"></div><div class="fbz"><div class="btns"><button class="btn" onclick="checkDraw()">Check diagram</button></div><div id="dfb"></div></div>`;
   const el = document.getElementById('dsvg'); let down = false;
   const pos = e => { const r = el.getBoundingClientRect(); return [(e.clientX-r.left)*320/r.width-160, (e.clientY-r.top)*300/r.height-150]; };
@@ -938,16 +969,16 @@ function checkDraw(){
   const s = cur.d.steps[cur.i]; if(s.st.solved) return; const box = document.getElementById('step'), fb = document.getElementById('dfb');
   const drawn = Object.keys(s.vec).map(Number), wrong = drawn.filter(i=>!s.forces[i].ok), missed = s.forces.map((f,i)=>i).filter(i=>s.forces[i].ok && !s.vec[i]);
   const msgs = wrong.map(i=>`✗ <b>${s.forces[i].id}</b> does not belong: ${s.forces[i].why}`);
-  if(missed.length) msgs.push(`🔎 You are missing <b>${missed.length}</b> force${missed.length>1?'s':''}. What touches the object? Gravity always acts.`);
+  if(missed.length) msgs.push(` You are missing <b>${missed.length}</b> force${missed.length>1?'s':''}. What touches the object? Gravity always acts.`);
   drawn.filter(i=>s.forces[i].ok && aDiff(vAng(s.vec[i]), s.forces[i].a) > 22).forEach(i=>msgs.push(`↻ <b>${s.forces[i].id}</b> points the wrong way. Think about which way that force pushes or pulls.`));
   if(!msgs.length){ const len = id => { const i = s.forces.findIndex(f=>f.id===id); return Math.hypot(s.vec[i][0], s.vec[i][1]); };
     s.rel.forEach(([A,op,B,why]) => { const a = len(A), b = len(B);
-      if(op==='>' && !(a > 1.12*b)) msgs.push(`📏 Draw <b>${A}</b> clearly LONGER than <b>${B}</b>: ${why}.`);
-      if(op==='=' && Math.abs(a-b) > 0.22*Math.max(a,b)) msgs.push(`📏 <b>${A}</b> and <b>${B}</b> should be the SAME length: ${why}.`); }); }
+      if(op==='>' && !(a > 1.12*b)) msgs.push(` Draw <b>${A}</b> clearly LONGER than <b>${B}</b>: ${why}.`);
+      if(op==='=' && Math.abs(a-b) > 0.22*Math.max(a,b)) msgs.push(` <b>${A}</b> and <b>${B}</b> should be the SAME length: ${why}.`); }); }
   if(msgs.length){ miss(s); fb.innerHTML = `<div class="fb bad">${msgs.join('<br>')}</div>`; return; }
   s.act = null; addChips(['FBD: ' + s.forces.filter(f=>f.ok).map(f=>f.id).join(', ')]);
   stepDraw(s, box, document.querySelector('#step .phase').outerHTML);
-  solve(s, box, s.forces.filter(f=>f.ok).map(f=>`<br>• <b>${f.id}</b>: ${f.why}`).join('') + s.rel.map(r=>`<br>📏 ${r[0]} ${r[1]} ${r[2]}: ${r[3]}.`).join(''));
+  solve(s, box, s.forces.filter(f=>f.ok).map(f=>`<br>• <b>${f.id}</b>: ${f.why}`).join('') + s.rel.map(r=>`<br> ${r[0]} ${r[1]} ${r[2]}: ${r[3]}.`).join(''));
   document.getElementById('dsvg').innerHTML = drawInner(s);
 }
 
@@ -957,7 +988,7 @@ function stepBlank(s, box, head){
   const lines = s.tpl.map(line => '<div class="bl m">' + line.replace(/\{\}/g, () => { const b = s.blanks[k], i = k++;
     if(b.opts){ if(!b.ord) b.ord = shuffle(b.opts); return `<select class="bsel" data-b="${i}"><option value="">choose ▾</option>${b.ord.map(x=>`<option>${x}</option>`).join('')}</select>`; }
     return `<input class="bin" data-b="${i}" inputmode="decimal" autocomplete="off" onkeydown="if(event.key==='Enter')checkBlank()">`; }) + '</div>').join('');
-  box.innerHTML = `${head}<div class="q">✏️ ${s.prompt}</div>${lines}<div class="small">Fill in every blank, then press Check. All blanks are checked together. Numbers within 2% count.</div><div class="hz"></div><div class="fbz"><div class="btns"><button class="btn" onclick="checkBlank()">Check blanks</button></div><div id="bfb"></div></div>`;
+  box.innerHTML = `${head}<div class="q"> ${s.prompt}</div>${lines}<div class="small">Fill in every blank, then press Check. All blanks are checked together. Numbers within 2% count.</div><div class="hz"></div><div class="fbz"><div class="btns"><button class="btn" onclick="checkBlank()">Check blanks</button></div><div id="bfb"></div></div>`;
 }
 function checkBlank(){
   const s = cur.d.steps[cur.i]; if(s.st.solved) return; const box = document.getElementById('step');
@@ -977,7 +1008,7 @@ function checkBlank(){
 function stepPair(s, box, head){
   if(!s.oa){ s.oa = shuffle(s.a.map((_,i)=>i)); s.ob = shuffle(s.b.map((_,i)=>i)); s.pa = -1; s.pb = -1; }
   const grp = (g,ord,arr,p) => `<div class="opts">${ord.map(i=>`<button class="opt ${p===i?'sel':''}" data-g="${g}" data-i="${i}" onclick="pickPair('${g}',${i})">${p===i?'◉':'○'} ${arr[i].t}</button>`).join('')}</div>`;
-  box.innerHTML = `${head}<div class="q">🧠 ${s.prompt}</div>${grp('a',s.oa,s.a,s.pa)}<div class="q" style="margin-top:16px">…because:</div>${grp('b',s.ob,s.b,s.pb)}<div class="small">Choose an answer AND the reason that supports it. Both must be right.</div><div class="hz"></div><div class="fbz"><div class="btns"><button class="btn" onclick="checkPair()">Check answer + reason</button></div><div id="pfb"></div></div>`;
+  box.innerHTML = `${head}<div class="q"> ${s.prompt}</div>${grp('a',s.oa,s.a,s.pa)}<div class="q" style="margin-top:16px">…because:</div>${grp('b',s.ob,s.b,s.pb)}<div class="small">Choose an answer AND the reason that supports it. Both must be right.</div><div class="hz"></div><div class="fbz"><div class="btns"><button class="btn" onclick="checkPair()">Check answer + reason</button></div><div id="pfb"></div></div>`;
 }
 function pickPair(g, i){ const s = cur.d.steps[cur.i]; if(s.st.solved) return; s['p'+g] = i; stepPair(s, document.getElementById('step'), document.querySelector('#step .phase').outerHTML); }
 function checkPair(){
@@ -1005,7 +1036,7 @@ function pvShow(id, el){
     let t = d.text.replace(/\[\[(.+?)\]\]/g, (_,x)=>x.split('|')[0]).replace(/<[^>]+>/g,''); if(t.length>260) t = t.slice(0,257)+'…';
     const kinds = new Set(d.steps.map(s=>s.type)); if(EXTRA[id]) EXTRA[id](d.v||{}).forEach(e=>kinds.add(e[1].type));
     const names = {clue:'clue hunt',mcq:'multiple choice',multi:'select all',num:'calculate',eq:'equation builder',fbd:'free-body diagram',blank:'fill in the blanks',pair:'answer + reason',draw:'draw the FBD (direction + length)'};
-    PV[id] = {t, fig:d.fig, meta:`${n} steps · ${[...kinds].map(k=>names[k]).join(', ')}${m.rnd?' · 🎲 numbers change each play':''}`}; }
+    PV[id] = {t, fig:d.fig, meta:`${n} steps · ${[...kinds].map(k=>names[k]).join(', ')}${m.rnd?' · numbers change each play':''}`}; }
   const pv = document.getElementById('pv'), c = PV[id];
   pv.innerHTML = `<div class="pt">${m.title}</div><div class="px">${c.t}</div>${c.fig?`<div class="pf">${c.fig}</div>`:''}<div class="pm">${c.meta}</div>`;
   pv.style.display = 'block';
@@ -1022,16 +1053,16 @@ function unlocked(lv){ return true; }
 function showMap(){
   cur = null; hud(); pvHide();
   const done = MS.filter(m=>S.done[m.id]).length;
-  let h = `<div class="card"><h2>🕵️ Train your physics instincts</h2><p class="lead">Every problem is a case. Don't jump to the numbers! Work through the same routine a physicist uses, step by step. Progress: <b>${done}/${MS.length}</b> missions.</p>
+  let h = `<div class="card"><h2> Train your physics instincts</h2><p class="lead">Every problem is a case. Don't jump to the numbers! Work through the same routine a physicist uses, step by step. Progress: <b>${done}/${MS.length}</b> missions.</p>
   <div class="intro">${PH.map((p,i)=>`<div><b>${i+1}. ${p[1]}</b>${p[2]}</div>`).join('')}</div></div><div class="levels">`;
   LEVELS.forEach(L=>{
     const ms = MS.filter(m=>m.lv===L.n), k = ms.filter(m=>S.done[m.id]).length, un = unlocked(L.n);
     h += `<div class="lv ${un?'':'lock'} ${k===ms.length?'done':''}"><div class="hd"><div class="n">${k===ms.length?'✓':L.n}</div><div><div class="t">${L.name}</div><div class="d">${L.desc}</div></div></div>
     <div class="bar"><i style="width:${100*k/ms.length}%"></i></div>`;
-    ms.forEach(m=> h += `<div class="ms ${un?'':'locked'}" onmouseenter="pvShow('${m.id}',this)" onmouseleave="pvHide()" onclick="${un?`startMission('${m.id}')`:`toast('Finish Level ${L.n-1} first (or unlock all at the bottom).')`}"><span class="ck">${S.done[m.id]?'✅':un?'▶':'🔒'}</span>${m.title}${m.rnd?' <span title="new numbers each time">🎲</span>':''}${hasNote(m.id)?' <span title="you have notes here">📝</span>':''}${hasSave(m.id)?' <span title="saved in progress">💾</span>':''}</div>`);
+    ms.forEach(m=> h += `<div class="ms ${un?'':'locked'}" onmouseenter="pvShow('${m.id}',this)" onmouseleave="pvHide()" onclick="${un?`startMission('${m.id}')`:`toast('Finish Level ${L.n-1} first (or unlock all at the bottom).')`}"><span class="ck">${S.done[m.id]?'✓':'▸'}</span>${m.title}${m.rnd?' <span class="rnd" title="new numbers each time">[new numbers]</span>':''}${hasNote(m.id)?' <span class="rnd">[notes]</span>':''}${hasSave(m.id)?' <span class="rnd">[saved]</span>':''}</div>`);
     h += `</div>`;
   });
-  h += `</div><p class="small" style="margin-top:16px">All levels are unlocked: start anywhere. &nbsp;·&nbsp; <a href="#" onclick="if(confirm('Reset all progress?')){S.xp=0;S.streak=0;S.done={};save();showMap()}return false">Reset progress</a> &nbsp;·&nbsp; 🎲 = new numbers every time you play. Uses g = 9.8 m/s².</p>`;
+  h += `</div><p class="small" style="margin-top:16px">All levels are unlocked: start anywhere. &nbsp;·&nbsp; <a href="#" onclick="if(confirm('Reset all progress?')){S.xp=0;S.streak=0;S.done={};save();showMap()}return false">Reset progress</a> &nbsp;·&nbsp; [new numbers] = different numbers every time you play. Uses g = 9.8 m/s².</p>`;
   document.getElementById('app').innerHTML = h; window.scrollTo(0,0);
 }
 
@@ -1040,7 +1071,7 @@ function hasSave(id){ try{ return !!localStorage.getItem(skey(id)); }catch(e){ r
 function saveMission(){
   try{ localStorage.setItem(skey(cur.m.id), JSON.stringify({d:cur.d, i:cur.max, chips:cur.chips, found:[...cur.found], gained:cur.gained}, (k,v)=> v instanceof Set ? {__set:[...v]} : v));
     const x = loadNote(cur.m.id); x.text = document.getElementById('ntext').value; if(x.text || x.img) saveNote(cur.m.id, x);
-    toast(`💾 Saved at step ${cur.max+1} of ${cur.d.steps.length}. Your answers, clue board and notes will be here when you come back.`);
+    toast(` Saved at step ${cur.max+1} of ${cur.d.steps.length}. Your answers, clue board and notes will be here when you come back.`);
   }catch(e){ toast('Could not save: browser storage is full.'); }
 }
 function resetMission(){
@@ -1066,15 +1097,15 @@ function renderMission(){
   const {m,d} = cur, L = LEVELS[m.lv-1];
   document.getElementById('app').innerHTML = `<div class="mission">
    <div>
-    <div class="card"><div class="mt">Level ${L.n} · ${L.name}</div><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap"><div class="ptitle">${m.title}</div><div style="display:flex;gap:6px"><button class="nt" style="font-size:14px;padding:6px 12px" onclick="saveMission()">💾 Save</button><button class="nt" style="font-size:14px;padding:6px 12px" onclick="resetMission()">↺ Reset</button></div></div><div class="ptext" id="ptext"></div>${d.fig?`<div class="fig">${d.fig}</div>`:''}</div>
-    <div class="card board"><h4>🗂 Clue Board</h4><div id="chips"></div></div>
-    <div class="card board notes"><h4>📝 My Notes for this problem <span id="nsaved" style="text-transform:none;letter-spacing:0;color:var(--green)"></span></h4>
+    <div class="card"><div class="mt">Level ${L.n} · ${L.name}</div><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap"><div class="ptitle">${m.title}</div><div style="display:flex;gap:6px"><button class="nt" style="font-size:14px;padding:6px 12px" onclick="saveMission()"> Save</button><button class="nt" style="font-size:14px;padding:6px 12px" onclick="resetMission()">↺ Reset</button></div></div><div class="ptext" id="ptext"></div>${d.fig?`<div class="fig">${d.fig}</div>`:''}</div>
+    <div class="card board"><h4> Clue Board</h4><div id="chips"></div></div>
+    <div class="card board notes"><h4> My Notes for this problem <span id="nsaved" style="text-transform:none;letter-spacing:0;color:var(--green)"></span></h4>
      <textarea id="ntext" placeholder="Type your notes here: what tripped you up, the key formula, what to remember next time…"></textarea>
      <div class="ntools">
       ${['#1d2733','#2a7ab0','#d63c4a','#2e9e5b'].map((c,i)=>`<button class="nc ${i?'':'on'}" style="background:${c}" title="pen colour" onclick="ntool('color','${c}',this)"></button>`).join('')}
       <button class="nt on" data-s="3" onclick="ntool('size',3,this)">thin</button><button class="nt" data-s="7" onclick="ntool('size',7,this)">thick</button>
-      <button class="nt" id="nerase" onclick="ntool('erase',1,this)">🧽 eraser</button>
-      <button class="nt" onclick="nundo()">↶ undo</button><button class="nt" onclick="nclear()">🗑 clear drawing</button>
+      <button class="nt" id="nerase" onclick="ntool('erase',1,this)"> eraser</button>
+      <button class="nt" onclick="nundo()">↶ undo</button><button class="nt" onclick="nclear()"> clear drawing</button>
      </div>
      <canvas id="ncv" width="900" height="520"></canvas>
      <div class="small">Draw with a mouse, finger or stylus. Notes save automatically in this browser, separately for each problem.</div></div>
@@ -1083,7 +1114,7 @@ function renderMission(){
     <div class="tracker" id="tracker"></div>
     <div class="card" id="step"></div>
     <div class="small" id="stepnav" style="margin:-8px 4px 14px"></div>
-    <div class="card checklist"><h4>🧠 Physicist's Checklist</h4><ol id="cl">${PH.map(p=>`<li data-p="${p[0]}"><div>${p[1]}<small>${p[2]}</small></div></li>`).join('')}</ol></div>
+    <div class="card checklist"><h4> Physicist's Checklist</h4><ol id="cl">${PH.map(p=>`<li data-p="${p[0]}"><div>${p[1]}<small>${p[2]}</small></div></li>`).join('')}</ol></div>
    </div></div>`;
   initNotes(); renderStep();
 }
@@ -1113,7 +1144,7 @@ function renderStep(){
   renderText(); renderChips();
   const box = document.getElementById('step');
   const head = `<div class="phase">Step ${cur.i+1}/${d.steps.length} · ${PH[PHI[s.ph]][1]}</div>`;
-  ({clue:stepClue, mcq:stepMcq, multi:stepMulti, num:stepNum, eq:stepEq, fbd:stepFbd, blank:stepBlank, pair:stepPair, draw:stepDraw})[s.type](s, box, s.st.solved && cur.i<cur.max ? head.replace('<div class="phase">','<div class="phase" style="background:#fff3d6;color:#8a6200">👀 Reviewing · ') : head);
+  ({clue:stepClue, mcq:stepMcq, multi:stepMulti, num:stepNum, eq:stepEq, fbd:stepFbd, blank:stepBlank, pair:stepPair, draw:stepDraw})[s.type](s, box, s.st.solved && cur.i<cur.max ? head.replace('<div class="phase">','<div class="phase" style="background:#fff3d6;color:#8a6200"> Reviewing · ') : head);
   if(s.st.solved) review(s, box);
   document.getElementById('stepnav').innerHTML = cur.i>0 && !s.st.solved ? `<a href="#" onclick="goStep(${cur.i-1});return false">← Look back at the previous step</a> &nbsp;·&nbsp; or click any ✓ step in the bar above. Your place is kept.` : '';
 }
@@ -1123,14 +1154,14 @@ function goStep(k){ if(k<0 || k>cur.max) return; cur.i = k; renderStep(); }
 function review(s, box){
   const q = sel => [...box.querySelectorAll(sel)];
   if(s.type==='mcq') s.opts.forEach((op,i)=>{ if(op.ok){ const b = box.querySelector(`.opt[data-i="${i}"]`); b.classList.add('ok'); b.innerHTML += `<span class="why">${op.why||''}</span>`; } });
-  if(s.type==='multi') s.opts.forEach((op,i)=>{ if(op.ok){ const b = box.querySelector(`.opt[data-i="${i}"]`); b.classList.add('ok'); b.innerHTML = '☑ ' + op.t + `<span class="why">${op.why||''}</span>`; } });
+  if(s.type==='multi') s.opts.forEach((op,i)=>{ if(op.ok){ const b = box.querySelector(`.opt[data-i="${i}"]`); b.classList.add('ok'); b.innerHTML = '[x] ' + op.t + `<span class="why">${op.why||''}</span>`; } });
   if(s.type==='num') document.getElementById('numin').value = f3(s.ans);
   if(s.type==='blank') q('[data-b]').forEach(el=>{ const b = s.blanks[+el.dataset.b]; el.value = b.opts ? b.a : f3(b.a); el.classList.add('ok'); });
   if(s.type==='pair') q('.opt.sel').forEach(b=>b.classList.add('ok'));
   if(s.type==='fbd') q('.fbtn.sel').forEach(b=>b.classList.add('ok'));
   q('button,input,select').forEach(e=>{ e.disabled = true; e.style.cursor = 'default'; });
   const last = cur.i === cur.d.steps.length-1, behind = cur.i < cur.max;
-  box.querySelector('.fbz').innerHTML = `<div class="fb ok">✅ <b>You solved this step.</b> This is your finished work.${s.explain?`<div style="margin-top:6px">${s.explain}</div>`:''}</div><div class="btns">${cur.i>0?`<button class="btn g" onclick="goStep(${cur.i-1})">← Previous step</button>`:''}${behind?`<button class="btn g" onclick="goStep(${cur.i+1})">Next step →</button><button class="btn" onclick="goStep(${cur.max})">⏭ Back to where I left off (step ${cur.max+1})</button>`:`<button class="btn gr" id="nextb" onclick="nextStep()">${last?'Close the case 🏁':'Next step →'}</button>`}</div>`;
+  box.querySelector('.fbz').innerHTML = `<div class="fb ok"> <b>You solved this step.</b> This is your finished work.${s.explain?`<div style="margin-top:6px">${s.explain}</div>`:''}</div><div class="btns">${cur.i>0?`<button class="btn g" onclick="goStep(${cur.i-1})">← Previous step</button>`:''}${behind?`<button class="btn g" onclick="goStep(${cur.i+1})">Next step →</button><button class="btn" onclick="goStep(${cur.max})"> Back to where I left off (step ${cur.max+1})</button>`:`<button class="btn gr" id="nextb" onclick="nextStep()">${last?'Close the case ':'Next step →'}</button>`}</div>`;
 }
 
 /* ---------- scoring ---------- */
@@ -1142,31 +1173,31 @@ function solve(s, box, extraHtml){
   S.xp += pts; cur.gained += pts; save(); hud();
   const fb = box.querySelector('.fbz');
   const last = cur.i === cur.d.steps.length-1;
-  fb.innerHTML = `<div class="fb ok">✅ <b>+${pts} XP.</b> ${extraHtml||''} ${s.explain?`<div style="margin-top:6px">${s.explain}</div>`:''}</div><div class="btns"><button class="btn gr" id="nextb" onclick="nextStep()">${last?'Close the case 🏁':'Next step →'}</button></div>`;
+  fb.innerHTML = `<div class="fb ok"> <b>+${pts} XP.</b> ${extraHtml||''} ${s.explain?`<div style="margin-top:6px">${s.explain}</div>`:''}</div><div class="btns"><button class="btn gr" id="nextb" onclick="nextStep()">${last?'Close the case ':'Next step →'}</button></div>`;
   box.querySelectorAll('.hb').forEach(b=>b.remove());
   document.getElementById('nextb').focus();
   renderChips();
 }
 function miss(s){ s.st.tries++; S.streak=0; S.xp=Math.max(0,S.xp-2); cur.gained-=2; save(); hud(); }
-function hintBtn(s){ return s.hint ? `<button class="btn g hb" onclick="showHint()">💡 Hint (−2 XP)</button>` : ''; }
-function showHint(){ const s=cur.d.steps[cur.i]; s.st.hint=true; const z=document.getElementById('step').querySelector('.hz'); z.innerHTML=`<div class="fb hint">💡 ${s.hint}</div>`; }
+function hintBtn(s){ return s.hint ? `<button class="btn g hb" onclick="showHint()"> Hint (−2 XP)</button>` : ''; }
+function showHint(){ const s=cur.d.steps[cur.i]; s.st.hint=true; const z=document.getElementById('step').querySelector('.hz'); z.innerHTML=`<div class="fb hint"> ${s.hint}</div>`; }
 function nextStep(){ cur.i++; if(cur.i>=cur.d.steps.length) return finish(); renderStep(); document.getElementById('step').scrollIntoView({behavior:'smooth',block:'nearest'}); }
 
 function finish(){
   const m = cur.m; S.done[m.id] = true; save(); try{ localStorage.removeItem(skey(m.id)); }catch(e){}
   const idx = MS.indexOf(m), nx = MS[idx+1];
   const canNext = nx && unlocked(nx.lv);
-  document.getElementById('app').innerHTML = `<div class="card end"><div class="big">🏁</div><h2>Case closed: ${m.title}</h2><p class="lead">You earned <b>${cur.gained} XP</b> on this case. Best streak: ${S.best}.</p>
+  document.getElementById('app').innerHTML = `<div class="card end"><div class="big"></div><h2>Case closed: ${m.title}</h2><p class="lead">You earned <b>${cur.gained} XP</b> on this case. Best streak: ${S.best}.</p>
   <div class="card" style="text-align:left;max-width:640px;margin:0 auto 16px"><h4 class="mt">Your final clue board</h4>${cur.chips.map(c=>`<span class="chip ${c.u?'u':''}">${c.t}</span>`).join('')}</div>
-  <div class="btns" style="justify-content:center">${m.rnd?`<button class="btn g" onclick="startMission('${m.id}')">🎲 Replay with new numbers</button>`:`<button class="btn g" onclick="startMission('${m.id}')">↻ Replay</button>`}
-  ${canNext?`<button class="btn" onclick="startMission('${nx.id}')">Next case: ${nx.title} →</button>`:''}<button class="btn g" onclick="showMap()">🗺 Map</button></div></div>`;
+  <div class="btns" style="justify-content:center">${m.rnd?`<button class="btn g" onclick="startMission('${m.id}')"> Replay with new numbers</button>`:`<button class="btn g" onclick="startMission('${m.id}')">↻ Replay</button>`}
+  ${canNext?`<button class="btn" onclick="startMission('${nx.id}')">Next case: ${nx.title} →</button>`:''}<button class="btn g" onclick="showMap()"> Map</button></div></div>`;
   window.scrollTo(0,0);
 }
 
 /* ---------- step: clue hunt ---------- */
 function stepClue(s, box, head){
   const total = tokens(cur.d.text).filter(t=>t.clue).length;
-  box.innerHTML = `${head}<div class="q">🔍 ${s.prompt}</div><div class="small">Click words in the problem on the left. Clues found: <b id="cc">${cur.found.size}</b> / ${total}. Wrong clicks cost points.</div><div class="hz"></div><div id="cmsg"></div><div class="fbz"><div class="btns"><button class="btn g" onclick="clueHint()">💡 Show me one (−2 XP)</button></div></div>`;
+  box.innerHTML = `${head}<div class="q"> ${s.prompt}</div><div class="small">Click words in the problem on the left. Clues found: <b id="cc">${cur.found.size}</b> / ${total}. Wrong clicks cost points.</div><div class="hz"></div><div id="cmsg"></div><div class="fbz"><div class="btns"><button class="btn g" onclick="clueHint()"> Show me one (−2 XP)</button></div></div>`;
   s.total = total;
   if(cur.found.size>=total) solve(s, box);
 }
@@ -1176,7 +1207,7 @@ function clickClue(i, el){
   cur.found.add(i); addChips([t.mean], /\?/.test(t.mean));
   renderText(); renderChips();
   document.getElementById('cc').textContent = cur.found.size;
-  document.getElementById('cmsg').innerHTML = `<div class="fb ${t.hidden?'hint':'ok'}">${t.hidden?'🕵️ <b>Hidden clue!</b> ':'✔ '}"${t.p}" → <span class="m"><b>${t.mean}</b></span></div>`;
+  document.getElementById('cmsg').innerHTML = `<div class="fb ${t.hidden?'hint':'ok'}">${t.hidden?' <b>Hidden clue!</b> ':'✓ '}"${t.p}" → <span class="m"><b>${t.mean}</b></span></div>`;
   if(cur.found.size >= s.total) solve(s, document.getElementById('step'), 'All clues found.');
 }
 function clickWord(el){
@@ -1206,9 +1237,9 @@ function pickMcq(i, el){
 /* ---------- step: multi select ---------- */
 function stepMulti(s, box, head){
   if(!s.order) s.order = shuffle(s.opts.map((_,i)=>i)); s.sel = s.sel || new Set();
-  box.innerHTML = `${head}<div class="q">${s.prompt}</div><div class="small" style="margin:-6px 0 10px">Select all that apply, then press Check.</div><div class="opts">${s.order.map(i=>`<button class="opt" data-i="${i}" onclick="togMulti(${i},this)">☐ ${s.opts[i].t}</button>`).join('')}</div><div class="hz"></div><div class="fbz"><div class="btns"><button class="btn" onclick="checkMulti()">Check</button>${hintBtn(s)}</div><div id="mfb"></div></div>`;
+  box.innerHTML = `${head}<div class="q">${s.prompt}</div><div class="small" style="margin:-6px 0 10px">Select all that apply, then press Check.</div><div class="opts">${s.order.map(i=>`<button class="opt" data-i="${i}" onclick="togMulti(${i},this)">[ ] ${s.opts[i].t}</button>`).join('')}</div><div class="hz"></div><div class="fbz"><div class="btns"><button class="btn" onclick="checkMulti()">Check</button>${hintBtn(s)}</div><div id="mfb"></div></div>`;
 }
-function togMulti(i, el){ const s=cur.d.steps[cur.i]; if(s.st.solved) return; if(s.sel.has(i)) s.sel.delete(i); else s.sel.add(i); el.classList.toggle('sel'); el.innerHTML = (s.sel.has(i)?'☑ ':'☐ ') + s.opts[i].t; el.classList.remove('bad'); }
+function togMulti(i, el){ const s=cur.d.steps[cur.i]; if(s.st.solved) return; if(s.sel.has(i)) s.sel.delete(i); else s.sel.add(i); el.classList.toggle('sel'); el.innerHTML = (s.sel.has(i)?'[x] ':'[ ] ') + s.opts[i].t; el.classList.remove('bad'); }
 function checkMulti(){
   const s = cur.d.steps[cur.i]; const box = document.getElementById('step');
   const wrong = [...s.sel].filter(i=>!s.opts[i].ok), missed = s.opts.map((x,i)=>i).filter(i=>s.opts[i].ok && !s.sel.has(i));
@@ -1297,7 +1328,7 @@ function fbdSVG(s){
 }
 function stepFbd(s, box, head){
   s.sel = s.sel || new Set();
-  box.innerHTML = `${head}<div class="q">${s.prompt}</div><div class="fbdwrap"><div id="fbdsvg">${fbdSVG(s)}</div><div class="forces">${s.forces.map((f,i)=>`<button class="fbtn ${s.sel.has(i)?'sel':''}" data-i="${i}" onclick="togF(${i})">${s.sel.has(i)?'☑':'☐'} ${f.l}</button>`).join('')}</div></div><div class="hz"></div><div class="fbz"><div class="btns"><button class="btn" onclick="checkFbd()">Check diagram</button>${hintBtn(s)}</div><div id="ffb"></div></div>`;
+  box.innerHTML = `${head}<div class="q">${s.prompt}</div><div class="fbdwrap"><div id="fbdsvg">${fbdSVG(s)}</div><div class="forces">${s.forces.map((f,i)=>`<button class="fbtn ${s.sel.has(i)?'sel':''}" data-i="${i}" onclick="togF(${i})">${s.sel.has(i)?'[x]':'[ ]'} ${f.l}</button>`).join('')}</div></div><div class="hz"></div><div class="fbz"><div class="btns"><button class="btn" onclick="checkFbd()">Check diagram</button>${hintBtn(s)}</div><div id="ffb"></div></div>`;
 }
 function togF(i){ const s=cur.d.steps[cur.i]; if(s.st.solved) return; s.sel.has(i)?s.sel.delete(i):s.sel.add(i); stepFbd(s, document.getElementById('step'), document.querySelector('#step .phase').outerHTML); }
 function checkFbd(){
@@ -1311,7 +1342,7 @@ function checkFbd(){
   }
   miss(s);
   wrong.forEach(i=>box.querySelector(`.fbtn[data-i="${i}"]`).classList.add('bad'));
-  document.getElementById('ffb').innerHTML = `<div class="fb bad">${wrong.map(i=>`✗ <b>${s.forces[i].l}</b>: ${s.forces[i].why}`).join('<br>')}${missed.length?`${wrong.length?'<br>':''}🔎 You are missing <b>${missed.length}</b> force${missed.length>1?'s':''}. Ask yourself: what TOUCHES the object? And gravity always acts.`:''}</div>`;
+  document.getElementById('ffb').innerHTML = `<div class="fb bad">${wrong.map(i=>`✗ <b>${s.forces[i].l}</b>: ${s.forces[i].why}`).join('<br>')}${missed.length?`${wrong.length?'<br>':''} You are missing <b>${missed.length}</b> force${missed.length>1?'s':''}. Ask yourself: what TOUCHES the object? And gravity always acts.`:''}</div>`;
 }
 
 /* ================= per-problem notes (text + drawing) ================= */
@@ -1347,7 +1378,7 @@ function nclear(){ NT.undo.push(NT.ctx.getImageData(0,0,NT.cv.width,NT.cv.height
 
 /* ================= notebook ================= */
 function openNotebook(){
-  document.getElementById('mbox').innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><h2>📒 Formula Notebook</h2><button class="btn g" onclick="closeModal()">Close ✕</button></div>
+  document.getElementById('mbox').innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><h2> Formula Notebook</h2><button class="btn g" onclick="closeModal()">Close </button></div>
   <h3>1. Information you need</h3>
   <table><tr><th>Information</th><th>Why you need it</th></tr>
   <tr><td>Mass (m)</td><td>Weight (mg) and inertia (ma)</td></tr><tr><td>Gravity (g = 9.8 m/s²)</td><td>To calculate weight: mg</td></tr>
