@@ -1,0 +1,6 @@
+services:
+  - type: web
+    runtime: static
+    name: physics-detective
+    buildCommand: echo "no build step"
+    staticPublishPath: .

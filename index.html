@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Physics Detective: Newton's Laws Training</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#1d2733;--mute:#5a6878;--line:#e3e8ee;--blue:#2a7ab0;--blueL:#eef6fc;--green:#2e9e5b;--greenL:#eaf7ef;--red:#d9534f;--redL:#fdf1f1;--yel:#fff8e1;--bg:#e9edf2}
+body{font-family:"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+header{background:#1d2733;color:#fff;display:flex;align-items:center;gap:14px;padding:12px 22px;position:sticky;top:0;z-index:5}
+.logo{font-weight:800;font-size:20px;cursor:pointer}.logo span{color:#7cc4f0}
+header .sp{flex:1}
+.pill{background:rgba(255,255,255,.12);border-radius:20px;padding:6px 12px;font-size:14px}
+.hbtn{background:#2a7ab0;color:#fff;border:0;border-radius:8px;padding:8px 14px;font-weight:700;cursor:pointer;font-size:14px}
+.hbtn.g{background:rgba(255,255,255,.14)}
+main{max-width:1280px;margin:0 auto;padding:22px}
+.card{background:#fff;border-radius:14px;box-shadow:0 3px 14px rgba(0,0,0,.07);padding:18px;margin-bottom:16px}
+h2{font-size:22px;margin-bottom:6px}.lead{color:var(--mute);margin-bottom:16px;line-height:1.5}
+/* map */
+.levels{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px}
+.lv{border:2px solid var(--line);border-radius:14px;padding:16px;background:#fff}
+.lv.lock{opacity:.55}
+.lv .hd{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.lv .n{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;background:var(--blue);flex:none}
+.lv.done .n{background:var(--green)}.lv.lock .n{background:#9aa6b2}
+.lv .t{font-weight:800;font-size:16px}.lv .d{font-size:13px;color:var(--mute)}
+.ms{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:14px}
+.ms:hover{background:var(--blueL)}.ms .ck{width:20px;text-align:center}
+.ms.locked{cursor:not-allowed}.ms.locked:hover{background:none}
+.bar{height:6px;background:#eef1f4;border-radius:4px;overflow:hidden;margin:6px 0 8px}.bar i{display:block;height:100%;background:var(--green)}
+/* mission */
+.mission{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:18px;align-items:start}
+@media(max-width:980px){.mission{grid-template-columns:1fr}}
+.mt{font-size:12.5px;color:var(--mute);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.ptitle{font-size:19px;font-weight:800;margin-bottom:10px}
+.ptext{background:#e8f6f6;border-radius:10px;padding:14px 16px;font-size:16.5px;line-height:1.95}
+.ptext.hunt{background:#fffdf3;outline:2px dashed #e8c96a}
+.w{cursor:pointer;border-radius:3px;padding:1px 1px}
+.ptext.hunt .w:hover{background:#eef1f4}
+.w.cl{background:#ffe58a;border-bottom:2px solid #e0b400;padding:1px 3px}
+.w.hid{background:#ffd6d6;border-bottom:2px solid var(--red);padding:1px 3px}
+.w.miss{animation:shake .35s;background:#eceff3;color:#8a96a3}
+.w.flash{animation:fl 1s 2}
+@keyframes shake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+@keyframes fl{50%{background:#9fd3ff}}
+.fig{display:flex;justify-content:center;margin-top:12px}
+.fig svg{max-width:100%;height:auto}
+.board h4,.checklist h4{font-size:12.5px;color:var(--mute);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.chip{display:inline-block;background:#fff;border:1.5px solid var(--blue);border-radius:8px;padding:5px 9px;margin:0 6px 7px 0;font-size:14px;font-family:"Cambria Math",Cambria,Georgia,serif}
+.chip.u{border-color:var(--red);color:#b03a36}
+.chip.new{animation:pop .4s}
+@keyframes pop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1)}}
+.empty{color:#9aa6b2;font-size:13.5px}
+.checklist ol{list-style:none;counter-reset:c}
+.checklist li{counter-increment:c;display:flex;gap:10px;padding:6px 8px;border-radius:8px;font-size:14px;align-items:flex-start}
+.checklist li:before{content:counter(c);width:22px;height:22px;border-radius:50%;background:#eef1f4;color:var(--mute);display:grid;place-items:center;font-size:12px;font-weight:700;flex:none}
+.checklist li.on{background:var(--blueL)}.checklist li.on:before{background:var(--blue);color:#fff}
+.checklist li small{display:block;color:var(--mute);font-size:12px}
+.tracker{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap}
+.tk{flex:1;min-width:60px;text-align:center;font-size:11.5px;padding:6px 3px;border-radius:7px;background:#fff;color:var(--mute);border:1px solid var(--line)}
+.tk.on{background:var(--blue);color:#fff;font-weight:700;border-color:var(--blue)}.tk.ok{background:#d9f0e1;color:#1f7a45;border-color:#bfe3c9}
+.phase{display:inline-block;background:var(--blueL);color:var(--blue);font-size:12px;font-weight:700;border-radius:20px;padding:4px 10px;margin-bottom:10px}
+.q{font-size:17px;font-weight:700;line-height:1.45;margin-bottom:12px}
+.opts{display:grid;gap:9px}
+.opt{border:2px solid var(--line);border-radius:10px;padding:11px 13px;font-size:15px;cursor:pointer;background:#fff;text-align:left;font-family:inherit;color:inherit;line-height:1.4}
+.opt:hover{border-color:#9fc6e2}
+.opt.ok{border-color:var(--green);background:var(--greenL)}
+.opt.bad{border-color:#e3b5b3;background:var(--redL);color:#8a4a48}
+.opt.sel{border-color:var(--blue);background:var(--blueL)}
+.opt .why{display:block;font-size:13px;margin-top:4px;color:inherit;opacity:.95}
+.m{font-family:"Cambria Math",Cambria,Georgia,serif}
+.fb{margin-top:12px;padding:11px 13px;border-radius:8px;font-size:14.5px;line-height:1.5}
+.fb.ok{background:var(--greenL);border-left:4px solid var(--green)}
+.fb.bad{background:var(--redL);border-left:4px solid var(--red)}
+.fb.hint{background:var(--yel);border-left:4px solid #f0b400}
+.btns{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+.btn{background:var(--blue);color:#fff;border:0;border-radius:8px;padding:10px 18px;font-weight:700;font-size:14.5px;cursor:pointer;font-family:inherit}
+.btn.g{background:#eef1f4;color:var(--ink)}.btn.gr{background:var(--green)}
+.btn:disabled{opacity:.45;cursor:default}
+.numrow{display:flex;align-items:center;gap:10px;font-size:18px;margin-top:4px}
+.numrow input{font-size:18px;padding:9px 12px;border:2px solid #c9d3dd;border-radius:8px;width:170px;font-family:inherit}
+.numrow input:focus{outline:none;border-color:var(--blue)}
+/* equation builder */
+.eq{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:20px;margin:6px 0 4px}
+.slot{min-width:70px;height:44px;border:2px dashed var(--blue);border-radius:8px;display:grid;place-items:center;font-size:18px;padding:0 10px;cursor:pointer;background:#fff}
+.slot.f{border-style:solid;background:var(--blueL)}.slot.act{box-shadow:0 0 0 3px #9fd3ff}
+.sgn{width:34px;height:34px;border-radius:50%;border:2px solid var(--ink);background:#fff;font-size:20px;font-weight:700;cursor:pointer;display:grid;place-items:center;line-height:1}
+.tiles{margin-top:12px;display:flex;gap:7px;flex-wrap:wrap}
+.tile{background:var(--ink);color:#fff;border:0;border-radius:8px;padding:8px 14px;font-size:17px;cursor:pointer}
+.tile:hover{background:#34495e}
+.bl{font-size:17px;line-height:2.5}
+.bin,.bsel{font-size:16px;padding:5px 6px;border:2px solid #c9d3dd;border-radius:7px;font-family:inherit;background:#fff;margin:0 3px}
+.bin{width:84px;text-align:center}
+.bin.ok,.bsel.ok{border-color:var(--green);background:var(--greenL)}
+.bin.bad,.bsel.bad{border-color:var(--red);background:var(--redL)}
+.pv{position:fixed;z-index:15;background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.25);padding:14px;width:350px;pointer-events:none;display:none;border:2px solid var(--blue)}
+.pv .pt{font-weight:800;margin-bottom:6px}.pv .px{font-size:13.5px;line-height:1.5;color:#34424f}
+.pv .pf{display:flex;justify-content:center;margin-top:8px}.pv .pf svg{max-width:100%;max-height:230px;height:auto}
+.pv .pm{font-size:12px;color:var(--mute);margin-top:8px}
+.notes textarea{width:100%;min-height:90px;border:2px solid var(--line);border-radius:8px;padding:9px;font-family:inherit;font-size:14.5px;resize:vertical;line-height:1.5}
+.notes textarea:focus{outline:none;border-color:var(--blue)}
+.ntools{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:10px 0 6px}
+.nt{border:2px solid var(--line);background:#fff;border-radius:7px;padding:4px 9px;cursor:pointer;font-size:13px;font-family:inherit}
+.nt.on{border-color:var(--blue);background:var(--blueL)}
+.nc{width:24px;height:24px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--line);cursor:pointer;padding:0}
+.nc.on{box-shadow:0 0 0 3px var(--blue)}
+#ncv{width:100%;display:block;background:#fff;border:2px solid var(--line);border-radius:8px;touch-action:none;cursor:crosshair;background-image:radial-gradient(#d5dbe2 1px,transparent 1px);background-size:20px 20px}
+.small{font-size:13px;color:var(--mute);margin-top:6px}
+/* fbd */
+.fbdwrap{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
+.fbdwrap svg{background:#fafbfc;border:1px solid var(--line);border-radius:10px;flex:none}
+.forces{display:grid;gap:7px;flex:1;min-width:220px}
+.fbtn{border:2px solid var(--line);border-radius:8px;padding:8px 10px;text-align:left;background:#fff;cursor:pointer;font-size:14px;font-family:inherit}
+.fbtn.sel{border-color:#d63c4a;background:#fff3f4}
+.fbtn.ok{border-color:var(--green);background:var(--greenL)}
+.fbtn.bad{border-color:#e3b5b3;background:var(--redL)}
+/* end */
+.end{text-align:center;padding:30px}
+.end .big{font-size:46px}
+.modal{position:fixed;inset:0;background:rgba(20,30,40,.5);display:none;align-items:flex-start;justify-content:center;z-index:20;overflow:auto;padding:30px 12px}
+.modal.show{display:flex}
+.mbox{background:#fff;border-radius:14px;max-width:820px;width:100%;padding:24px}
+.mbox h3{margin:18px 0 8px;font-size:17px}
+.mbox table{width:100%;border-collapse:collapse;font-size:14px}
+.mbox td,.mbox th{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left}
+.formula{background:#f6f8fa;border-radius:8px;padding:10px 14px;margin:6px 0;font-family:"Cambria Math",Cambria,Georgia,serif;font-size:17px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1d2733;color:#fff;padding:10px 18px;border-radius:10px;font-size:14px;opacity:0;transition:.3s;pointer-events:none;z-index:30;max-width:90vw}
+.toast.show{opacity:1}
+.intro{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px}
+.intro div{background:#f6f8fa;border-radius:10px;padding:10px 12px;font-size:13.5px}
+.intro b{display:block;color:var(--blue);margin-bottom:2px}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo" onclick="showMap()">Physics <span>Detective</span></div>
+ <div class="sp"></div>
+ <div class="pill" id="xp">⭐ 0 XP</div>
+ <div class="pill" id="streak">🔥 0</div>
+ <button class="hbtn g" onclick="openNotebook()">📒 Formula Notebook</button>
+ <button class="hbtn" onclick="showMap()">🗺 Map</button>
+</header>
+<main id="app"></main>
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div class="mbox" id="mbox"></div></div>
+<div class="toast" id="toast"></div>
+<div class="pv" id="pv"></div>
+
+<script>
+/* ================= core helpers ================= */
+const g = 9.8;
+const S = {xp:0, streak:0, best:0, done:{}, unlockAll:false};
+try { Object.assign(S, JSON.parse(localStorage.getItem('physdet1') || '{}')); } catch(e) {}
+function save(){ try{ localStorage.setItem('physdet1', JSON.stringify(S)); }catch(e){} }
+const R = (a,b,s=1) => { const n = Math.round((b-a)/s); return +(a + s*Math.floor(Math.random()*(n+1))).toFixed(4); };
+function f3(x){ if(!isFinite(x)) return '?'; if(x===0) return '0'; const d = Math.max(0, 2-Math.floor(Math.log10(Math.abs(x)))); return String(+x.toFixed(d)); }
+const o = (t,ok,why='') => ({t, ok:!!ok, why});
+const sinD = d => Math.sin(d*Math.PI/180), cosD = d => Math.cos(d*Math.PI/180);
+function shuffle(a){ a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function toast(t){ const el=document.getElementById('toast'); el.textContent=t; el.classList.add('show'); clearTimeout(toast.h); toast.h=setTimeout(()=>el.classList.remove('show'),2600); }
+function hud(){ document.getElementById('xp').textContent = `⭐ ${S.xp} XP`; document.getElementById('streak').textContent = `🔥 ${S.streak} streak`; }
+
+/* ================= SVG figure helpers ================= */
+const COL = {R:'#d63c4a', K:'#333', B:'#2a7ab0', O:'#e08a1e'};
+const DEFS = '<defs>' + Object.entries(COL).map(([k,c]) => `<marker id="ar${k}" markerWidth="4" markerHeight="4" refX="3.4" refY="2" orient="auto-start-reverse"><path d="M0,0 L4,2 L0,4z" fill="${c}"/></marker>`).join('') + '</defs>';
+const svg = (w,h,inner) => `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg" font-family="Georgia,serif">${DEFS}${inner}</svg>`;
+const ar = (x1,y1,x2,y2,c='R',w=3) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${COL[c]}" stroke-width="${w}" marker-end="url(#ar${c})"/>`;
+const tx = (x,y,s,a='') => `<text x="${x}" y="${y}" ${a}>${s}</text>`;
+const ROPE = 'stroke="#c9a45a" stroke-width="3"';
+const BLK = 'fill="#f4dcd2" stroke="#777" stroke-width="1.5"';
+const CEIL = (x,w,y=4) => `<rect x="${x}" y="${y}" width="${w}" height="8" fill="#b9c4c9"/>`;
+const IT = c => `font-style="italic" fill="${COL[c]}" font-size="15"`;
+
+function figHang(lbl, aDir){
+  let s = CEIL(40,120) + `<line x1="100" y1="12" x2="100" y2="80" ${ROPE}/><rect x="70" y="80" width="60" height="42" ${BLK}/>` + tx(100,106,lbl,'text-anchor="middle" font-size="13"');
+  if(aDir==='up') s += ar(155,122,155,82,'O') + tx(163,106,'a',IT('O'));
+  if(aDir==='down') s += ar(155,82,155,122,'O') + tx(163,106,'a',IT('O'));
+  return svg(200,135,s);
+}
+function figElev(lbl, vDir, aDir){
+  let s = `<line x1="100" y1="0" x2="100" y2="12" ${ROPE}/><rect x="50" y="12" width="100" height="150" fill="#eef2f5" stroke="#667" stroke-width="2"/><rect x="72" y="150" width="56" height="8" fill="#555"/><rect x="80" y="104" width="40" height="46" ${BLK}/>` + tx(100,131,lbl,'text-anchor="middle" font-size="12"') + tx(100,172,'scale','text-anchor="middle" font-size="10" fill="#555"');
+  const A = (x,d,c,l) => (d==='up' ? ar(x,115,x,65,c) : ar(x,65,x,115,c)) + tx(x+7,94,l,IT(c));
+  if(vDir) s += A(170,vDir,'B','v');
+  if(aDir) s += A(25,aDir,'O','a');
+  return svg(200,178,s);
+}
+function figAtwood(l1, l2, h, arrows){
+  let s = CEIL(40,120) + `<line x1="100" y1="12" x2="100" y2="30" stroke="#555" stroke-width="3"/><line x1="78" y1="42" x2="78" y2="100" ${ROPE}/><line x1="122" y1="42" x2="122" y2="135" ${ROPE}/><circle cx="100" cy="42" r="22" fill="#dfe3e6" stroke="#666" stroke-width="2"/><circle cx="100" cy="42" r="3" fill="#666"/><rect x="56" y="100" width="44" height="32" ${BLK}/><rect x="99" y="135" width="48" height="38" ${BLK}/>` + tx(78,121,l1,'text-anchor="middle" font-size="12"') + tx(123,159,l2,'text-anchor="middle" font-size="12"');
+  if(h) s += `<rect x="20" y="214" width="170" height="7" fill="#b9c4c9"/><line x1="160" y1="176" x2="160" y2="212" stroke="#333" stroke-width="1.5" marker-end="url(#arK)" marker-start="url(#arK)"/>` + tx(166,199,h,'font-size="13" fill="#b03a36" font-weight="bold"');
+  if(arrows){ s += ar(40,95,40,125,'O') + tx(26,115,'a',IT('O')) + ar(178,170,178,140,'O') + tx(184,160,'a',IT('O')); }
+  return svg(210, h?226:180, s);
+}
+function figChain(){
+  let s = `<rect x="10" y="72" width="300" height="10" fill="#b9c4c9"/>`;
+  [['A',20],['B',120],['C',220]].forEach(([l,x]) => s += `<rect x="${x}" y="42" width="40" height="30" ${BLK}/>` + tx(x+20,62,l,'text-anchor="middle"'));
+  s += `<line x1="60" y1="57" x2="120" y2="57" stroke="#555" stroke-width="2"/><line x1="160" y1="57" x2="220" y2="57" stroke="#555" stroke-width="2"/>` + tx(190,50,'T','font-style="italic" text-anchor="middle"') + tx(90,50,'T<tspan font-size="10" dy="3">AB</tspan>','font-style="italic" text-anchor="middle" fill="#b03a36"') + ar(260,57,306,57,'R') + tx(288,46,'F',IT('R'));
+  return svg(320,92,s);
+}
+/* incline that descends to the right. blocks: {d (distance along slope from top), w, h, l, mu} */
+function figIncline(o){
+  const th=o.th, r=th*Math.PI/180, x0=o.x0||25, L=o.L||270, yb=o.yb||190, top=yb-L*Math.tan(r);
+  const P = (d,hh=0) => [x0+d*Math.cos(r)+hh*Math.sin(r), top+d*Math.sin(r)-hh*Math.cos(r)];
+  let s = `<polygon points="${x0},${top} ${x0},${yb} ${x0+L},${yb}" fill="#dfe6ea" stroke="#9aa"/>`;
+  s += `<path d="M${x0+L-45},${yb} A45,45 0 0 0 ${x0+L-45*Math.cos(r)},${yb-45*Math.sin(r)}" fill="none" stroke="#555"/>` + tx(x0+L-75,yb-6,(o.thLabel||th+'°'),'font-size="13"');
+  (o.ab?o.blocks.slice(0,1):(o.blocks||[])).forEach(b => {
+    const [px,py] = P(b.d);
+    s += `<g transform="translate(${px},${py}) rotate(${th})"><rect x="${-b.w/2}" y="${-b.h}" width="${b.w}" height="${b.h}" ${BLK}/><text x="0" y="${-b.h/2+4}" text-anchor="middle" font-size="12">${b.l}</text></g>`;
+    if(b.mu) s += tx(px-14,py+22,b.mu,'font-size="12" fill="#334"');
+  });
+  if(o.string && o.blocks.length>1){ const [a,b]=o.blocks; const p1=P(a.d+a.w/2,a.h/2), p2=P(b.d-b.w/2,b.h/2); s += `<line x1="${p1[0]}" y1="${p1[1]}" x2="${p2[0]}" y2="${p2[1]}" ${ROPE}/>`; }
+  if(o.hang){ // pulley at top-left corner, rope from first block, hanging mass on the left
+    const b=o.blocks[0], pc=[x0-6, top-14], rr=13;
+    const pA=P(b.d-b.w/2,b.h/2);
+    s += `<line x1="${x0-6}" y1="${top-14}" x2="${x0+10}" y2="${top+8}" stroke="#666" stroke-width="5"/>`;
+    s += `<line x1="${pA[0]}" y1="${pA[1]}" x2="${pc[0]+rr*Math.sin(r)}" y2="${pc[1]-rr*Math.cos(r)}" ${ROPE}/>`;
+    s += `<line x1="${pc[0]-rr}" y1="${pc[1]}" x2="${pc[0]-rr}" y2="${top+70}" ${ROPE}/><circle cx="${pc[0]}" cy="${pc[1]}" r="${rr}" fill="#dfe3e6" stroke="#666" stroke-width="2"/>`;
+    s += `<rect x="${pc[0]-rr-22}" y="${top+70}" width="44" height="36" ${BLK}/>` + tx(pc[0]-rr,top+93,o.hang,'text-anchor="middle" font-size="12"');
+    s += ar(pc[0]-rr-34,top+70,pc[0]-rr-34,top+108,'O') + tx(pc[0]-rr-50,top+92,'a',IT('O'));
+    const q1=P(b.d+b.w/2+8,b.h+10), q2=P(b.d+b.w/2-30,b.h+10); s += ar(q1[0],q1[1],q2[0],q2[1],'O') + tx(q1[0]+4,q1[1]-4,'a',IT('O'));
+  }
+  if(o.ab){ // stacked A (bottom) and B (top), pulley at top-left
+    const pc=[x0-4, top-14], rr=13;
+    s += `<line x1="${x0-4}" y1="${top-14}" x2="${x0+12}" y2="${top+8}" stroke="#666" stroke-width="5"/>`;
+    const a=o.blocks[0], b=o.blocks[1];
+    const pa=P(a.d-a.w/2,a.h/2), pb=P(b.d-b.w/2,a.h+b.h/2);
+    const t1=[pc[0]+rr*Math.sin(r), pc[1]-rr*Math.cos(r)];
+    s += `<line x1="${pa[0]}" y1="${pa[1]}" x2="${t1[0]}" y2="${t1[1]}" ${ROPE}/><line x1="${pb[0]}" y1="${pb[1]}" x2="${pc[0]-rr*0.2}" y2="${pc[1]-rr}" ${ROPE}/><circle cx="${pc[0]}" cy="${pc[1]}" r="${rr}" fill="#dfe3e6" stroke="#666" stroke-width="2"/>`;
+    const [bx,by]=P(b.d,a.h); s += `<g transform="translate(${bx},${by}) rotate(${th})"><rect x="${-b.w/2}" y="${-b.h}" width="${b.w}" height="${b.h}" ${BLK}/><text x="0" y="${-b.h/2+5}" text-anchor="middle" font-size="13">${b.l}</text></g>`;
+  }
+  return svg(o.W||320, yb+(o.hang?12:8), s);
+}
+function figRopes(){
+  let s = ar(80,52,80,6,'R') + tx(90,24,'F',IT('R'));
+  s += `<rect x="58" y="52" width="44" height="34" ${BLK}/>` + tx(80,74,'A','text-anchor="middle"');
+  s += `<line x1="80" y1="86" x2="80" y2="138" ${ROPE} stroke-dasharray="4 2"/>` + tx(10,117,'Rope 1','font-size="13"');
+  s += `<rect x="58" y="138" width="44" height="34" ${BLK}/>` + tx(80,160,'B','text-anchor="middle"');
+  s += `<line x1="80" y1="172" x2="80" y2="222" ${ROPE} stroke-dasharray="4 2"/>` + tx(10,202,'Rope 2','font-size="13"');
+  s += ar(140,120,140,80,'O') + tx(148,104,'a',IT('O'));
+  return svg(180,228,s);
+}
+function figBook(){
+  return svg(240,130, `<rect x="40" y="52" width="160" height="12" fill="#d5d8db" stroke="#888"/><rect x="52" y="64" width="9" height="62" fill="#d5d8db" stroke="#888"/><rect x="179" y="64" width="9" height="62" fill="#d5d8db" stroke="#888"/><rect x="80" y="34" width="80" height="18" rx="5" fill="#c98a4b" stroke="#8a5a2b"/>` + tx(120,47,'5 N book','text-anchor="middle" font-size="11" fill="#fff"'));
+}
+function figFloor(){
+  return svg(300,110, `<rect x="10" y="80" width="280" height="10" fill="#b9c4c9"/>` + tx(20,104,'rough floor (μₖ)','font-size="11" fill="#555"') + `<rect x="70" y="40" width="70" height="40" ${BLK}/>` + tx(105,65,'sled','text-anchor="middle" font-size="12"') + `<line x1="140" y1="60" x2="220" y2="60" ${ROPE}/>` + ar(220,60,262,60,'R') + tx(232,52,'T',IT('R')) + ar(80,25,130,25,'B') + tx(136,30,'v',IT('B')));
+}
+function figCompound(lbl){
+  let s = CEIL(30,190);
+  s += `<line x1="62" y1="12" x2="62" y2="160" ${ROPE}/><line x1="98" y1="160" x2="98" y2="80" ${ROPE}/><line x1="162" y1="80" x2="162" y2="185" ${ROPE}/><line x1="130" y1="12" x2="130" y2="50" ${ROPE}/>`;
+  s += `<circle cx="130" cy="80" r="32" fill="#dfe3e6" stroke="#666" stroke-width="2"/><circle cx="130" cy="80" r="3" fill="#666"/><circle cx="80" cy="160" r="18" fill="#dfe3e6" stroke="#666" stroke-width="2"/><circle cx="80" cy="160" r="3" fill="#666"/>`;
+  s += `<line x1="80" y1="160" x2="80" y2="205" ${ROPE}/><rect x="52" y="205" width="56" height="36" fill="#d79b74" stroke="#777"/>` + tx(80,228,lbl,'text-anchor="middle" font-size="12"');
+  s += ar(162,185,162,232,'R') + tx(170,222,'F',IT('R'));
+  const L = (x,y,n) => tx(x,y,`T<tspan font-size="10" dy="3">${n}</tspan>`,'font-style="italic" font-size="15"');
+  s += L(38,100,'2') + L(104,125,'3') + L(168,150,'5') + L(108,35,'4') + L(86,190,'1');
+  return svg(215,248,s);
+}
+
+/* ================= thinking-routine phases ================= */
+const PH = [
+ ['info','Gather the information','m, g, a, direction of motion, other forces, rope/pulley setup'],
+ ['unknown','Name the unknown','What exactly is asked? Symbol + units'],
+ ['system','Choose the object (system)','One object or several? Forces between them are internal'],
+ ['fbd','Draw the free-body diagram','Only forces acting ON this object'],
+ ['sign','Pick the + direction','Make + the way the object accelerates'],
+ ['law','Write ΣF = ma for EACH object','One equation per object, with signs from your + choice'],
+ ['link','Link the objects','Ideal rope: same T everywhere, same size of a'],
+ ['solve','Solve, then check','Units right? Bigger or smaller than mg? Does it make sense?']
+];
+const SHORT = ['Info','Unknown','System','FBD','Sign','ΣF = ma','Link','Solve'];
+const PHI = Object.fromEntries(PH.map((p,i)=>[p[0],i]));
+PHI.check = PHI.solve;
+
+/* ================= LEVELS & MISSIONS ================= */
+const LEVELS = [
+ {n:1, name:'Clue Hunt', desc:'Pick out the givens, the units, and the hidden clues ("from rest" means v₀ = 0)'},
+ {n:2, name:'The Information Checklist', desc:'What do you need, why do you need it, and what is missing?'},
+ {n:3, name:'Direction & Signs', desc:'+ is the direction of a. Then T − mg = ma or mg − T = ma?'},
+ {n:4, name:'Free-Body Builder', desc:'Only the real forces acting ON the object'},
+ {n:5, name:'Action / Reaction', desc:"Newton's 3rd-law pairs compared with forces that balance by the 1st and 2nd laws"},
+ {n:6, name:'One Object, Full Solve', desc:'Hanging at rest, accelerating up, accelerating down'},
+ {n:7, name:'Connected Objects', desc:'ΣF = ma for EACH object; same T, same a'},
+ {n:8, name:'Case Files: Pulleys & Inclines', desc:'Full problems from start to finish'}
+];
+
+const MS = [
+/* ---------- LEVEL 1: CLUE HUNT ---------- */
+{id:'1a', lv:1, title:'The Hanging Lamp', make:()=>({
+ text:`A [[2.5 kg|m = 2.5 kg]] lamp hangs [[at rest|a = 0|hidden]] from a single cord attached to a white ceiling that is 3 m high. What is the tension in the cord?`,
+ fig: figHang('2.5 kg'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Click every piece of information you would actually use. Some phrases secretly stand for a number.', explain:`"At rest" is a <b>hidden clue</b>: no motion means no acceleration, so <span class="m">a = 0</span>. The ceiling's colour and its 3 m height are story details. Height does not appear anywhere in <span class="m">ΣF = ma</span>.`},
+  {type:'mcq', ph:'unknown', prompt:'What is the problem asking for?', opts:[o('The tension T in the cord',1,'Yes. "What is the tension…" names the unknown. Write it on your clue board as T = ?'),o('The mass m',0,'The mass is given: 2.5 kg.'),o('The acceleration a',0,'"At rest" already told you a = 0.'),o('The height of the ceiling',0,'The height is given and is not needed.')], add:['T = ?'], u:true},
+  {type:'mcq', ph:'info', prompt:'One value you need is never written in the problem. Which one?', opts:[o('g = 9.8 m/s²',1,'Right. Gravity is always available near Earth, and you need it for the weight mg.'),o('The length of the cord',0,"Length doesn't change the tension."),o('The speed of the lamp',0,"Speed isn't in ΣF = ma. Only acceleration is.")], add:['g = 9.8 m/s²']}
+ ]})},
+{id:'1b', lv:1, title:'Elevator Scale', make:()=>({
+ text:`A [[60 kg|m = 60 kg]] student stands on a bathroom scale in an elevator in a building with 12 floors. The elevator is [[moving upward|v points up]] and [[speeding up|a points the same way as v|hidden]] at a rate of [[2.0 m/s²|a = 2.0 m/s²]]. What does the scale read?`,
+ fig: figElev('60 kg','up','up'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Find the information. Careful: one number is just a story detail.', explain:`"12 floors" is a distractor. "Speeding up" is a hidden <b>direction</b> clue: when an object speeds up, <span class="m">a</span> points the same way as <span class="m">v</span>, so here <span class="m">a</span> points up.`},
+  {type:'mcq', ph:'unknown', prompt:'A scale reads how hard it pushes up on you. In physics language, the unknown is…', opts:[o('The normal force n from the scale on the student',1,'Exactly. A scale measures the normal force n, not your weight directly.'),o("The student's weight mg",0,'Weight is mg = 588 N no matter what. The scale reading changes when the elevator accelerates, so it must be a different force.'),o('The acceleration',0,'That is given: 2.0 m/s².')], add:['n = ?'], u:true},
+  {type:'mcq', ph:'sign', prompt:'Which way does the acceleration point?', opts:[o('Up',1,'Moving up and speeding up means a points up. Later you will choose + = up.'),o('Down',0,'Speeding up means a is in the same direction as v.'),o('It is zero',0,'Speeding up means the velocity is changing, so a ≠ 0.')]}
+ ]})},
+{id:'1c', lv:1, title:'Two Blocks, One Pulley', make:()=>({
+ text:`The [[100 kg|m₂ = 100 kg]] block in the figure takes [[5.2 s|t = 5.2 s]] to reach the floor after being [[released from rest|v₀ = 0|hidden]]. The pulley is [[massless and frictionless|T is the same on both sides|hidden]]. What is the mass of the block on the left?`,
+ fig: figAtwood('m₁ = ?','100 kg','1 m'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Hunt the clues in the text. Two of them are hidden in words, not numbers.', explain:`"Released from rest" means <span class="m">v₀ = 0</span>. "Massless and frictionless pulley" means the pulley only redirects the rope, so the <b>tension is the same on both sides</b>.`},
+  {type:'mcq', ph:'info', prompt:'You will need the distance the block falls. Where is it?', opts:[o('In the figure: 1 m',1,'Always read the figure! Mastering Physics often puts data only in the picture.'),o("It isn't given, so the problem can't be solved",0,'Look again at the figure.'),o('Use g × t',0,'g × t is a speed, not a distance.')], add:['Δy = 1 m']},
+  {type:'mcq', ph:'unknown', prompt:'What is the unknown?', opts:[o('m₁, the mass of the left block',1,'Yes. You will probably need a and T along the way, but m₁ is the target.'),o('The tension T',0,"You may need T along the way, but it isn't what's asked."),o('The time',0,'The time is given: 5.2 s.')], add:['m₁ = ?'], u:true}
+ ]})},
+{id:'1d', lv:1, title:'Three Blocks on a Track', make:()=>({
+ text:`[[Three identical|m_A = m_B = m_C]] blocks connected by [[ideal (massless) strings|tension is the same along each string|hidden]] are pulled along a horizontal [[frictionless|no friction force|hidden]] surface by a horizontal force F. The tension in the string between B and C is [[T = 3.00 N|T_BC = 3.00 N]]. Each block has mass [[m = 0.400 kg|m = 0.400 kg]]. What is F, and what is the tension between A and B?`,
+ fig: figChain(),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Find all the clues. "Identical" and "frictionless" are information too!', explain:`"Identical" gives you all three masses from one number. "Frictionless" removes a force from every free-body diagram. "Ideal strings" means each string has one tension throughout.`},
+  {type:'mcq', ph:'unknown', prompt:'How many unknowns does the question ask for?', opts:[o('Two: F and T_AB',1,'Right. Write both on the clue board.'),o('One: F',0,'Read the end again: "and what is the tension between A and B?"'),o('Three: F, T_AB and T',0,'T = 3.00 N is given.')], add:['F = ?','T_AB = ?'], u:true},
+  {type:'mcq', ph:'link', prompt:'The strings stay tight. What does that tell you about the blocks?', opts:[o('All three have the same acceleration a',1,'Connected objects that move together share one a, which is a powerful link.'),o('All three feel the same net force',0,'Same mass and same a do mean the same net force, but you can only say that because of the shared a.'),o('Nothing',0,'Taut strings force the blocks to move together.')], add:['a same for A, B, C']}
+ ]})},
+{id:'1e', lv:1, title:'Two Blocks on an Incline', make:()=>({
+ text:`Two blocks, [[1.0 kg|m₁ = 1.0 kg]] and [[2.0 kg|m₂ = 2.0 kg]], are tied together by a [[massless string|same T at both ends|hidden]] and are [[sliding down|kinetic friction, a points down the slope|hidden]] a [[20°|θ = 20°]] incline. The coefficient of kinetic friction is [[0.20|μ₁ = 0.20]] for the 1.0 kg block and [[0.10|μ₂ = 0.10]] for the 2.0 kg block. What is the tension in the string?`,
+ fig: figIncline({th:20, string:true, blocks:[{d:70,w:44,h:30,l:'1.0 kg',mu:'μₖ = 0.20'},{d:190,w:54,h:34,l:'2.0 kg',mu:'μₖ = 0.10'}]}),
+ steps:[
+  {type:'clue', ph:'info', prompt:'This one is rich. Find every clue (7 of them).', explain:`"Sliding" tells you the friction is <b>kinetic</b>: <span class="m">f = μₖn</span>. Each block has its own μ, so match each μ to the right block! The angle is needed to split gravity into components along and perpendicular to the slope.`},
+  {type:'mcq', ph:'unknown', prompt:'What is the unknown?', opts:[o('The tension T in the string',1,'Yes. You will need a along the way.'),o('The acceleration',0,"You'll need it on the way, but the question asks for T."),o('The angle',0,'The angle is given: 20°.')], add:['T = ?'], u:true},
+  {type:'mcq', ph:'info', prompt:'What does the friction force depend on?', opts:[o('μₖ times the normal force n, and on a slope n = mg cos θ',1,'Exactly: f = μₖ n = μₖ m g cos θ. You need the mass, g, μ, AND the angle.'),o('μₖ times the weight mg',0,'Only on level ground is n = mg. On a slope, part of the weight pushes along the slope, so n = mg cos θ.'),o('How fast the block is sliding',0,'Kinetic friction does not depend on speed.')]}
+ ]})},
+
+/* ---------- LEVEL 2: CHECKLIST ---------- */
+{id:'2a', lv:2, title:'The Well Bucket', make:()=>({
+ text:`A [[4.0 kg|m = 4.0 kg]] bucket of water is pulled up out of a well by a rope. It [[speeds up|a points up|hidden]] at [[1.5 m/s²|a = 1.5 m/s²]]. The well is 8 m deep and the bucket is red. Find the tension in the rope.`,
+ fig: figHang('4.0 kg','up'),
+ steps:[
+  {type:'multi', ph:'info', prompt:'Which information do you need to find the tension? Select all that apply.', opts:[o('Mass m',1,'Needed for the weight mg and for ma.'),o('Gravity g',1,'Needed to compute the weight mg.'),o('Acceleration a',1,"Needed for the right side of Newton's 2nd law."),o('Direction of the acceleration',1,'Needed to decide which forces are + and which are −.'),o('Depth of the well (8 m)',0,'Depth matters for energy or time, but not for a force balance.'),o('Colour of the bucket',0,'Story detail.')], explain:'This is the information checklist: <b>m, g, a, direction, other forces, rope/pulley setup</b>. Run through it at the start of every problem.'},
+  {type:'mcq', ph:'info', prompt:'Why do you need g?', opts:[o('To calculate the weight: W = mg',1,'Yes. Every object near Earth has a weight force mg pointing down.'),o('Because the bucket is moving',0,'You would need g even if the bucket were at rest.'),o('To find the speed of the bucket',0,'The speed is not needed here.')]},
+  {type:'mcq', ph:'info', prompt:'Why do you need the mass? (It appears twice!)', opts:[o('For the weight mg AND for the inertia term ma',1,'Right. m shows up on both sides of T − mg = ma.'),o('Only for the weight',0,'m also appears on the right side: ma (inertia).'),o('Only for ma',0,'The weight mg also needs m.')]},
+  {type:'mcq', ph:'sign', prompt:'Why do you need the direction of the acceleration?', opts:[o('To set which forces are + and which are −',1,'Pick + in the direction of a. Then T (up) is + and mg (down) is −.'),o('To get the size of T',0,'Direction alone sets signs, not sizes.'),o("It isn't really needed",0,"Without it you can't tell whether to write T − mg = ma or mg − T = ma, and those give different answers.")], explain:'Coming up later: <span class="m">T − mg = ma &nbsp;⇒&nbsp; T = m(g + a)</span>.'}
+ ]})},
+{id:'2b', lv:2, title:'Counting Unknowns', make:()=>({
+ text:`Block 1 ([[5.0 kg|m₁ = 5.0 kg]]) and block 2 ([[3.0 kg|m₂ = 3.0 kg]]) hang on opposite sides of a [[massless, frictionless pulley|same T on both sides|hidden]], connected by a [[light rope|same T, same size of a for both|hidden]]. Find their acceleration and the rope tension.`,
+ fig: figAtwood('5.0 kg','3.0 kg'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues, including the hidden rope/pulley clues.', explain:'The rope/pulley setup tells you <b>how the objects are connected</b>. An ideal rope over an ideal pulley means one tension T and one size of acceleration a for both blocks.'},
+  {type:'mcq', ph:'unknown', prompt:'How many unknowns are there?', opts:[o('Two: a and T',1,'Right. Two unknowns need two equations.'),o('One: a',0,'The question also asks for T.'),o('Four: a₁, a₂, T₁, T₂',0,'The ideal rope makes a₁ = a₂ = a and T₁ = T₂ = T, so only 2 remain.')], add:['a = ?','T = ?'], u:true},
+  {type:'mcq', ph:'law', prompt:'So where do your two equations come from?', opts:[o("Newton's 2nd law written separately for EACH block",1,'Yes! One ΣF = ma per object gives 2 equations for 2 unknowns.'),o("Newton's 2nd law once for the whole thing",0,'That gives only one equation, and it hides T.'),o("Newton's 3rd law",0,"The 3rd law is about pairs of forces. It doesn't give you a.")], explain:'Big idea: <b>count unknowns, then write one ΣF = ma per object</b> until you have as many equations as unknowns.'}
+ ]})},
+{id:'2c', lv:2, title:"What's Missing?", make:()=>({
+ text:`Detective rule: before solving, check that you HAVE what you need. Each short problem below is missing one piece. Find it.`,
+ fig:'',
+ steps:[
+  {type:'mcq', ph:'info', prompt:'"A crane lifts a 500 kg steel beam. Find the cable tension." What is missing?', opts:[o('The acceleration, or a phrase like "at constant speed"',1,'Right. T = m(g + a), so you need a. "Constant speed" would mean a = 0.'),o('The value of g',0,'g = 9.8 m/s² is always known.'),o('The length of the beam',0,'Length is not in ΣF = ma.')]},
+  {type:'mcq', ph:'info', prompt:'"Two blocks hang over an ideal pulley. m₁ = 4 kg. Find a." What is missing?', opts:[o('m₂',1,'a = (m₁ − m₂)g/(m₁ + m₂) needs both masses.'),o('The tension',0,'T is an unknown you solve for alongside a, so it is not missing information.'),o('The height of the pulley',0,"It doesn't affect a.")]},
+  {type:'mcq', ph:'info', prompt:'"A box slides across a floor at 3 m/s with μₖ = 0.30. Find the friction force." What is missing?', opts:[o('The mass of the box',1,'f = μₖ n = μₖ mg, so you need m.'),o('The speed',0,'The speed is given, and kinetic friction does not depend on speed anyway.'),o('The acceleration',0,"Friction f = μₖn doesn't need a.")]},
+  {type:'mcq', ph:'info', prompt:'"A 2 kg block is pulled across a frictionless floor by a horizontal rope. Find a." What is missing?', opts:[o('The rope tension (the "other forces")',1,'ΣF = T here, so you need T to get a = T/m.'),o('The coefficient of friction',0,'"Frictionless" already tells you it is 0.'),o('g',0,'g is always known.')]}
+ ]})},
+
+/* ---------- LEVEL 3: SIGNS ---------- */
+{id:'3a', lv:3, title:'Which Way Is a?', make:()=>({
+ text:`Rule: acceleration points the way the velocity is <b>changing</b>. Speeding up means a points the SAME way as v. Slowing down means a points OPPOSITE to v. Constant velocity means a = 0.`,
+ fig:'',
+ steps:[
+  ['An elevator moves up and speeds up.','up','Moving up and speeding up means a points the same way as v: up.'],
+  ['An elevator moves up and slows down to stop at the top floor.','down','Trap! It is moving up, but it is slowing, so a points opposite to v: down.'],
+  ['A bucket is lowered and speeds up.','down','Moving down and speeding up means a points down.'],
+  ['A bucket is lowered and slows down before touching the ground.','up','Moving down and slowing means a points up, even though it moves down.'],
+  ['A crate is lifted at a constant 2 m/s.','zero','Constant velocity means no change, so a = 0. The 2 m/s is a distractor!']
+ ].map(([q,ans,why]) => ({type:'mcq', ph:'sign', prompt:q+' Which way does a point?', opts:[o('Up ↑',ans==='up',ans==='up'?why:'Check: is it speeding up or slowing down?'),o('Down ↓',ans==='down',ans==='down'?why:'Check: is it speeding up or slowing down?'),o('a = 0',ans==='zero',ans==='zero'?why:'The velocity is changing, so a ≠ 0.')], keep:true}))
+})},
+{id:'3b', lv:3, title:'Pick the Equation', make:()=>{
+ const E = [o('T − mg = ma',0),o('mg − T = ma',0),o('T − mg = 0',0),o('T + mg = ma',0,'T and mg point in opposite directions, so they cannot both be +.')];
+ const mk = (q,k,why) => ({type:'mcq', ph:'law', prompt:q, keep:true, opts:E.map((e,i)=>o(e.t, i===k, i===k?why:(e.why||'Choose + = direction of a. Forces along + are positive, forces against it are negative.')))});
+ return {
+ text:`A mass m hangs from a rope with tension T. Strategy: <b>choose + in the direction of a</b>. Forces pointing that way are +, and forces pointing the other way are −. Then ΣF = ma (a is a positive magnitude).`,
+ fig: figHang('m'),
+ steps:[
+  mk('Lifted and speeding up (a ↑). Choose + = up.',0,'T points + (up) and mg points − (down): T − mg = ma, so T = m(g + a).'),
+  mk('Lowered and speeding up (a ↓). Choose + = down.',1,'mg is + (down) and T is − (up): mg − T = ma, so T = m(g − a).'),
+  mk('Moving UP but slowing down. Choose + = direction of a.',1,'a points down, so + = down: mg − T = ma. T is less than mg, which is why you feel light as an elevator stops going up.'),
+  mk('Moving at constant velocity.',2,'a = 0, so the forces balance: T − mg = 0, which gives T = mg.'),
+  {type:'mcq', ph:'check', prompt:'In which situation is the tension BIGGER than the weight mg?', opts:[o('Whenever a points up',1,'T = m(g + a) > mg. The rope must beat gravity to accelerate the mass upward.'),o('Whenever the object moves up',0,'Moving up at constant speed gives T = mg, and moving up while slowing gives T < mg. Direction of MOTION is not the test.'),o('Never; tension is always mg',0,'Only when a = 0.')], explain:'Sanity check you can always do: <b>a up ⇒ T > mg; a down ⇒ T < mg; a = 0 ⇒ T = mg.</b>'}
+ ]};}},
+{id:'3c', lv:3, title:'Atwood Signs', make:()=>({
+ text:`A 5 kg block (m₁) and a 3 kg block (m₂) hang on either side of an ideal pulley. Pick + <b>separately for each block</b>, following the way that block accelerates.`,
+ fig: figAtwood('5 kg','3 kg',null,true),
+ steps:[
+  {type:'mcq', ph:'sign', prompt:'Which way does the 5 kg block accelerate?', opts:[o('Down',1,'The heavier side wins: its weight is bigger than the tension.'),o('Up',0,'Gravity pulls harder on the heavier block.'),o("It doesn't move",0,'Only if the masses were equal.')]},
+  {type:'mcq', ph:'law', prompt:'With + = DOWN for the 5 kg block, its equation is…', opts:[o('m₁g − T = m₁a',1,'Weight points down (+), tension points up (−).'),o('T − m₁g = m₁a',0,'That would be + = up, but you chose down for this block.'),o('m₁g − T = 0',0,"It accelerates, so ΣF isn't 0.")]},
+  {type:'mcq', ph:'sign', prompt:'For the 3 kg block, which direction should be +?', opts:[o('Up',1,'It accelerates up, so + = up.'),o('Down',0,'You CAN choose down, but then a would come out negative. Following the motion keeps a positive and the signs consistent.')]},
+  {type:'mcq', ph:'law', prompt:'Equation for the 3 kg block:', opts:[o('T − m₂g = m₂a',1,'Tension up (+), weight down (−).'),o('m₂g − T = m₂a',0,'Check your + direction: up.'),o('T − m₁g = m₂a',0,"Use THIS block's mass for its weight.")]},
+  {type:'mcq', ph:'link', prompt:'Why do both equations use the same a (instead of a₁ and a₂)?', opts:[o('The rope does not stretch: when one block goes down 1 cm, the other goes up 1 cm',1,'Exactly. That constraint links the two equations.'),o('Because both blocks have the same mass',0,'They have different masses.'),o("Newton's 3rd law",0,'This is a rope constraint, not a 3rd-law pair.')], explain:'Now add the two equations: T cancels, giving <span class="m">(m₁ − m₂)g = (m₁ + m₂)a</span>, so <span class="m">a = (m₁ − m₂)g / (m₁ + m₂)</span>.'}
+ ]})},
+
+/* ---------- LEVEL 4: FBD ---------- */
+{id:'4a', lv:4, title:'Book on a Table', make:()=>({
+ text:`A book rests on a table. Draw the free-body diagram for the <b>book</b>.`, fig: figBook(),
+ steps:[
+  {type:'fbd', ph:'fbd', prompt:'Click each force that acts ON the book.', forces:[
+   {l:'Weight w (Earth on book)', a:-90, ok:1, why:'Earth pulls down on everything with mass.'},
+   {l:'Normal n (table on book)', a:90, ok:1, why:'The table is touching the book and pushes perpendicular to the surface.'},
+   {l:'Book pushing down on table', a:-90, ok:0, why:'That force acts ON THE TABLE. A free-body diagram only shows forces acting on the chosen object.'},
+   {l:'Force of the table legs', a:90, ok:0, why:"The legs touch the table, not the book. The book only feels the table's surface through n."},
+   {l:'"Force of rest"', a:90, ok:0, why:'No such force. An object at rest needs no special force; the forces just balance.'}
+  ], explain:'Ask "what touches it?" (normal, tension, friction) plus "gravity always". Nothing else.'}
+ ]})},
+{id:'4b', lv:4, title:'Lifted Block', make:()=>({
+ text:`A block hangs from a rope and is being pulled <b>upward with increasing speed</b>. Draw its free-body diagram.`, fig: figHang('m','up'),
+ steps:[
+  {type:'fbd', ph:'fbd', prompt:'Click each force that acts ON the block.', forces:[
+   {l:'Tension T (rope on block)', a:90, ok:1, why:'The rope touches the block and pulls along the rope.'},
+   {l:'Weight mg', a:-90, ok:1, why:'Gravity always acts.'},
+   {l:'"ma", the force of acceleration', a:90, ok:0, why:'ma is NOT a force. It is the RESULT of the forces (the right side of ΣF = ma). Never draw ma on an FBD.'},
+   {l:'Normal force n', a:90, ok:0, why:'Nothing is touching the block from below, so there is no normal force.'}
+  ], explain:'Because a is up, T must be longer than mg on your diagram. The net force points the same way as a.'},
+  {type:'mcq', ph:'check', prompt:'On a correct diagram, which arrow is longer?', opts:[o('T is longer than mg',1,'The net force points up (same as a), so T > mg.'),o('They are equal',0,'Equal arrows mean a = 0.'),o('mg is longer',0,'Then the net force would point down, but a points up.')]}
+ ]})},
+{id:'4c', lv:4, title:'Sled on a Rough Floor', make:()=>({
+ text:`A sled is pulled to the right across a rough floor by a horizontal rope. Draw its free-body diagram.`, fig: figFloor(),
+ steps:[
+  {type:'fbd', ph:'fbd', prompt:'Click each force that acts ON the sled.', forces:[
+   {l:'Tension T (to the right)', a:0, ok:1, why:'The rope pulls along its own direction.'},
+   {l:'Kinetic friction f (to the left)', a:180, ok:1, why:'Kinetic friction opposes the sliding motion.'},
+   {l:'Normal n (up)', a:90, ok:1, why:'The floor touches the sled and pushes perpendicular to the surface.'},
+   {l:'Weight mg (down)', a:-90, ok:1, why:'Gravity always acts.'},
+   {l:'Friction to the right', a:0, ok:0, why:'Friction opposes the sliding, so it points left.'},
+   {l:'"Force of motion" (to the right)', a:0, ok:0, why:'There is no "force of motion". Motion does not need its own force (1st law).'}
+  ], explain:'Next step would be: vertical gives <span class="m">n = mg</span>, then <span class="m">f = μₖ n</span>, and horizontal gives <span class="m">T − f = ma</span>.'}
+ ]})},
+{id:'4d', lv:4, title:'Sliding Down a Slope', make:()=>({
+ text:`A block slides DOWN a rough incline (the slope goes down to the right). Draw its free-body diagram.`, fig: figIncline({th:25, blocks:[{d:120,w:50,h:34,l:'m'}]}),
+ steps:[
+  {type:'fbd', ph:'fbd', slope:-25, prompt:'Click each force that acts ON the block.', forces:[
+   {l:'Weight mg (straight down)', a:-90, ok:1, why:'Gravity always points straight down, never "into the slope".'},
+   {l:'Normal n (perpendicular to the slope)', a:65, ok:1, why:'Normal means perpendicular to the surface.'},
+   {l:'Friction f (up the slope)', a:155, ok:1, why:'The block slides down, so kinetic friction points up the slope.'},
+   {l:'Normal force straight up', a:90, ok:0, why:'The normal force is perpendicular to the SURFACE, which is tilted.'},
+   {l:'mg sin θ (down the slope)', a:-25, ok:0, why:'That is a COMPONENT of the weight, not an extra force. Draw mg once and split it into components later.'},
+   {l:'Friction down the slope', a:-25, ok:0, why:'Friction opposes the sliding.'}
+  ], explain:'Tilt your axes: x along the slope, y perpendicular. Then weight splits into <span class="m">mg sin θ</span> (along) and <span class="m">mg cos θ</span> (perpendicular), so <span class="m">n = mg cos θ</span>.'}
+ ]})},
+{id:'4e', lv:4, title:'Block A Under Block B', make:()=>({
+ text:`Block B sits on block A on a rough incline. A rope from A goes over a pulley at the top and comes back to B. A is heavier and slides DOWN the slope, which drags B UP. All surfaces have friction. Draw the free-body diagram for <b>block A</b>.`,
+ fig: figIncline({th:28, ab:true, blocks:[{d:150,w:110,h:26,l:'A'},{d:140,w:60,h:28,l:'B'}]}),
+ steps:[
+  {type:'fbd', ph:'fbd', slope:-28, prompt:'Six forces act on A. Find them all (the slope goes down to the right, and A moves down it).', forces:[
+   {l:'(F_G)_A weight, straight down', a:-90, ok:1, why:'Gravity on A.'},
+   {l:'n_A, incline pushing A (⊥ out of slope)', a:62, ok:1, why:'The incline touches A from below.'},
+   {l:'n_B on A, B pushing on A (⊥ into slope)', a:-118, ok:1, why:'B sits on top of A and presses down on it.'},
+   {l:'T_B on A, rope pulling A up the slope', a:152, ok:1, why:'The rope runs from A to the pulley, which is up the slope.'},
+   {l:'(f_k)_A, incline friction, up the slope', a:152, ok:1, why:'A slides down, so the incline\'s friction on A points up the slope.'},
+   {l:'(f_k)_B on A, friction from B, up the slope', a:152, ok:1, why:'Relative to B, A moves down the slope, so B\'s friction on A points up the slope.'},
+   {l:'n_A on B (A pushing up on B)', a:62, ok:0, why:'That force acts ON B. It is the 3rd-law partner of n_B on A.'},
+   {l:'Incline friction pointing down the slope', a:-28, ok:0, why:'A slides down, so friction opposes that and points up.'}
+  ], explain:'Two surfaces touch A (the incline and B), so A gets <b>two normal forces and two friction forces</b>, plus the rope and gravity.'}
+ ]})},
+
+/* ---------- LEVEL 5: 3RD LAW ---------- */
+{id:'5a', lv:5, title:'The Book & the Earth', make:()=>({
+ text:`A book weighing [[5 N|w = 5 N]] rests on a table.`, fig: figBook(),
+ steps:[
+  {type:'mcq', ph:'system', prompt:'Earth pulls DOWN on the book with 5 N. What is the 3rd-law partner of this force?', opts:[o('The book pulls UP on the Earth with 5 N',1,'Same pair of objects (Earth & book), swapped, same type (gravity), opposite direction.'),o('The table pushes UP on the book with 5 N',0,'Equal and opposite, yes, but both forces act on the SAME object (the book) and they are different types. That is balance (1st/2nd law), not a 3rd-law pair.'),o('The book pushes DOWN on the table',0,"That's a contact force between book and table. It doesn't involve Earth.")]},
+  {type:'mcq', ph:'system', prompt:'The table pushes UP on the book (n = 5 N). What is its partner?', opts:[o('The book pushes DOWN on the table with 5 N',1,'Table on book ↔ book on table.'),o("The book's weight",0,'The weight is Earth on book, which is a different pair of objects.'),o('The floor pushes up on the table',0,"Different objects entirely.")]},
+  {type:'multi', ph:'law', prompt:'Which laws predict weight on book = normal force on book (both acting on the book)?', opts:[o("Newton's 1st law",1,'At rest means net force = 0.'),o("Newton's 2nd law",1,'a = 0 means ΣF = 0.'),o("Newton's 3rd law",0,'Both forces act on the SAME object, so it is not a 3rd-law pair.')]},
+  {type:'multi', ph:'law', prompt:'Which laws predict (table on book) = (book on table)?', opts:[o("Newton's 1st law",0,'These forces act on different objects. The 1st law is about forces on one object.'),o("Newton's 2nd law",0,'Same reason.'),o("Newton's 3rd law",1,'A on B = −(B on A), always.')]},
+  {type:'mcq', ph:'check', prompt:'A real 3rd-law pair ALWAYS…', opts:[o('acts on two different objects and is the same type of force',1,'Test: swap the names ("A on B" ↔ "B on A"). If that gives the other force, it is a pair.'),o('acts on the same object in opposite directions',0,'Forces on the same object that cancel are balanced by the 1st/2nd law, not a 3rd-law pair.'),o('cancels out, so nothing can accelerate',0,"They act on different objects, so they never cancel in one object's ΣF.")]}
+ ]})},
+{id:'5b', lv:5, title:'Blocks A & B: Find the Pairs', make:()=>({
+ text:`Block A slides down an incline with block B on top, connected by a rope over a pulley (as in Level 4). Let the system be the two blocks. The rope tension is an interaction force between A and B.`,
+ fig: figIncline({th:28, ab:true, blocks:[{d:150,w:110,h:26,l:'A'},{d:140,w:60,h:28,l:'B'}]}),
+ steps:[
+  {type:'multi', ph:'system', prompt:'Which pairs are action/reaction pairs? Select all that apply.', opts:[
+   o('(f_k)_A on B and (f_k)_B on A',1,'Friction between A and B: swap the names and you get the other force. ✔'),
+   o('(f_k)_A and (f_k)_A on B',0,'(f_k)_A is the incline on A, which involves different objects.'),
+   o('n_A and n_A on B',0,'n_A is the incline on A. Its partner is A on the incline.'),
+   o('(F_G)_A and (F_G)_B',0,"Two different weights. Each one's partner is the block pulling on Earth."),
+   o('n_A on B and n_B on A',1,'The contact push between A and B. ✔'),
+   o('T_A on B and T_B on A',1,'Treated as an interaction between A and B through the rope. ✔')]},
+  {type:'mcq', ph:'system', prompt:'What is the real partner of (F_G)_A, the weight of A?', opts:[o('A pulls up on the Earth',1,'Earth on A ↔ A on Earth.'),o('n_A',0,"Different type (contact), and on the same object."),o('(F_G)_B',0,'Different object.')]}
+ ]})},
+{id:'5c', lv:5, title:'Horse & Cart Paradox', make:()=>({
+ text:`A horse pulls on a cart. By Newton's 3rd law, the cart pulls back on the horse with an <b>equal</b> force. So how can anything move?`,
+ fig:'',
+ steps:[
+  {type:'mcq', ph:'system', prompt:'Why can the cart still accelerate?', opts:[o('The pair acts on different objects. For the cart, only forces ON the cart count: the horse\'s pull minus friction.',1,'Yes. Choose ONE object, then add only the forces on it.'),o('The horse pulls a little harder than the cart pulls back',0,'3rd-law pairs are ALWAYS exactly equal.'),o("The 3rd law doesn't apply to moving objects",0,'It always applies.')]},
+  {type:'mcq', ph:'system', prompt:'For the horse + cart together (one system), what external force pushes them forward?', opts:[o('The ground pushing forward on the horse\'s hooves (friction)',1,'The horse pushes back on the ground, and the ground pushes forward on the horse. That is external to the system.'),o('The horse pulling the cart',0,'Inside the system, so it is internal and cancels with the cart pulling the horse.'),o('Gravity',0,'Gravity points down, not forward.')], explain:'This is why "choose the system" is a step. <b>Internal forces cancel in pairs</b>; only external forces change the motion of the system.'}
+ ]})},
+
+/* ---------- LEVEL 6: ONE OBJECT ---------- */
+{id:'6a', lv:6, title:'Situation A: Hanging at Rest', rnd:true, make:()=>{ const m=R(2,12,0.5); const T=m*g; return { v:{m,T},
+ text:`A [[${m} kg|m = ${m} kg]] sign hangs [[at rest|a = 0|hidden]] from a single rope. Find the tension.`, fig: figHang(m+' kg'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Pick out the information.', explain:'"At rest" means a = 0.'},
+  {type:'fbd', ph:'fbd', prompt:'Forces on the sign:', forces:[{l:'Tension T (up)',a:90,ok:1,why:'The rope pulls up.'},{l:'Weight mg (down)',a:-90,ok:1,why:'Gravity.'},{l:'ma (up)',a:90,ok:0,why:'Not a force, and here a = 0 anyway.'}]},
+  {type:'eq', ph:'law', prompt:'Build ΣF = ma with + = UP.', lhs:2, tiles:['T','mg','ma','0','n'], ans:['+T,-mg=0'], explain:'T − mg = 0, so <b>T = mg</b>.'},
+  {type:'num', ph:'solve', prompt:'Calculate T.', sym:'T', unit:'N', ans:T, slips:[{v:m,msg:'That is the mass in kg. Multiply by g = 9.8 m/s² to get a force in newtons.'}], explain:`T = ${m} × 9.8 = ${f3(T)} N. Check: the units are newtons, and T = weight because a = 0. ✓`}
+ ]};}},
+{id:'6b', lv:6, title:'Situation B: Lifted, Accelerating Up', rnd:true, make:()=>{ const m=R(2,20,1), a=R(0.5,4,0.5); const T=m*(g+a); return { v:{m,a,T},
+ text:`A [[${m} kg|m = ${m} kg]] crate is lifted by a cable and [[speeds up|a points up|hidden]] at [[${a} m/s²|a = ${a} m/s²]]. Find the cable tension.`, fig: figHang(m+' kg','up'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Pick out the information.', explain:'Speeding up while moving up means a ↑.'},
+  {type:'mcq', ph:'sign', prompt:'Choose the + direction:', opts:[o('Up, the direction of a',1,'Now T is + and mg is −.'),o('Down',0,'Allowed, but you would get −a. Follow the rule: + = direction of a.')]},
+  {type:'eq', ph:'law', prompt:'Build ΣF = ma (+ = up).', lhs:2, tiles:['T','mg','ma','0'], ans:['+T,-mg=ma']},
+  {type:'mcq', ph:'solve', prompt:'Solve for T algebraically BEFORE plugging in numbers:', opts:[o('T = m(g + a)',1,'T = mg + ma = m(g + a).'),o('T = m(g − a)',0,'Move −mg to the other side: it becomes +mg.'),o('T = ma',0,'You dropped the weight.')]},
+  {type:'num', ph:'solve', prompt:'Calculate T.', sym:'T', unit:'N', ans:T, slips:[{v:m*(g-a),msg:'You used m(g − a). Since a is up, the rope must pull MORE than the weight: use m(g + a).'},{v:m*a,msg:'You forgot the weight mg.'},{v:m*g,msg:'That is just the weight. The rope must also provide ma.'}], explain:`T = ${m}(9.8 + ${a}) = ${f3(T)} N.`},
+  {type:'mcq', ph:'check', prompt:`Check: the weight is ${f3(m*g)} N. Does T = ${f3(T)} N make sense?`, opts:[o('Yes: a points up, so T must be bigger than mg',1,'Physicist habit: always compare with the easy case (a = 0).'),o('No: T should equal mg',0,'Only if a = 0.')]}
+ ]};}},
+{id:'6c', lv:6, title:'Situation B: Lowered, Accelerating Down', rnd:true, make:()=>{ const m=R(3,25,1), a=R(0.5,4,0.5); const T=m*(g-a); return { v:{m,a,T},
+ text:`A [[${m} kg|m = ${m} kg]] bucket is lowered on a rope. It [[speeds up while going down|a points down|hidden]] at [[${a} m/s²|a = ${a} m/s²]]. Find the tension.`, fig: figHang(m+' kg','down'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Pick out the information.', explain:'Speeding up going down means a ↓.'},
+  {type:'mcq', ph:'sign', prompt:'Choose the + direction:', opts:[o('Down, the direction of a',1,'Now mg is + and T is −.'),o('Up',0,'Use the rule: + = direction of a.')]},
+  {type:'eq', ph:'law', prompt:'Build ΣF = ma (+ = DOWN).', lhs:2, tiles:['T','mg','ma','0'], ans:['+mg,-T=ma']},
+  {type:'mcq', ph:'solve', prompt:'Solve for T:', opts:[o('T = m(g − a)',1,'mg − ma = T.'),o('T = m(g + a)',0,'Check your algebra: T = mg − ma.'),o('T = mg',0,'That only holds if a = 0.')]},
+  {type:'num', ph:'solve', prompt:'Calculate T.', sym:'T', unit:'N', ans:T, slips:[{v:m*(g+a),msg:'You used m(g + a), but a points down, so the rope pulls LESS than the weight.'}], explain:`T = ${m}(9.8 − ${a}) = ${f3(T)} N, which is less than mg = ${f3(m*g)} N. ✓`}
+ ]};}},
+{id:'6d', lv:6, title:'Elevator Slowing at the Top', rnd:true, make:()=>{ const m=R(50,90,5), a=R(1,3,0.5); const n=m*(g-a); return { v:{m,a,n},
+ text:`A [[${m} kg|m = ${m} kg]] person stands on a scale in an elevator that is [[moving up|v points up]] but [[slowing down|a points down|hidden]] at [[${a} m/s²|a = ${a} m/s²]]. What does the scale read?`, fig: figElev(m+' kg','up','down'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Pick out the information. Watch the direction clues!', explain:'Moving up while slowing down means a points DOWN.'},
+  {type:'fbd', ph:'fbd', prompt:'Forces on the person:', forces:[{l:'Normal n from the scale (up)',a:90,ok:1,why:'The scale pushes up; this is what it reads.'},{l:'Weight mg (down)',a:-90,ok:1,why:'Gravity.'},{l:'Force of the elevator cable',a:90,ok:0,why:'The cable pulls the ELEVATOR, not the person.'}]},
+  {type:'eq', ph:'law', prompt:'Build ΣF = ma with + = DOWN (direction of a).', lhs:2, tiles:['n','mg','ma','0','T'], ans:['+mg,-n=ma']},
+  {type:'num', ph:'solve', prompt:'Scale reading n = ?', sym:'n', unit:'N', ans:n, slips:[{v:m*(g+a),msg:'a points down here, so n = m(g − a).'},{v:m,msg:'The scale reading as a force is in newtons, not kg.'}], explain:`n = m(g − a) = ${f3(n)} N, which is less than the weight ${f3(m*g)} N. You "feel lighter" as the elevator stops at the top floor. ✓`}
+ ]};}},
+
+/* ---------- LEVEL 7: CONNECTED ---------- */
+{id:'7a', lv:7, title:'Situation C: Atwood Machine', rnd:true, make:()=>{ const m1=R(4,9,1), m2=R(1,m1-1,1); const a=(m1-m2)*g/(m1+m2), T=2*m1*m2*g/(m1+m2); return { v:{m1,m2,a,T},
+ text:`Block m₁ = [[${m1} kg|m₁ = ${m1} kg]] and block m₂ = [[${m2} kg|m₂ = ${m2} kg]] hang over an [[ideal pulley|same T, same size of a|hidden]], starting [[from rest|v₀ = 0|hidden]]. Find the acceleration and the tension.`, fig: figAtwood(m1+' kg',m2+' kg',null,true),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.', explain:'Ideal rope + ideal pulley means one T and one size of a.'},
+  {type:'mcq', ph:'sign', prompt:'Which way does each block accelerate?', opts:[o(`m₁ (${m1} kg) down, m₂ (${m2} kg) up`,1,'The heavier side goes down. Choose + = down for m₁ and + = up for m₂.'),o(`m₁ up, m₂ down`,0,'Which weight is bigger?')]},
+  {type:'multi', ph:'link', prompt:'What do the two blocks share? Select all.', opts:[o('Same size of acceleration a',1,'The rope does not stretch.'),o('Same tension T',1,'Massless rope over a frictionless pulley.'),o('Same weight',0,'Different masses mean different weights.'),o('Same direction of motion',0,'One goes up, the other down.')]},
+  {type:'eq', ph:'law', prompt:'ΣF = ma for m₁ (the heavy one, + = DOWN):', lhs:2, tiles:['m₁g','m₂g','T','m₁a','m₂a','0'], ans:['+m₁g,-T=m₁a']},
+  {type:'eq', ph:'law', prompt:'ΣF = ma for m₂ (the light one, + = UP):', lhs:2, tiles:['m₁g','m₂g','T','m₁a','m₂a','0'], ans:['+T,-m₂g=m₂a']},
+  {type:'mcq', ph:'solve', prompt:'Add the two equations. What happens?', opts:[o('T cancels: (m₁ − m₂)g = (m₁ + m₂)a',1,'So a = (m₁ − m₂)g / (m₁ + m₂).'),o('a cancels',0,'a appears on both right sides; they add up to (m₁ + m₂)a.'),o('Nothing useful',0,'Look at the +T and −T.')]},
+  {type:'num', ph:'solve', prompt:'Calculate a.', sym:'a', unit:'m/s²', ans:a, slips:[{v:g,msg:"That's free fall. The other block holds it back."}], explain:`a = (${m1} − ${m2})(9.8)/(${m1} + ${m2}) = ${f3(a)} m/s²`},
+  {type:'num', ph:'solve', prompt:'Now plug a back into the m₂ equation: T = m₂(g + a).', sym:'T', unit:'N', ans:T, slips:[{v:m2*(g-a),msg:'m₂ accelerates UP, so T = m₂(g + a).'},{v:m1*(g+a),msg:'Check which block\'s equation you used.'}], explain:`T = ${m2}(9.8 + ${f3(a)}) = ${f3(T)} N`},
+  {type:'mcq', ph:'check', prompt:`Check: m₂g = ${f3(m2*g)} N and m₁g = ${f3(m1*g)} N. Is T = ${f3(T)} N reasonable?`, opts:[o('Yes: T must be between the two weights',1,'T > m₂g so m₂ goes up, and T < m₁g so m₁ goes down. ✓'),o('No: T should equal m₁g',0,'Then m₁ would not accelerate.')]}
+ ]};}},
+{id:'7b', lv:7, title:'Three Blocks: Choose the System', rnd:true, make:()=>{ const T=R(2,6,0.5), m=R(0.2,0.8,0.1); const a=T/(2*m), F=3*m*a, Tab=m*a; return { v:{T,m,a,F,Tab},
+ text:`Three identical blocks (each [[m = ${m} kg|m = ${m} kg]]) are linked by [[ideal strings|same a for all, T same along each string|hidden]] on a [[frictionless|no friction|hidden]] surface and pulled by a horizontal force F (see figure). The tension between B and C is [[T = ${T} N|T_BC = ${T} N]]. Find F and T_AB.`, fig: figChain(),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.', explain:'All three blocks share one acceleration a.'},
+  {type:'mcq', ph:'system', prompt:'You know T_BC. Which system has T_BC as its ONLY horizontal force?', opts:[o('Blocks A + B together',1,'T_BC pulls A+B forward; T_AB is internal and cancels.'),o('Block C alone',0,'C feels F (unknown) and T_BC: two forces, one unknown too many.'),o('All three blocks',0,'For all three, T_BC is internal. Only F (unknown) acts.')]},
+  {type:'eq', ph:'law', prompt:'ΣF = ma for the A+B system:', lhs:1, tiles:['T','F','T_AB'], rhs:['(2m)a','ma','(3m)a','0'], ans:['+T=(2m)a']},
+  {type:'num', ph:'solve', prompt:'Calculate a.', sym:'a', unit:'m/s²', ans:a, slips:[{v:T/m,msg:'Two blocks are being pulled: the mass is 2m.'},{v:T/(3*m),msg:'Only A+B are pulled by T_BC.'}]},
+  {type:'mcq', ph:'system', prompt:'Now, which system gives F most directly?', opts:[o('All three blocks: F = (3m)a',1,'F is the only external horizontal force on the whole train.'),o('Block A alone',0,'F does not act on A.')]},
+  {type:'num', ph:'solve', prompt:'Calculate F.', sym:'F', unit:'N', ans:F, explain:`F = 3(${m})(${f3(a)}) = ${f3(F)} N. Shortcut: F = 1.5 T_BC.`},
+  {type:'num', ph:'solve', prompt:'Calculate T_AB. (Hint: what is the only horizontal force on A?)', sym:'T_AB', unit:'N', ans:Tab, explain:`T_AB = m a = ${f3(Tab)} N. Check: T_AB < T_BC < F because each string pulls more blocks. ✓`}
+ ]};}},
+{id:'7c', lv:7, title:'Heavy Ropes', rnd:true, make:()=>{ const a=R(1,5,0.5); const F=2.5*(g+a), Ttop=1.5*(g+a), Tbot=1.25*(g+a); return { v:{a,F,Ttop,Tbot},
+ text:`Two [[1.0 kg|m_A = m_B = 1.0 kg]] blocks are connected by rope 1. Rope 2 hangs beneath block B. [[Both ropes have a mass of 250 g|m_rope = 0.25 kg each|hidden]]. The whole assembly is [[accelerated upward|a points up|hidden]] at [[${a} m/s²|a = ${a} m/s²]] by force F.`, fig: figRopes(),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues. The ropes are NOT massless this time!', explain:'A rope with mass needs a force to accelerate it too, so the tension changes along the rope.'},
+  {type:'mcq', ph:'link', prompt:'Is the tension the same at the top and bottom of rope 1?', opts:[o('No: the top must also hold up and accelerate the rope itself',1,'Only massless ropes have the same tension everywhere.'),o('Yes: tension is always the same along a rope',0,'Only for massless (ideal) ropes.')]},
+  {type:'mcq', ph:'system', prompt:'To find F, choose the system:', opts:[o('Everything: A + rope 1 + B + rope 2 = 2.5 kg',1,'F is the only external upward force on the whole assembly.'),o('Just block A',0,'Then rope 1 tension is another unknown.')]},
+  {type:'eq', ph:'law', prompt:'ΣF = ma for the whole assembly (total mass M, + = up):', lhs:2, tiles:['F','Mg','T','Ma','0'], ans:['+F,-Mg=Ma']},
+  {type:'num', ph:'solve', prompt:'Calculate F.', sym:'F', unit:'N', ans:F, slips:[{v:2*(g+a),msg:"Don't forget the ropes' mass (2 × 0.25 kg)."}], explain:`F = 2.5(9.8 + ${a}) = ${f3(F)} N`},
+  {type:'mcq', ph:'system', prompt:'To find the tension at the TOP of rope 1, imagine cutting there. What hangs below the cut?', opts:[o('Rope 1 + block B + rope 2 = 1.5 kg',1,'The tension at the cut must support and accelerate everything below it.'),o('Block B + rope 2 = 1.25 kg',0,"That's the cut at the BOTTOM of rope 1."),o('Only block B',0,'The ropes have mass too.')]},
+  {type:'num', ph:'solve', prompt:'Tension at the top of rope 1:', sym:'T_top', unit:'N', ans:Ttop, explain:`T = 1.5(9.8 + ${a}) = ${f3(Ttop)} N`},
+  {type:'num', ph:'solve', prompt:'Tension at the BOTTOM of rope 1:', sym:'T_bottom', unit:'N', ans:Tbot, explain:`T = 1.25(9.8 + ${a}) = ${f3(Tbot)} N, which is smaller because less mass is below that point. ✓`}
+ ]};}},
+
+/* ---------- LEVEL 8: CASE FILES ---------- */
+{id:'8a', lv:8, title:'Case File: The Mystery Mass', rnd:true, make:()=>{ const t=R(4,6.5,0.1), M=100, d=1; const a=2*d/(t*t), T=M*(g-a), m1=T/(g+a); return { v:{t,M,d,a,T,m1},
+ text:`The [[100 kg|m₂ = 100 kg]] block in the figure takes [[${t} s|t = ${t} s]] to reach the floor after being [[released from rest|v₀ = 0|hidden]]. The pulley is [[massless and frictionless|same T on both sides|hidden]]. What is the mass of the block on the left?`,
+ fig: figAtwood('m₁ = ?','100 kg','1 m'), chips:['Δy = 1 m (figure)'],
+ steps:[
+  {type:'clue', ph:'info', prompt:'Clue hunt (and remember the figure gives Δy = 1 m).', explain:'You have Δy, t and v₀ (motion clues), plus a mass. No forces are given directly.'},
+  {type:'mcq', ph:'solve', prompt:'Your clues are Δy, t, v₀. Which equation gets you a FIRST?', opts:[o('Δy = v₀t + ½at²',1,'It contains exactly your clues, so a is the only unknown: a = 2Δy/t².'),o('v = v₀ + at',0,"You don't know v."),o('ΣF = 0',0,'The blocks accelerate.'),o('v² = v₀² + 2aΔy',0,"You don't know v.")]},
+  {type:'num', ph:'solve', prompt:'Calculate a = 2Δy / t².', sym:'a', unit:'m/s²', ans:a, explain:`a = 2(1)/${t}² = ${f3(a)} m/s². Tiny! So the blocks are nearly balanced.`},
+  {type:'eq', ph:'law', prompt:'ΣF = ma for the 100 kg block (m₂, moving down, + = down):', lhs:2, tiles:['m₁g','m₂g','T','m₁a','m₂a'], ans:['+m₂g,-T=m₂a']},
+  {type:'eq', ph:'law', prompt:'ΣF = ma for the left block (m₁, moving up, + = up):', lhs:2, tiles:['m₁g','m₂g','T','m₁a','m₂a'], ans:['+T,-m₁g=m₁a']},
+  {type:'num', ph:'solve', prompt:'From the 100 kg equation: T = m₂(g − a). Calculate T.', sym:'T', unit:'N', ans:T, explain:`T = 100(9.8 − ${f3(a)}) = ${f3(T)} N`},
+  {type:'num', ph:'solve', prompt:'Now the left block: m₁ = T / (g + a). Calculate m₁.', sym:'m₁', unit:'kg', ans:m1, slips:[{v:T/g,msg:'Include the acceleration: m₁ = T/(g + a).'}], explain:`m₁ = ${f3(T)} / (9.8 + ${f3(a)}) = ${f3(m1)} kg`},
+  {type:'mcq', ph:'check', prompt:`m₁ ≈ ${f3(m1)} kg, just under 100 kg. Does that make sense?`, opts:[o('Yes: a is tiny, so the masses must be nearly equal, with the 100 kg side slightly heavier',1,'Great physicist instinct: small a means a near-balance.'),o('No: m₁ should be much smaller',0,'Then the 100 kg block would fall fast, not take seconds to drop 1 m.')]}
+ ]};}},
+{id:'8b', lv:8, title:'Case File: Tied on a Slope', rnd:true, make:()=>{ const th=R(15,30,1); const m1=1, m2=2, u1=0.2, u2=0.1; const ub=(u1*m1+u2*m2)/(m1+m2); const a=g*(sinD(th)-ub*cosD(th)); const T=m2*(g*sinD(th)-u2*g*cosD(th)-a); return { v:{th,m1,m2,u1,u2,ub,a,T},
+ text:`Two blocks, [[1.0 kg|m₁ = 1.0 kg]] and [[2.0 kg|m₂ = 2.0 kg]], tied by a [[massless string|same T at both ends|hidden]], are [[sliding down|kinetic friction, a down the slope|hidden]] a [[${th}°|θ = ${th}°]] incline. μₖ = [[0.20|μ₁ = 0.20]] for the 1.0 kg block (upper) and μₖ = [[0.10|μ₂ = 0.10]] for the 2.0 kg block (lower). What is the tension in the string?`,
+ fig: figIncline({th, string:true, blocks:[{d:70,w:44,h:30,l:'1.0 kg',mu:'μₖ = 0.20'},{d:190,w:54,h:34,l:'2.0 kg',mu:'μₖ = 0.10'}]}),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect all 7 clues.'},
+  {type:'mcq', ph:'link', prompt:'Why is the string tight (not slack)?', opts:[o('The lower block has less friction, so on its own it would accelerate faster. The upper block holds it back.',1,'If the upper block had the smaller μ instead, it would bump into the lower block and the string would go slack (T = 0).'),o('Strings are always tight',0,'A string can go slack, e.g. if the upper block were faster.'),o('The lower block is heavier',0,'On a slope, mass alone does not change a; friction coefficient does.')]},
+  {type:'mcq', ph:'fbd', prompt:'Friction on each block is…', opts:[o('f = μₖ m g cos θ, pointing up the slope',1,'n = mg cos θ on a slope, and kinetic friction opposes sliding.'),o('f = μₖ m g, pointing up the slope',0,'On a slope n = mg cos θ, not mg.'),o('f = μₖ m g sin θ, pointing down the slope',0,'sin θ is the along-slope part of gravity; friction uses n.')]},
+  {type:'mcq', ph:'system', prompt:'To find a quickly, choose the system:', opts:[o('Both blocks together (T is internal and cancels)',1,'Along the slope: (m₁ + m₂)g sin θ − μ₁m₁g cos θ − μ₂m₂g cos θ = (m₁ + m₂)a.'),o('The lower block only',0,'Then T is a second unknown. That works, but it is slower.')]},
+  {type:'num', ph:'solve', prompt:'Calculate a (along the slope).', sym:'a', unit:'m/s²', ans:a, explain:`a = g[sin θ − cos θ·(μ₁m₁ + μ₂m₂)/(m₁ + m₂)] = ${f3(a)} m/s²`},
+  {type:'mcq', ph:'law', prompt:'Now the lower block alone (+ = down the slope). Which equation?', opts:[o('m₂g sin θ − μ₂m₂g cos θ − T = m₂a',1,'The string pulls the lower block back UP the slope.'),o('m₂g sin θ − μ₂m₂g cos θ + T = m₂a',0,'The upper block holds it back, so T points up the slope (−).'),o('m₂g cos θ − μ₂m₂g sin θ − T = m₂a',0,'sin and cos are swapped.')]},
+  {type:'num', ph:'solve', prompt:'Calculate T.', sym:'T', unit:'N', ans:T, explain:`T = m₂(g sin θ − μ₂g cos θ − a) = ${f3(T)} N. Small, because the friction difference is small. ✓`}
+ ]};}},
+{id:'8c', lv:8, title:'Case File: Hanging vs. Slope (Symbolic)', make:()=>({
+ text:`Block 1 (mass [[m₁|m₁]]) hangs from a rope that passes over an [[ideal pulley|same T, same a|hidden]] to block 2 (mass [[m₂|m₂]]) on a slope of angle [[θ|θ]]. The blocks accelerate with magnitude [[a|a]]: block 1 [[down|a₁ points down|hidden]], block 2 [[up the slope|a₂ points up the slope|hidden]]. The coefficient of kinetic friction between block 2 and the slope is [[μ|μ]]. Find m₁/m₂ in terms of a, μ, θ and g.`,
+ fig: figIncline({th:33, x0:80, L:240, W:330, hang:'m₁', blocks:[{d:70,w:50,h:34,l:'m₂'}], thLabel:'θ'}),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues, including the directions.', explain:'Symbolic problems still need the checklist. Here the "numbers" are letters.'},
+  {type:'mcq', ph:'law', prompt:'Block 1 (+ = down):', opts:[o('m₁g − T = m₁a',1,'Weight is +, tension is −.'),o('T − m₁g = m₁a',0,'+ is down for block 1.'),o('m₁g = m₁a',0,'You forgot the rope.')]},
+  {type:'mcq', ph:'fbd', prompt:'Block 2 moves UP the slope. Kinetic friction on it points…', opts:[o('Down the slope',1,'Friction opposes the motion.'),o('Up the slope',0,'It opposes sliding, and the block slides up.'),o('Perpendicular to the slope',0,"That's the normal force.")]},
+  {type:'mcq', ph:'law', prompt:'Block 2 (+ = up the slope):', opts:[o('T − m₂g sin θ − μm₂g cos θ = m₂a',1,'Tension pulls up the slope; gravity\'s along-slope part and friction pull down.'),o('T − m₂g sin θ + μm₂g cos θ = m₂a',0,'Friction points down the slope here, so it is −.'),o('T − m₂g cos θ − μm₂g sin θ = m₂a',0,'sin and cos are swapped: along the slope is mg sin θ, and n = mg cos θ.'),o('T − m₂g − μm₂g = m₂a',0,'On a slope you must use components.')]},
+  {type:'mcq', ph:'solve', prompt:'Add the two equations (T cancels) and solve for m₁/m₂:', opts:[o('m₁/m₂ = (a + g sin θ + μg cos θ) / (g − a)',1,'m₁(g − a) = m₂(a + g sin θ + μg cos θ). ✓'),o('m₁/m₂ = (g sin θ + μg cos θ) / g',0,'That is only the a = 0 case.'),o('m₁/m₂ = (a + g sin θ − μg cos θ) / (g + a)',0,'Check friction\'s sign and the m₁ side: m₁g − m₁a = m₁(g − a).')], explain:'Check limiting cases: if a → 0 you get the balance condition; if μ = 0 and θ = 0, m₁/m₂ = a/(g − a). Both make sense. ✓'}
+ ]})},
+{id:'8d', lv:8, title:'Case File: Five Tensions', rnd:true, make:()=>{ const m=R(5,20,0.1); const mg=m*g; return { v:{m,mg},
+ text:`The block of mass [[m = ${m} kg|m = ${m} kg]] is [[held in place|a = 0|hidden]] by the force F applied to a [[massless rope passing over two massless, frictionless pulleys|same T along the one rope|hidden]]. Find T₁ to T₅ and F.`,
+ fig: figCompound('m'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.', explain:'"Held in place" means everything has a = 0, so every object balances: ΣF = 0.'},
+  {type:'mcq', ph:'system', prompt:'Start with the block (T₁ holds it). T₁ = ?', opts:[o('mg',1,'At rest: T₁ − mg = 0.'),o('mg/2',0,'Only the rope T₁ holds the block itself.'),o('F',0,'Start with the simplest object: the block.')]},
+  {type:'num', ph:'solve', prompt:'T₁ = ?', sym:'T₁', unit:'N', ans:mg},
+  {type:'mcq', ph:'link', prompt:'Ropes T₂, T₃ and T₅ are ONE rope over ideal pulleys. So…', opts:[o('T₂ = T₃ = T₅ = F',1,'One massless rope over frictionless pulleys has one tension everywhere.'),o('T₂ = T₃ but T₅ is different',0,'T₅ is the same rope.'),o('They are all mg',0,'Check the lower pulley.')]},
+  {type:'mcq', ph:'system', prompt:'Now the LOWER pulley: T₂ and T₃ pull up, T₁ pulls down. So T₂ = ?', opts:[o('T₁/2 = mg/2',1,'T₂ + T₃ = T₁ and T₂ = T₃, so each is mg/2.'),o('T₁ = mg',0,'Two rope segments share the load.'),o('2mg',0,'Upside down!')]},
+  {type:'num', ph:'solve', prompt:'T₂ (= T₃ = T₅ = F) = ?', sym:'T₂ = T₃ = T₅ = F', unit:'N', ans:mg/2, slips:[{v:mg,msg:'Two segments hold the lower pulley, so divide by 2.'}]},
+  {type:'mcq', ph:'system', prompt:'The UPPER pulley hangs from T₄. Its rope pulls down on it with T₃ and T₅. So T₄ = ?', opts:[o('T₃ + T₅ = mg',1,'Balance on the upper pulley.'),o('T₃ = mg/2',0,'Both rope sides pull down on the upper pulley.'),o('0',0,'Something must hold the pulley up.')]},
+  {type:'num', ph:'solve', prompt:'T₄ = ?', sym:'T₄', unit:'N', ans:mg, explain:`Answer to enter: T₁, T₂, T₃, T₄, T₅, F = ${f3(mg)}, ${f3(mg/2)}, ${f3(mg/2)}, ${f3(mg)}, ${f3(mg/2)}, ${f3(mg/2)} N. The movable pulley halves the force you need. ✓`}
+ ]};}}
+];
+
+/* ================= EXTRA: fill-in-the-blank and answer+reason steps ================= */
+const nb = (a,h) => ({a,h});
+const sl = (a,others,h) => ({a, opts:[a,...others], h});
+const bl = (ph,prompt,tpl,blanks,explain) => ({type:'blank',ph,prompt,tpl,blanks,explain});
+const pr = (ph,prompt,a,b,explain) => ({type:'pair',ph,prompt,a,b,explain});
+const UD = a => sl(a, [a==='up'?'down':'up']);
+const PM = a => sl(a, [a==='+'?'−':'+']);
+const SC = a => sl(a, [a==='sin'?'cos':'sin','tan']);
+const END = 99;
+const EXTRA = {
+'1a': ()=>[
+ [END, bl('info','Fill in your information sheet before solving anything.',['m = {} kg','a = {} m/s², because the lamp is {}','g = {} m/s²','Weight: mg = {} kg × {} m/s² = {} N'],[nb(2.5),nb(0),sl('at rest',['hanging','light','3 m up']),nb(9.8),nb(2.5),nb(9.8),nb(24.5)],'With a = 0 the tension equals the weight: T = 24.5 N.')],
+ [END, pr('check','The cord is replaced by one twice as long. The tension…',[o('stays the same',1),o('doubles'),o('is cut in half')],[o('T = mg here, and the cord length does not appear in ΣF = ma',1,'Only forces, mass and acceleration matter.'),o('a longer cord spreads the tension out'),o('a longer cord pulls with more force')])]],
+'1b': ()=>[
+ [END, bl('info','Fill in the information sheet.',['m = {} kg','a = {} m/s², pointing {}','v points {}','Weight: mg = {} N','Story detail you will NOT use: {}'],[nb(60),nb(2),UD('up'),UD('up'),nb(588),sl('12 floors',['60 kg','2.0 m/s²','speeding up'])])],
+ [END, pr('check','Before calculating: compared with the weight (588 N), the scale reading will be…',[o('bigger than 588 N',1),o('smaller than 588 N'),o('exactly 588 N')],[o('the net force must point up like a, so n must beat mg',1,'n − mg = ma gives n = m(g + a) = 708 N.'),o('the elevator moves up, and things moving up feel lighter'),o('weight never changes, so the scale never changes')])]],
+'1c': ()=>[
+ [END, bl('info','Fill in the information sheet.',['Falling block: m₂ = {} kg','Distance it falls: Δy = {} m, found in the {}','Time: t = {} s','Starting speed: v₀ = {} m/s','Unknown: {}'],[nb(100),nb(1),sl('figure',['text','formula sheet']),nb(5.2),nb(0),sl('m₁',['T','a','t'])])],
+ [END, pr('check','Which block is heavier?',[o('The 100 kg block',1),o('The left block'),o('They are equal')],[o('released from rest, the 100 kg block moves DOWN, so the net force on it points down',1,'It wins the tug of war, so m₁ < 100 kg.'),o('it is drawn bigger in the figure'),o('it hangs lower in the figure')])]],
+'1d': ()=>[
+ [END, bl('info','Fill in the information sheet.',['Mass of each block: {} kg','Total mass of all three: {} kg','Mass pulled by the B–C string (A + B): {} kg','T_BC = {} N','Friction force on each block: {} N'],[nb(0.4),nb(1.2),nb(0.8),nb(3),nb(0)])],
+ [END, pr('check','Without calculating: compare F with T_BC.',[o('F is bigger',1),o('They are equal'),o('F is smaller')],[o('all blocks share one a; F accelerates three blocks, T_BC only two',1,'F = 3ma and T_BC = 2ma, so F = 1.5 T_BC.'),o("by Newton's 3rd law every force along the chain is equal"),o('the string loses force to friction along the way')])]],
+'1e': ()=>[
+ [END, bl('info','Match every number to the right block.',['Upper block: m₁ = {} kg, μₖ = {}','Lower block: m₂ = {} kg, μₖ = {}','θ = {}°','Normal force on a slope: n = mg {} θ','Gravity along the slope: mg {} θ'],[nb(1),nb(0.2),nb(2),nb(0.1),nb(20),SC('cos'),SC('sin')])],
+ [END, pr('check','Which block feels the larger friction FORCE?',[o('They are equal',1),o('The upper 1.0 kg block'),o('The lower 2.0 kg block')],[o('f = μₖ m g cos θ, and 0.20 × 1.0 = 0.10 × 2.0',1,'Same force, but the lighter block is slowed more by it.'),o('a bigger μ always means a bigger friction force'),o('a heavier block always has more friction')])]],
+'2a': ()=>[
+ [END, bl('solve','Now use the information. Fill in every blank.',['T − mg = ma  ⇒  T = m(g {} a)','T = {} kg × ({} + {}) m/s²','T = {} N'],[PM('+'),nb(4),nb(9.8),nb(1.5),nb(45.2)])],
+ [END, pr('check','Suppose the bucket were LOWERED while speeding up at 1.5 m/s². The tension would be…',[o('smaller than mg',1),o('bigger than mg'),o('equal to mg')],[o('a points down, so the net force points down: mg must beat T',1,'T = m(g − a) = 33.2 N.'),o('the rope still holds the bucket, so T = mg'),o('any moving object needs extra force')])]],
+'2b': ()=>[
+ [END, bl('info','Count before you solve.',['Number of objects: {}','Number of unknowns: {}','Equations needed: {}','Heavier weight: m₁g = {} N','Lighter weight: m₂g = {} N','So T must lie between {} N and {} N'],[nb(2),nb(2),nb(2),nb(49),nb(29.4),nb(29.4),nb(49)],'T > m₂g so the light block rises, and T < m₁g so the heavy block falls.')],
+ [END, pr('check','If both masses were 5.0 kg, the acceleration would be…',[o('zero',1),o('g'),o('g/2')],[o('the net pull (m₁ − m₂)g would be zero',1),o('heavier systems always fall faster'),o('each block is in free fall')])]],
+'2c': ()=>[
+ [END, bl('info','Say what each piece of information is FOR.',['m is needed for the weight {} and the inertia term {}','g is needed for {}','The direction of a decides the {}','"Constant speed" secretly means a = {}'],[sl('mg',['ma','μn']),sl('ma',['mg','μn']),sl('the weight mg',['the speed','the rope length']),sl('signs (+ / −)',['mass','value of g']),nb(0)])]],
+'3a': ()=>[
+ [END, bl('sign','Write the rule in your own notebook.',['Speeding up: a points {} v','Slowing down: a points {} v','Constant velocity: a = {}','Moving DOWN and slowing: a points {}','Moving UP and slowing: a points {}'],[sl('the same way as',['opposite to']),sl('opposite to',['the same way as']),nb(0),UD('up'),UD('down')])],
+ [END, pr('check','A ball thrown straight up is at its highest point (v = 0 for an instant). Its acceleration is…',[o('9.8 m/s² downward',1),o('zero'),o('9.8 m/s² upward')],[o('gravity still pulls, and v is still changing (from up to down)',1,'a is about how v CHANGES, not about v itself.'),o('v = 0 means a = 0'),o('nothing is happening at that instant')])]],
+'3b': ()=>[
+ [END, bl('solve','A 5 kg object hangs from a rope. Fill in all three cases.',['a = 2 m/s² UP:  T = m(g {} a) = 5 × {} = {} N','a = 2 m/s² DOWN:  T = m(g {} a) = 5 × {} = {} N','At rest:  T = mg = {} N'],[PM('+'),nb(11.8),nb(59),PM('−'),nb(7.8),nb(39),nb(49)],'Up: 59 N. Rest: 49 N. Down: 39 N. The rope works hardest when a points up.')],
+ [END, pr('check','An object accelerates UPWARD. Compared with its weight, the tension is…',[o('bigger',1),o('smaller'),o('equal')],[o('the net force T − mg must point up, the same way as a',1),o('gravity is weaker on an object moving up'),o('subtracting a makes sense because the object moves away from the ground')])],
+ [END, bl('check','Rank the three cases.',['Largest tension: {}','Middle tension: {}','Smallest tension: {}'],[sl('a upward',['at rest','a downward']),sl('at rest',['a upward','a downward']),sl('a downward',['a upward','at rest'])])]],
+'3c': ()=>[
+ [END, bl('law','Rebuild the whole Atwood solution (m₁ = 5 kg, m₂ = 3 kg).',['m₁ (+ down):  {} − {} = m₁a','m₂ (+ up):  {} − {} = m₂a','Add them:  (m₁ − m₂)g = ({})a','a = ({} − {}) × 9.8 / ({} + {}) = {} m/s²'],[sl('m₁g',['T','m₂g']),sl('T',['m₁g','m₂g']),sl('T',['m₁g','m₂g']),sl('m₂g',['T','m₁g']),sl('m₁ + m₂',['m₁ − m₂','m₁','2T']),nb(5),nb(3),nb(5),nb(3),nb(2.45)])]],
+'4a': ()=>[
+ [END, bl('fbd','Describe your diagram in numbers.',['Number of forces on the book: {}','Net force on the book: {} N','If w = 5 N then n = {} N, pointing {}'],[nb(2),nb(0),nb(5),UD('up')])],
+ [END, pr('check','The table is suddenly removed. Which force on the book disappears?',[o('Only the normal force',1),o('Only the weight'),o('Both')],[o('the normal force needs contact; gravity acts without touching',1),o('without support, an object has no weight'),o('forces come in pairs, so both vanish together')])]],
+'4b': ()=>[
+ [END, bl('fbd','Describe the diagram.',['Forces on the block: {} (up) and {} (down)','Net force points {}','So {} is the longer arrow','If m = 2 kg and a = 3 m/s²: ma = {} N, mg = {} N, T = {} N'],[sl('T',['mg','ma','n']),sl('mg',['T','ma','n']),UD('up'),sl('T',['mg']),nb(6),nb(19.6),nb(25.6)])]],
+'4c': ()=>[
+ [END, bl('law','Turn the diagram into equations.',['Vertical (a = 0):  n − {} = 0','Friction:  f = {} × n','Horizontal (+ right):  {} − {} = ma'],[sl('mg',['T','f']),sl('μₖ',['m','g']),sl('T',['f','n','mg']),sl('f',['T','n','mg'])])],
+ [END, pr('check','The sled now moves at CONSTANT velocity. Then T is…',[o('equal to f',1),o('bigger than f'),o('zero')],[o('a = 0 means ΣF = 0',1,'Motion does not need a net force. Only CHANGING motion does.'),o('motion needs a net force forward'),o('friction disappears at constant speed')])]],
+'4d': ()=>[
+ [END, bl('law','Turn the diagram into equations (axes tilted along the slope).',['Perpendicular (a = 0):  n = mg {} θ','Along the slope (+ down):  mg {} θ − {} = ma','f = μₖ × {}','For m = 2 kg, θ = 30°:  mg sin θ = {} N,  n = {} N'],[SC('cos'),SC('sin'),sl('f',['n','mg']),sl('n',['mg','mg sin θ']),nb(9.8),nb(17)])],
+ [END, pr('check','As the slope gets steeper, the normal force…',[o('decreases',1),o('increases'),o('stays the same')],[o('n = mg cos θ, and cos θ shrinks as θ grows',1,'At 90° (a wall) the surface holds none of the weight.'),o('a steeper slope makes the block press harder'),o("the weight doesn't change, so n doesn't either")])]],
+'4e': ()=>[
+ [END, bl('fbd','Count what you drew.',['Forces on A pointing UP the slope: {}','Normal forces on A: {}','Things touching A: the incline, block B and the {}','Total forces on A: {}'],[nb(3),nb(2),sl('rope',['pulley','Earth','air']),nb(6)])]],
+'5a': ()=>[
+ [END, bl('system','Complete each 3rd-law pair.',['Earth pulls the book (5 N down)  ↔  the book pulls {} with {} N, pointing {}','Table pushes the book (5 N up)  ↔  the book pushes {} with {} N, pointing {}','Number of forces acting ON the book: {}'],[sl('Earth',['the table','itself']),nb(5),UD('up'),sl('the table',['Earth','itself']),nb(5),UD('down'),nb(2)])],
+ [END, pr('check','The table and book are now in an elevator accelerating upward. Which statement is true?',[o('n ≠ w, but (table on book) still equals (book on table)',1),o('Both equalities still hold'),o('Neither equality holds')],[o('the 3rd law always holds; n = w only came from a = 0',1),o('equal and opposite forces always cancel'),o("Newton's laws stop working when things accelerate")])]],
+'5b': ()=>[
+ [END, bl('system','Name the partner of each force.',['Partner of n_B on A:  {}','Partner of (f_k)_B on A:  {}','Partner of (F_G)_A:  {}','Partner of n_A (incline on A):  {}'],[sl('n_A on B',['n_A','(F_G)_B']),sl('(f_k)_A on B',['(f_k)_A','T_A on B']),sl('A pulling on Earth',['n_A','(F_G)_B']),sl('A pushing on the incline',['n_B on A','(F_G)_A'])])],
+ [END, pr('check',"B's friction on A points up the slope. A's friction on B points…",[o('down the slope',1),o('up the slope'),o('perpendicular to the slope')],[o('3rd-law partners point in opposite directions',1,'It also fits: B slides up over A, and friction opposes that.'),o('B moves up, so friction on B points up'),o('friction always points up a slope')])]],
+'5c': ()=>[
+ [END, bl('solve','Put numbers on the paradox.',['Horse pulls cart with 800 N  →  cart pulls horse with {} N','Friction on the cart is 300 N  →  net force on the cart = {} N','Cart mass 250 kg  →  a = {} m/s²'],[nb(800),nb(500),nb(2)],'The 800 N pair is equal, yet the cart accelerates, because only forces ON the cart count.')]],
+'6a': v=>[
+ [3, bl('solve','Substitute before you calculate.',['T − mg = {}','T = {} kg × {} m/s²'],[nb(0),nb(v.m),nb(9.8)])],
+ [END, pr('check','The sign is now raised at a steady 2 m/s. The tension is…',[o('the same as at rest',1),o('bigger'),o('smaller')],[o('constant velocity also means a = 0',1),o('moving up always needs more force'),o('a moving object is lighter')])]],
+'6b': v=>[
+ [4, bl('solve','Substitute before you calculate.',['T = m(g + a)','T = {} kg × ({} + {}) m/s²','Value of the bracket: {} m/s²'],[nb(v.m),nb(9.8),nb(v.a),nb(g+v.a)])],
+ [END, bl('check','Same crate, two other cases.',['LOWERED, speeding up at the same a:  T = m(g {} a) = {} N','Moving at constant speed:  T = {} N'],[PM('−'),nb(v.m*(g-v.a)),nb(v.m*g)])]],
+'6c': v=>[
+ [4, bl('solve','Substitute before you calculate.',['T = m(g − a)','T = {} kg × ({} − {}) m/s²','Value of the bracket: {} m/s²'],[nb(v.m),nb(9.8),nb(v.a),nb(g-v.a)])],
+ [END, pr('check','The rope is cut, so the bucket falls freely. What does T = m(g − a) give?',[o('T = 0',1),o('T = mg'),o('T = 2mg')],[o('in free fall a = g, so g − a = 0',1,'A formula that gives the right answer in an extreme case is a formula you can trust.'),o('gravity still acts, so the rope still pulls'),o('falling doubles the load')])]],
+'6d': v=>[
+ [3, bl('solve','Substitute before you calculate.',['mg − n = ma  ⇒  n = m(g {} a)','n = {} kg × ({} − {}) m/s²','True weight: mg = {} N'],[PM('−'),nb(v.m),nb(9.8),nb(v.a),nb(v.m*g)])],
+ [END, pr('check','The cable snaps and the elevator falls freely. The scale reads…',[o('zero',1),o('mg'),o('2mg')],[o('a = g downward, so n = m(g − g)',1,'That is "weightlessness": the weight is still mg, but nothing pushes on you.'),o('the weight never changes, so the scale never changes'),o('gravity disappears in free fall')])]],
+'7a': v=>[
+ [6, bl('solve','Substitute before you calculate.',['a = (m₁ − m₂)g / (m₁ + m₂)','a = ({} − {}) × 9.8 / ({} + {})','Net pull (top of the fraction): {} N','Total mass being accelerated: {} kg'],[nb(v.m1),nb(v.m2),nb(v.m1),nb(v.m2),nb((v.m1-v.m2)*g),nb(v.m1+v.m2)])],
+ [7, bl('solve','Set up the tension.',['m₂ accelerates {}, so T = m₂(g {} a)','T = {} kg × ({} + {}) m/s²'],[UD('up'),PM('+'),nb(v.m2),nb(9.8),nb(v.a)])]],
+'7b': v=>[
+ [2, bl('system','For each possible system, fill in its mass and the ONE horizontal force that pulls it.',['A + B:  mass = {} kg, pulled by {}','A + B + C:  mass = {} kg, pulled by {}','A alone:  mass = {} kg, pulled by {}'],[nb(2*v.m),sl('T_BC',['F','T_AB']),nb(3*v.m),sl('F',['T_BC','T_AB']),nb(v.m),sl('T_AB',['F','T_BC'])])],
+ [END, pr('check','Order the three forces.',[o('T_AB < T_BC < F',1),o('F < T_BC < T_AB'),o('All three are equal')],[o('same a for all; the forces pull 1, 2 and 3 blocks',1),o('a force gets weaker as it travels along the chain'),o('ideal strings pass a force on unchanged')])]],
+'7c': v=>[
+ [2, bl('system','How much mass hangs below each point?',['Below the TOP of rope 1: {} kg','Below the BOTTOM of rope 1: {} kg','Below the top of rope 2: {} kg','Total mass lifted by F: {} kg','g + a = {} m/s²'],[nb(1.5),nb(1.25),nb(0.25),nb(2.5),nb(g+v.a)],'Tension at any point = (mass below that point) × (g + a).')],
+ [END, bl('check','Two more points on rope 2.',['Tension at the top of rope 2: {} N','Tension at the free bottom end of rope 2: {} N'],[nb(0.25*(g+v.a)),nb(0)])]],
+'8a': v=>[
+ [2, bl('solve','Set up the kinematics.',['Δy = v₀t + ½at²,  with v₀ = {}','So Δy = ½at²  ⇒  a = {} × Δy / t²','a = {} × {} m / ({} s)²'],[nb(0),nb(2),nb(2),nb(1),nb(v.t)])],
+ [5, bl('sign','Think before you compute T.',['The 100 kg block accelerates {}','So T is {} its weight','T = m₂(g {} a)','Weight of the 100 kg block: {} N'],[UD('down'),sl('less than',['more than','equal to']),PM('−'),nb(980)])]],
+'8b': v=>[
+ [3, bl('fbd','Put numbers on the forces.',['Gravity along the slope: mg {} θ','Normal force: n = mg {} θ','Friction on the 1.0 kg block: 0.20 × 1.0 × 9.8 × cos θ = {} N','Friction on the 2.0 kg block: 0.10 × 2.0 × 9.8 × cos θ = {} N'],[SC('sin'),SC('cos'),nb(0.2*g*cosD(v.th)),nb(0.2*g*cosD(v.th))])],
+ [END, pr('check','If the string were cut, which block would have the larger acceleration?',[o('The lower 2.0 kg block',1),o('The upper 1.0 kg block'),o('Both the same')],[o('a = g(sin θ − μ cos θ): mass cancels, and a smaller μ gives a bigger a',1),o('heavier objects slide faster'),o('the friction forces are equal, so the accelerations are equal')])]],
+'8c': ()=>[
+ [3, bl('fbd','Describe the forces on block 2 (it moves UP the slope).',['Normal force: n = m₂g {} θ','Friction: f = {} × n, pointing {} the slope','Gravity along the slope: m₂g {} θ, pointing {} the slope'],[SC('cos'),sl('μ',['a','g']),UD('down'),SC('sin'),UD('down')])],
+ [END, pr('check','For the same a, a bigger μ means the ratio m₁/m₂ must…',[o('increase',1),o('decrease'),o('stay the same')],[o('more friction to overcome needs a heavier hanging block',1,'μ sits in the top of the fraction with a + sign.'),o('friction helps pull block 2 up the slope'),o('friction cancels when the equations are added')])]],
+'8d': v=>[
+ [END, bl('check','What the pulley system does for you.',['Rope segments holding up the lower pulley: {}','F = mg / {}','To raise the block 1 m you pull {} m of rope','The ceiling holds T₂ + T₄ = {} N in total'],[nb(2),nb(2),nb(2),nb(1.5*v.mg)],'Half the force, twice the rope. Check: the ceiling carries mg + F.')]]
+};
+
+/* ---------- step: fill in the blanks ---------- */
+function stepBlank(s, box, head){
+  let k = 0;
+  const lines = s.tpl.map(line => '<div class="bl m">' + line.replace(/\{\}/g, () => { const b = s.blanks[k], i = k++;
+    if(b.opts){ if(!b.ord) b.ord = shuffle(b.opts); return `<select class="bsel" data-b="${i}"><option value="">choose ▾</option>${b.ord.map(x=>`<option>${x}</option>`).join('')}</select>`; }
+    return `<input class="bin" data-b="${i}" inputmode="decimal" autocomplete="off" onkeydown="if(event.key==='Enter')checkBlank()">`; }) + '</div>').join('');
+  box.innerHTML = `${head}<div class="q">✏️ ${s.prompt}</div>${lines}<div class="small">Fill in every blank, then press Check. All blanks are checked together. Numbers within 2% count.</div><div class="hz"></div><div class="fbz"><div class="btns"><button class="btn" onclick="checkBlank()">Check blanks</button></div><div id="bfb"></div></div>`;
+}
+function checkBlank(){
+  const s = cur.d.steps[cur.i]; if(s.st.solved) return; const box = document.getElementById('step');
+  const els = [...box.querySelectorAll('[data-b]')]; const bad = [];
+  if(els.some(e=>e.value.trim()==='')){ document.getElementById('bfb').innerHTML = `<div class="fb bad">Fill in every blank first.</div>`; return; }
+  els.forEach(el => { const b = s.blanks[+el.dataset.b], raw = el.value.trim(); let ok;
+    if(b.opts) ok = raw === b.a; else { const v = parseFloat(raw.replace(',', '.')); ok = isFinite(v) && near(v, b.a); }
+    el.classList.toggle('ok', ok); el.classList.toggle('bad', !ok); if(!ok) bad.push(b); });
+  if(!bad.length){ els.forEach(e=>e.disabled=true); solve(s, box); return; }
+  miss(s);
+  let msg = `<b>${els.length-bad.length} of ${els.length}</b> blanks are right. Fix the red ones (−2 XP).`;
+  if(s.st.tries >= 3) msg += `<br><b>Red blanks, in order:</b> ${bad.map(b=>b.opts?b.a:f3(b.a)).join(' · ')}`;
+  document.getElementById('bfb').innerHTML = `<div class="fb bad">✗ ${msg}</div>`;
+}
+
+/* ---------- step: answer + reason ---------- */
+function stepPair(s, box, head){
+  if(!s.oa){ s.oa = shuffle(s.a.map((_,i)=>i)); s.ob = shuffle(s.b.map((_,i)=>i)); s.pa = -1; s.pb = -1; }
+  const grp = (g,ord,arr,p) => `<div class="opts">${ord.map(i=>`<button class="opt ${p===i?'sel':''}" data-g="${g}" data-i="${i}" onclick="pickPair('${g}',${i})">${p===i?'◉':'○'} ${arr[i].t}</button>`).join('')}</div>`;
+  box.innerHTML = `${head}<div class="q">🧠 ${s.prompt}</div>${grp('a',s.oa,s.a,s.pa)}<div class="q" style="margin-top:16px">…because:</div>${grp('b',s.ob,s.b,s.pb)}<div class="small">Choose an answer AND the reason that supports it. Both must be right.</div><div class="hz"></div><div class="fbz"><div class="btns"><button class="btn" onclick="checkPair()">Check answer + reason</button></div><div id="pfb"></div></div>`;
+}
+function pickPair(g, i){ const s = cur.d.steps[cur.i]; if(s.st.solved) return; s['p'+g] = i; stepPair(s, document.getElementById('step'), document.querySelector('#step .phase').outerHTML); }
+function checkPair(){
+  const s = cur.d.steps[cur.i]; if(s.st.solved) return; const box = document.getElementById('step'), fb = document.getElementById('pfb');
+  if(s.pa<0 || s.pb<0){ fb.innerHTML = `<div class="fb bad">Pick one answer and one reason.</div>`; return; }
+  const A = s.a[s.pa], Bq = s.b[s.pb];
+  if(A.ok && Bq.ok){ box.querySelectorAll('.opt.sel').forEach(b=>b.classList.add('ok')); solve(s, box, Bq.why||''); return; }
+  miss(s);
+  fb.innerHTML = `<div class="fb bad">✗ ${s.st.tries===1 ? 'Your answer and your reason do not both hold up (−2 XP). Test the reason on its own: is it a true statement of physics? Then ask whether it really leads to your answer.' : (!A.ok && !Bq.ok ? 'Both the answer and the reason are wrong.' : !A.ok ? 'Your reason is correct physics. Follow it through: what answer does it lead to?' : 'Your answer is right, but that reason is not why. Which statement is actually true?')}</div>`;
+}
+
+/* ================= tokenizer for clue text ================= */
+function tokens(text){
+  const out=[]; const re=/\[\[(.+?)\]\]/g; let last=0, mm;
+  const words = s => { s.split(/(\s+|<[^>]+>)/).forEach(w=>{ if(!w) return; if(/^\s+$/.test(w)||/^</.test(w)) out.push({raw:w}); else out.push({w}); }); };
+  while((mm=re.exec(text))){ words(text.slice(last,mm.index)); const [p,mean,h]=mm[1].split('|'); out.push({clue:true,p,mean,hidden:h==='hidden'}); last=re.lastIndex; }
+  words(text.slice(last)); return out;
+}
+
+/* ================= hover preview on the map ================= */
+const PV = {};
+function pvShow(id, el){
+  const m = MS.find(x=>x.id===id);
+  if(!PV[id]){ const d = m.make(); let n = d.steps.length; if(EXTRA[id]) n += EXTRA[id](d.v||{}).length;
+    let t = d.text.replace(/\[\[(.+?)\]\]/g, (_,x)=>x.split('|')[0]).replace(/<[^>]+>/g,''); if(t.length>260) t = t.slice(0,257)+'…';
+    const kinds = new Set(d.steps.map(s=>s.type)); if(EXTRA[id]) EXTRA[id](d.v||{}).forEach(e=>kinds.add(e[1].type));
+    const names = {clue:'clue hunt',mcq:'multiple choice',multi:'select all',num:'calculate',eq:'equation builder',fbd:'free-body diagram',blank:'fill in the blanks',pair:'answer + reason'};
+    PV[id] = {t, fig:d.fig, meta:`${n} steps · ${[...kinds].map(k=>names[k]).join(', ')}${m.rnd?' · 🎲 numbers change each play':''}`}; }
+  const pv = document.getElementById('pv'), c = PV[id];
+  pv.innerHTML = `<div class="pt">${m.title}</div><div class="px">${c.t}</div>${c.fig?`<div class="pf">${c.fig}</div>`:''}<div class="pm">${c.meta}</div>`;
+  pv.style.display = 'block';
+  const r = el.getBoundingClientRect(), w = pv.offsetWidth, h = pv.offsetHeight;
+  let left = r.right + 10; if(left + w > innerWidth - 8) left = r.left - w - 10; if(left < 8) left = Math.max(8, innerWidth - w - 8);
+  pv.style.left = left + 'px'; pv.style.top = Math.max(64, Math.min(r.top - 20, innerHeight - h - 8)) + 'px';
+}
+function pvHide(){ document.getElementById('pv').style.display = 'none'; }
+
+/* ================= state & navigation ================= */
+let cur = null;
+function unlocked(lv){ return true; }
+
+function showMap(){
+  cur = null; hud(); pvHide();
+  const done = MS.filter(m=>S.done[m.id]).length;
+  let h = `<div class="card"><h2>🕵️ Train your physics instincts</h2><p class="lead">Every problem is a case. Don't jump to the numbers! Work through the same routine a physicist uses, step by step. Progress: <b>${done}/${MS.length}</b> missions.</p>
+  <div class="intro">${PH.map((p,i)=>`<div><b>${i+1}. ${p[1]}</b>${p[2]}</div>`).join('')}</div></div><div class="levels">`;
+  LEVELS.forEach(L=>{
+    const ms = MS.filter(m=>m.lv===L.n), k = ms.filter(m=>S.done[m.id]).length, un = unlocked(L.n);
+    h += `<div class="lv ${un?'':'lock'} ${k===ms.length?'done':''}"><div class="hd"><div class="n">${k===ms.length?'✓':L.n}</div><div><div class="t">${L.name}</div><div class="d">${L.desc}</div></div></div>
+    <div class="bar"><i style="width:${100*k/ms.length}%"></i></div>`;
+    ms.forEach(m=> h += `<div class="ms ${un?'':'locked'}" onmouseenter="pvShow('${m.id}',this)" onmouseleave="pvHide()" onclick="${un?`startMission('${m.id}')`:`toast('Finish Level ${L.n-1} first (or unlock all at the bottom).')`}"><span class="ck">${S.done[m.id]?'✅':un?'▶':'🔒'}</span>${m.title}${m.rnd?' <span title="new numbers each time">🎲</span>':''}${hasNote(m.id)?' <span title="you have notes here">📝</span>':''}${hasSave(m.id)?' <span title="saved in progress">💾</span>':''}</div>`);
+    h += `</div>`;
+  });
+  h += `</div><p class="small" style="margin-top:16px">All levels are unlocked: start anywhere. &nbsp;·&nbsp; <a href="#" onclick="if(confirm('Reset all progress?')){S.xp=0;S.streak=0;S.done={};save();showMap()}return false">Reset progress</a> &nbsp;·&nbsp; 🎲 = new numbers every time you play. Uses g = 9.8 m/s².</p>`;
+  document.getElementById('app').innerHTML = h; window.scrollTo(0,0);
+}
+
+const skey = id => 'physdet_save_' + id;
+function hasSave(id){ try{ return !!localStorage.getItem(skey(id)); }catch(e){ return false; } }
+function saveMission(){
+  try{ localStorage.setItem(skey(cur.m.id), JSON.stringify({d:cur.d, i:cur.i, chips:cur.chips, found:[...cur.found], gained:cur.gained}, (k,v)=> v instanceof Set ? {__set:[...v]} : v));
+    const x = loadNote(cur.m.id); x.text = document.getElementById('ntext').value; if(x.text || x.img) saveNote(cur.m.id, x);
+    toast(`💾 Saved at step ${cur.i+1} of ${cur.d.steps.length}. Your answers, clue board and notes will be here when you come back.`);
+  }catch(e){ toast('Could not save: browser storage is full.'); }
+}
+function resetMission(){
+  if(!confirm('Reset this problem? Your answers and saved spot will be cleared and you start again from step 1.')) return;
+  const id = cur.m.id; try{ localStorage.removeItem(skey(id)); }catch(e){}
+  if(hasNote(id) && confirm('Also erase your notes and drawing for this problem?\n\nOK = erase notes, Cancel = keep notes')){ try{ localStorage.removeItem(nkey(id)); }catch(e){} }
+  startMission(id); toast('↺ Problem reset.');
+}
+function startMission(id){
+  pvHide();
+  const m = MS.find(x=>x.id===id);
+  let sv = null; try{ sv = JSON.parse(localStorage.getItem(skey(id)) || 'null', (k,v)=> v && v.__set ? new Set(v.__set) : v); }catch(e){}
+  if(sv && sv.d && sv.d.steps){ cur = {m, d:sv.d, i:sv.i, chips:sv.chips, found:new Set(sv.found), gained:sv.gained, newChip:-1}; renderMission(); window.scrollTo(0,0); toast(`Resumed from your saved spot (step ${sv.i+1}). Press Reset to start over.`); return; }
+  const d = m.make();
+  if(EXTRA[m.id]){ const ex = EXTRA[m.id](d.v||{}), out = []; d.steps.forEach((st,i)=>{ ex.filter(e=>e[0]===i).forEach(e=>out.push(e[1])); out.push(st); }); ex.filter(e=>e[0]>=d.steps.length).forEach(e=>out.push(e[1])); d.steps = out; }
+  d.steps.forEach(s=>{ s.st={tries:0,hint:false,solved:false}; });
+  cur = {m, d, i:0, chips:[...(d.chips||[])].map(t=>({t})), found:new Set(), gained:0, newChip:-1};
+  if(!d.steps.some(s=>s.type==='clue')) tokens(d.text).filter(t=>t.clue).forEach((t,i)=>{ cur.found.add(i); cur.chips.push({t:t.mean}); });
+  renderMission(); window.scrollTo(0,0);
+}
+
+function renderMission(){
+  const {m,d} = cur, L = LEVELS[m.lv-1];
+  document.getElementById('app').innerHTML = `<div class="mission">
+   <div>
+    <div class="card"><div class="mt">Level ${L.n} · ${L.name}</div><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap"><div class="ptitle">${m.title}</div><div style="display:flex;gap:6px"><button class="nt" style="font-size:14px;padding:6px 12px" onclick="saveMission()">💾 Save</button><button class="nt" style="font-size:14px;padding:6px 12px" onclick="resetMission()">↺ Reset</button></div></div><div class="ptext" id="ptext"></div>${d.fig?`<div class="fig">${d.fig}</div>`:''}</div>
+    <div class="card board"><h4>🗂 Clue Board</h4><div id="chips"></div></div>
+    <div class="card board notes"><h4>📝 My Notes for this problem <span id="nsaved" style="text-transform:none;letter-spacing:0;color:var(--green)"></span></h4>
+     <textarea id="ntext" placeholder="Type your notes here: what tripped you up, the key formula, what to remember next time…"></textarea>
+     <div class="ntools">
+      ${['#1d2733','#2a7ab0','#d63c4a','#2e9e5b'].map((c,i)=>`<button class="nc ${i?'':'on'}" style="background:${c}" title="pen colour" onclick="ntool('color','${c}',this)"></button>`).join('')}
+      <button class="nt on" data-s="3" onclick="ntool('size',3,this)">thin</button><button class="nt" data-s="7" onclick="ntool('size',7,this)">thick</button>
+      <button class="nt" id="nerase" onclick="ntool('erase',1,this)">🧽 eraser</button>
+      <button class="nt" onclick="nundo()">↶ undo</button><button class="nt" onclick="nclear()">🗑 clear drawing</button>
+     </div>
+     <canvas id="ncv" width="900" height="520"></canvas>
+     <div class="small">Draw with a mouse, finger or stylus. Notes save automatically in this browser, separately for each problem.</div></div>
+   </div>
+   <div>
+    <div class="tracker" id="tracker"></div>
+    <div class="card" id="step"></div>
+    <div class="card checklist"><h4>🧠 Physicist's Checklist</h4><ol id="cl">${PH.map(p=>`<li data-p="${p[0]}"><div>${p[1]}<small>${p[2]}</small></div></li>`).join('')}</ol></div>
+   </div></div>`;
+  initNotes(); renderStep();
+}
+
+function renderText(){
+  const s = cur.d.steps[cur.i], hunt = s && s.type==='clue' && !s.st.solved;
+  let ci = -1, h = '';
+  tokens(cur.d.text).forEach((t,k)=>{
+    if(t.raw!==undefined){ h += t.raw; return; }
+    if(t.clue){ ci++; const f = cur.found.has(ci); h += `<span class="w ${f?(t.hidden?'hid':'cl'):''}" data-c="${ci}" ${hunt?`onclick="clickClue(${ci},this)"`:''}>${t.p}</span>`; }
+    else h += `<span class="w" ${hunt?`onclick="clickWord(this)"`:''}>${t.w}</span>`;
+  });
+  const el = document.getElementById('ptext'); el.innerHTML = h; el.classList.toggle('hunt', !!hunt);
+}
+function renderChips(){
+  const el = document.getElementById('chips');
+  el.innerHTML = cur.chips.length ? cur.chips.map((c,i)=>`<span class="chip ${c.u?'u':''} ${i>=cur.newChip&&cur.newChip>=0?'new':''}">${c.t}</span>`).join('') : '<span class="empty">Clues you find will be pinned here.</span>';
+  cur.newChip = -1;
+}
+function addChips(arr,u){ if(!arr) return; cur.newChip = cur.chips.length; arr.forEach(t=>{ if(!cur.chips.some(c=>c.t===t)) cur.chips.push({t,u}); }); }
+
+function renderStep(){
+  const {d} = cur, s = d.steps[cur.i];
+  document.getElementById('tracker').innerHTML = d.steps.map((x,i)=>`<div class="tk ${i<cur.i?'ok':i===cur.i?'on':''}">${i<cur.i?'✓':(i+1)} ${SHORT[PHI[x.ph]]}</div>`).join('');
+  document.querySelectorAll('#cl li').forEach(li=>li.classList.toggle('on', PHI[li.dataset.p]===PHI[s.ph]));
+  renderText(); renderChips();
+  const box = document.getElementById('step');
+  const head = `<div class="phase">Step ${cur.i+1}/${d.steps.length} · ${PH[PHI[s.ph]][1]}</div>`;
+  ({clue:stepClue, mcq:stepMcq, multi:stepMulti, num:stepNum, eq:stepEq, fbd:stepFbd, blank:stepBlank, pair:stepPair})[s.type](s, box, head);
+}
+
+/* ---------- scoring ---------- */
+function solve(s, box, extraHtml){
+  if(s.st.solved) return; s.st.solved = true;
+  let pts = s.type==='clue' ? Math.max(2, 10 - 2*s.st.tries) : (s.st.tries===0 ? 10 : 4);
+  if(s.st.hint) pts = Math.max(1, pts-2);
+  if(s.st.tries===0){ S.streak++; S.best=Math.max(S.best,S.streak); }
+  S.xp += pts; cur.gained += pts; save(); hud();
+  const fb = box.querySelector('.fbz');
+  const last = cur.i === cur.d.steps.length-1;
+  fb.innerHTML = `<div class="fb ok">✅ <b>+${pts} XP.</b> ${extraHtml||''} ${s.explain?`<div style="margin-top:6px">${s.explain}</div>`:''}</div><div class="btns"><button class="btn gr" id="nextb" onclick="nextStep()">${last?'Close the case 🏁':'Next step →'}</button></div>`;
+  box.querySelectorAll('.hb').forEach(b=>b.remove());
+  document.getElementById('nextb').focus();
+  renderChips();
+}
+function miss(s){ s.st.tries++; S.streak=0; S.xp=Math.max(0,S.xp-2); cur.gained-=2; save(); hud(); }
+function hintBtn(s){ return s.hint ? `<button class="btn g hb" onclick="showHint()">💡 Hint (−2 XP)</button>` : ''; }
+function showHint(){ const s=cur.d.steps[cur.i]; s.st.hint=true; const z=document.getElementById('step').querySelector('.hz'); z.innerHTML=`<div class="fb hint">💡 ${s.hint}</div>`; }
+function nextStep(){ cur.i++; if(cur.i>=cur.d.steps.length) return finish(); renderStep(); document.getElementById('step').scrollIntoView({behavior:'smooth',block:'nearest'}); }
+
+function finish(){
+  const m = cur.m; S.done[m.id] = true; save(); try{ localStorage.removeItem(skey(m.id)); }catch(e){}
+  const idx = MS.indexOf(m), nx = MS[idx+1];
+  const canNext = nx && unlocked(nx.lv);
+  document.getElementById('app').innerHTML = `<div class="card end"><div class="big">🏁</div><h2>Case closed: ${m.title}</h2><p class="lead">You earned <b>${cur.gained} XP</b> on this case. Best streak: ${S.best}.</p>
+  <div class="card" style="text-align:left;max-width:640px;margin:0 auto 16px"><h4 class="mt">Your final clue board</h4>${cur.chips.map(c=>`<span class="chip ${c.u?'u':''}">${c.t}</span>`).join('')}</div>
+  <div class="btns" style="justify-content:center">${m.rnd?`<button class="btn g" onclick="startMission('${m.id}')">🎲 Replay with new numbers</button>`:`<button class="btn g" onclick="startMission('${m.id}')">↻ Replay</button>`}
+  ${canNext?`<button class="btn" onclick="startMission('${nx.id}')">Next case: ${nx.title} →</button>`:''}<button class="btn g" onclick="showMap()">🗺 Map</button></div></div>`;
+  window.scrollTo(0,0);
+}
+
+/* ---------- step: clue hunt ---------- */
+function stepClue(s, box, head){
+  const total = tokens(cur.d.text).filter(t=>t.clue).length;
+  box.innerHTML = `${head}<div class="q">🔍 ${s.prompt}</div><div class="small">Click words in the problem on the left. Clues found: <b id="cc">${cur.found.size}</b> / ${total}. Wrong clicks cost points.</div><div class="hz"></div><div id="cmsg"></div><div class="fbz"><div class="btns"><button class="btn g" onclick="clueHint()">💡 Show me one (−2 XP)</button></div></div>`;
+  s.total = total;
+  if(cur.found.size>=total) solve(s, box);
+}
+function clickClue(i, el){
+  const s = cur.d.steps[cur.i]; if(cur.found.has(i)) return;
+  const t = tokens(cur.d.text).filter(t=>t.clue)[i];
+  cur.found.add(i); addChips([t.mean], /\?/.test(t.mean));
+  renderText(); renderChips();
+  document.getElementById('cc').textContent = cur.found.size;
+  document.getElementById('cmsg').innerHTML = `<div class="fb ${t.hidden?'hint':'ok'}">${t.hidden?'🕵️ <b>Hidden clue!</b> ':'✔ '}"${t.p}" → <span class="m"><b>${t.mean}</b></span></div>`;
+  if(cur.found.size >= s.total) solve(s, document.getElementById('step'), 'All clues found.');
+}
+function clickWord(el){
+  const s = cur.d.steps[cur.i]; s.st.tries++; if(S.streak){S.streak=0;hud();}
+  el.classList.remove('miss'); void el.offsetWidth; el.classList.add('miss');
+  const w = el.textContent;
+  const msg = /\d/.test(w) ? `"${w}" is a number, but it's a <b>story detail</b>. It doesn't enter ΣF = ma or the kinematics here.` : `"${w}" isn't needed information. Look for <b>numbers with units</b>, or phrases that secretly mean a number or a direction (like "at rest" or "speeding up").`;
+  document.getElementById('cmsg').innerHTML = `<div class="fb bad">${msg}</div>`;
+}
+function clueHint(){
+  const s = cur.d.steps[cur.i]; s.st.hint = true;
+  const cl = tokens(cur.d.text).filter(t=>t.clue); const i = cl.findIndex((t,k)=>!cur.found.has(k));
+  const el = document.querySelector(`#ptext [data-c="${i}"]`); if(el){ el.classList.add('flash'); el.scrollIntoView({block:'center',behavior:'smooth'}); }
+}
+
+/* ---------- step: multiple choice ---------- */
+function stepMcq(s, box, head){
+  if(!s.order) s.order = s.keep ? s.opts.map((_,i)=>i) : shuffle(s.opts.map((_,i)=>i));
+  box.innerHTML = `${head}<div class="q">${s.prompt}</div><div class="small" style="margin:-6px 0 10px">Think first: every wrong pick costs 2 XP.</div><div class="opts">${s.order.map(i=>`<button class="opt" data-i="${i}" onclick="pickMcq(${i},this)">${s.opts[i].t}</button>`).join('')}</div><div class="hz"></div><div class="fbz"><div class="btns hb">${hintBtn(s)}</div></div>`;
+}
+function pickMcq(i, el){
+  const s = cur.d.steps[cur.i]; if(s.st.solved) return; const op = s.opts[i];
+  if(op.ok){ el.classList.add('ok'); el.innerHTML += `<span class="why">${op.why||''}</span>`; if(s.add) addChips(s.add, s.u); solve(s, document.getElementById('step')); }
+  else { if(el.classList.contains('bad')) return; miss(s); el.classList.add('bad'); el.innerHTML += `<span class="why">✗ ${op.why||'Not quite. Think about it again.'}</span>`; }
+}
+
+/* ---------- step: multi select ---------- */
+function stepMulti(s, box, head){
+  if(!s.order) s.order = shuffle(s.opts.map((_,i)=>i)); s.sel = s.sel || new Set();
+  box.innerHTML = `${head}<div class="q">${s.prompt}</div><div class="small" style="margin:-6px 0 10px">Select all that apply, then press Check.</div><div class="opts">${s.order.map(i=>`<button class="opt" data-i="${i}" onclick="togMulti(${i},this)">☐ ${s.opts[i].t}</button>`).join('')}</div><div class="hz"></div><div class="fbz"><div class="btns"><button class="btn" onclick="checkMulti()">Check</button>${hintBtn(s)}</div><div id="mfb"></div></div>`;
+}
+function togMulti(i, el){ const s=cur.d.steps[cur.i]; if(s.st.solved) return; if(s.sel.has(i)) s.sel.delete(i); else s.sel.add(i); el.classList.toggle('sel'); el.innerHTML = (s.sel.has(i)?'☑ ':'☐ ') + s.opts[i].t; el.classList.remove('bad'); }
+function checkMulti(){
+  const s = cur.d.steps[cur.i]; const box = document.getElementById('step');
+  const wrong = [...s.sel].filter(i=>!s.opts[i].ok), missed = s.opts.map((x,i)=>i).filter(i=>s.opts[i].ok && !s.sel.has(i));
+  if(!wrong.length && !missed.length){
+    box.querySelectorAll('.opt').forEach(b=>{ const i=+b.dataset.i; if(s.opts[i].ok){ b.classList.add('ok'); b.innerHTML += `<span class="why">${s.opts[i].why}</span>`; } });
+    solve(s, box); return;
+  }
+  miss(s);
+  wrong.forEach(i=>{ const b=box.querySelector(`.opt[data-i="${i}"]`); b.classList.add('bad'); });
+  document.getElementById('mfb').innerHTML = `<div class="fb bad">${wrong.map(i=>`✗ <b>${s.opts[i].t}</b>: ${s.opts[i].why}`).join('<br>')}${missed.length?`${wrong.length?'<br>':''}You missed <b>${missed.length}</b> correct choice${missed.length>1?'s':''}.`:''}</div>`;
+}
+
+/* ---------- step: numeric ---------- */
+function stepNum(s, box, head){
+  box.innerHTML = `${head}<div class="q">${s.prompt}</div><div class="numrow"><span class="m">${s.sym} =</span><input id="numin" type="text" inputmode="decimal" placeholder="number" onkeydown="if(event.key==='Enter')checkNum()"><span>${s.unit}</span></div><div class="small">g = 9.8 m/s². Within 2% counts as correct, so 3 significant figures is plenty.</div><div class="hz"></div><div class="fbz"><div class="btns"><button class="btn" onclick="checkNum()">Check</button>${hintBtn(s)}</div><div id="nfb"></div></div>`;
+  setTimeout(()=>{ const i=document.getElementById('numin'); if(i) i.focus({preventScroll:true}); },50);
+}
+function near(v, t, tol=0.02){ return Math.abs(v-t) <= Math.max(tol*Math.abs(t), 1e-6); }
+function checkNum(){
+  const s = cur.d.steps[cur.i]; if(s.st.solved) return;
+  const raw = document.getElementById('numin').value.replace(',', '.'); const v = parseFloat(raw);
+  const fb = document.getElementById('nfb');
+  if(!isFinite(v)){ fb.innerHTML = `<div class="fb bad">Type a number.</div>`; return; }
+  if(near(v, s.ans)){ addChips([`${s.sym} = ${f3(s.ans)} ${s.unit}`]); document.getElementById('numin').disabled = true; solve(s, document.getElementById('step'), `${s.sym} = ${f3(s.ans)} ${s.unit}.`); return; }
+  miss(s);
+  const slip = (s.slips||[]).find(x=>near(v, x.v));
+  let msg = slip ? slip.msg : near(v, s.ans, 0.1) ? 'Very close. Check your rounding and use g = 9.8 m/s².' : near(-v, s.ans) ? 'Right size, wrong sign. Magnitudes are positive here.' : 'Not yet. Go back to your equation on the clue board and rearrange it symbolically first.';
+  if(s.st.tries >= 3) msg += ` <br><b>Answer:</b> ${f3(s.ans)} ${s.unit}. Type it in to continue (fewer XP).`;
+  fb.innerHTML = `<div class="fb bad">✗ ${msg}</div>`;
+}
+
+/* ---------- step: equation builder ---------- */
+function canon(lhs, rhs){ return [...lhs].sort().join(',') + '=' + rhs; }
+function canonStr(a){ const [l,r]=a.split('='); return canon(l.split(','), r); }
+function stepEq(s, box, head){
+  if(!s.slots){ s.slots = Array.from({length:s.lhs},()=>({sg:'+',t:null})); s.rh = null; s.act = 0; }
+  const rhsTiles = s.rhs || s.tiles;
+  const lhsH = s.slots.map((sl,k)=>`${k>0||sl.sg==='-'?`<button class="sgn" onclick="eqSign(${k})">${sl.sg==='+'?'+':'−'}</button>`:`<button class="sgn" title="toggle sign" onclick="eqSign(${k})">+</button>`}<div class="slot m ${sl.t?'f':''} ${s.act===k?'act':''}" onclick="eqSlot(${k})">${sl.t||'?'}</div>`).join('');
+  box.innerHTML = `${head}<div class="q">${s.prompt}</div>
+  <div class="eq m"><span>ΣF :</span>${lhsH}<span>=</span><div class="slot m ${s.rh?'f':''} ${s.act===s.lhs?'act':''}" onclick="eqSlot(${s.lhs})">${s.rh||'?'}</div></div>
+  <div class="small">Click a box, then a tile. Click a round sign button to flip + / −. Click a filled box to empty it.</div>
+  <div class="tiles">${(s.act===s.lhs ? rhsTiles : s.tiles).map(t=>`<button class="tile m" onclick="eqTile('${t}')">${t}</button>`).join('')}</div>
+  <div class="hz"></div><div class="fbz"><div class="btns"><button class="btn" onclick="checkEq()">Check equation</button>${hintBtn(s)}</div><div id="efb"></div></div>`;
+}
+function eqSign(k){ const s=cur.d.steps[cur.i]; if(s.st.solved) return; s.slots[k].sg = s.slots[k].sg==='+'?'-':'+'; stepEq(s, document.getElementById('step'), document.querySelector('#step .phase').outerHTML); }
+function eqSlot(k){ const s=cur.d.steps[cur.i]; if(s.st.solved) return; if(k===s.lhs){ if(s.rh) s.rh=null; } else if(s.slots[k].t) s.slots[k].t=null; s.act=k; stepEq(s, document.getElementById('step'), document.querySelector('#step .phase').outerHTML); }
+function eqTile(t){
+  const s=cur.d.steps[cur.i]; if(s.st.solved) return;
+  if(s.act===s.lhs) s.rh=t; else s.slots[s.act].t=t;
+  const nextEmpty = s.slots.findIndex(x=>!x.t); s.act = nextEmpty>=0 ? nextEmpty : (s.rh ? s.act : s.lhs);
+  stepEq(s, document.getElementById('step'), document.querySelector('#step .phase').outerHTML);
+}
+function checkEq(){
+  const s=cur.d.steps[cur.i]; const fb=document.getElementById('efb');
+  if(s.slots.some(x=>!x.t) || !s.rh){ fb.innerHTML=`<div class="fb bad">Fill every box first.</div>`; return; }
+  const lhs = s.slots.map(x=>x.sg+x.t), c = canon(lhs, s.rh), answers = s.ans.map(canonStr);
+  const pretty = s.slots.map((x,k)=>(k===0?(x.sg==='-'?'−':''):(x.sg==='+'?' + ':' − '))+x.t).join('') + ' = ' + s.rh;
+  if(answers.includes(c)){ addChips([pretty]); solve(s, document.getElementById('step'), `<span class="m">${pretty}</span>`); return; }
+  miss(s);
+  const abs = a => a.split('=')[0].split(',').map(x=>x.slice(1)).sort().join(',');
+  const myAbs = lhs.map(x=>x.slice(1)).sort().join(','), myR = s.rh;
+  const ref = s.ans[0].split('='), refR = ref[1];
+  let msg;
+  if(answers.some(a=>abs(a)===myAbs) && myR===refR) msg = 'The forces are right, but check the <b>signs</b>: forces pointing along your + direction are +, and forces pointing against it are −.';
+  else if(myR!==refR) msg = 'Check the right side: it is <b>(mass of THIS object) × a</b>, or 0 if a = 0. Never put a force there.';
+  else msg = 'Compare with the free-body diagram: which forces act <b>on this object</b>? Use this object\'s own mass in its weight.';
+  if(s.st.tries>=3) msg += `<br><b>Answer:</b> <span class="m">${s.ans[0].replace('=',' = ').replace(/,/g,' ').replace(/^\+/,'')}</span>`;
+  fb.innerHTML = `<div class="fb bad">✗ ${msg}</div>`;
+}
+
+/* ---------- step: free-body diagram ---------- */
+function fbdSVG(s){
+  const cx=150, cy=130, Lr=78; let h='';
+  if(s.slope!=null){ const r=s.slope*Math.PI/180, dx=Math.cos(r), dy=-Math.sin(r);
+    h += `<line x1="${cx-140*dx}" y1="${cy+18-140*dy}" x2="${cx+140*dx}" y2="${cy+18+140*dy}" stroke="#9aa" stroke-width="2" stroke-dasharray="6 4"/>`; }
+  h += `<rect x="${cx-22}" y="${cy-18}" width="44" height="36" fill="#f4dcd2" stroke="#999" opacity=".6" ${s.slope!=null?`transform="rotate(${-s.slope} ${cx} ${cy})"`:''}/>`;
+  const byA = {}; s.forces.forEach((f,i)=>{ if(s.sel.has(i)) (byA[f.a]=byA[f.a]||[]).push(i); });
+  Object.entries(byA).forEach(([a,arr])=>{ a=+a; const r=a*Math.PI/180, dx=Math.cos(r), dy=-Math.sin(r), px=-dy, py=dx;
+    arr.forEach((i,k)=>{ const off=(k-(arr.length-1)/2)*11, sx=cx+px*off, sy=cy+py*off, L=Lr+(arr.length>1?k*14:0);
+      const f=s.forces[i], c = s.res ? (f.ok?'#2e9e5b':'#d63c4a') : '#d63c4a';
+      h += `<line x1="${sx}" y1="${sy}" x2="${sx+L*dx}" y2="${sy+L*dy}" stroke="${c}" stroke-width="3" marker-end="url(#arR)"/>`;
+      const lab = f.l.split(/[ ,(]/)[0];
+      h += `<text x="${sx+(L+16)*dx}" y="${sy+(L+16)*dy+4}" text-anchor="middle" font-size="12" fill="${c}" font-style="italic">${lab}</text>`; }); });
+  h += `<circle cx="${cx}" cy="${cy}" r="6" fill="#111"/>`;
+  return svg(300,260,h);
+}
+function stepFbd(s, box, head){
+  s.sel = s.sel || new Set();
+  box.innerHTML = `${head}<div class="q">${s.prompt}</div><div class="fbdwrap"><div id="fbdsvg">${fbdSVG(s)}</div><div class="forces">${s.forces.map((f,i)=>`<button class="fbtn ${s.sel.has(i)?'sel':''}" data-i="${i}" onclick="togF(${i})">${s.sel.has(i)?'☑':'☐'} ${f.l}</button>`).join('')}</div></div><div class="hz"></div><div class="fbz"><div class="btns"><button class="btn" onclick="checkFbd()">Check diagram</button>${hintBtn(s)}</div><div id="ffb"></div></div>`;
+}
+function togF(i){ const s=cur.d.steps[cur.i]; if(s.st.solved) return; s.sel.has(i)?s.sel.delete(i):s.sel.add(i); stepFbd(s, document.getElementById('step'), document.querySelector('#step .phase').outerHTML); }
+function checkFbd(){
+  const s=cur.d.steps[cur.i]; const box=document.getElementById('step');
+  const wrong=[...s.sel].filter(i=>!s.forces[i].ok), missed=s.forces.map((f,i)=>i).filter(i=>s.forces[i].ok&&!s.sel.has(i));
+  if(!wrong.length && !missed.length){
+    s.res=true; document.getElementById('fbdsvg').innerHTML=fbdSVG(s);
+    box.querySelectorAll('.fbtn').forEach(b=>{ const i=+b.dataset.i; if(s.forces[i].ok) b.classList.add('ok'); });
+    addChips(['FBD: ' + s.forces.filter(f=>f.ok).map(f=>f.l.split(/[ ,(]/)[0]).join(', ')]);
+    solve(s, box, s.forces.filter(f=>f.ok).map(f=>`<br>• <b>${f.l}</b>: ${f.why}`).join('')); return;
+  }
+  miss(s);
+  wrong.forEach(i=>box.querySelector(`.fbtn[data-i="${i}"]`).classList.add('bad'));
+  document.getElementById('ffb').innerHTML = `<div class="fb bad">${wrong.map(i=>`✗ <b>${s.forces[i].l}</b>: ${s.forces[i].why}`).join('<br>')}${missed.length?`${wrong.length?'<br>':''}🔎 You are missing <b>${missed.length}</b> force${missed.length>1?'s':''}. Ask yourself: what TOUCHES the object? And gravity always acts.`:''}</div>`;
+}
+
+/* ================= per-problem notes (text + drawing) ================= */
+let NT = null;
+const nkey = id => 'physdet_note_' + id;
+function loadNote(id){ try{ return JSON.parse(localStorage.getItem(nkey(id)) || '{}'); }catch(e){ return {}; } }
+function saveNote(id, n){ try{ if(!n.text && !n.img) localStorage.removeItem(nkey(id)); else localStorage.setItem(nkey(id), JSON.stringify(n)); const el=document.getElementById('nsaved'); if(el){ el.textContent='· saved ✓'; clearTimeout(saveNote.h); saveNote.h=setTimeout(()=>{el.textContent='';},1500); } }catch(e){ toast('Could not save notes: browser storage is full.'); } }
+function hasNote(id){ try{ return !!localStorage.getItem(nkey(id)); }catch(e){ return false; } }
+function initNotes(){
+  const id = cur.m.id, n = loadNote(id), ta = document.getElementById('ntext'), cv = document.getElementById('ncv'), ctx = cv.getContext('2d');
+  ta.value = n.text || '';
+  ta.oninput = () => { const x = loadNote(id); x.text = ta.value; saveNote(id, x); };
+  NT = {id, cv, ctx, color:'#1d2733', size:3, erase:false, undo:[], down:false};
+  if(n.img){ const im = new Image(); im.onload = () => ctx.drawImage(im, 0, 0); im.src = n.img; }
+  const pos = e => { const r = cv.getBoundingClientRect(); return [(e.clientX-r.left)*cv.width/r.width, (e.clientY-r.top)*cv.height/r.height]; };
+  cv.onpointerdown = e => { e.preventDefault(); try{ cv.setPointerCapture(e.pointerId); }catch(_){}
+    NT.undo.push(ctx.getImageData(0,0,cv.width,cv.height)); if(NT.undo.length>25) NT.undo.shift();
+    NT.down = true; const [x,y] = pos(e);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = NT.erase ? 30 : NT.size; ctx.strokeStyle = NT.color;
+    ctx.globalCompositeOperation = NT.erase ? 'destination-out' : 'source-over';
+    ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+0.01,y); ctx.stroke(); };
+  cv.onpointermove = e => { if(!NT.down) return; const [x,y] = pos(e); ctx.lineTo(x,y); ctx.stroke(); };
+  cv.onpointerup = cv.onpointercancel = () => { if(!NT.down) return; NT.down = false; nsaveDraw(); };
+}
+function nsaveDraw(){ const x = loadNote(NT.id); x.img = NT.cv.toDataURL('image/png'); saveNote(NT.id, x); }
+function ntool(k, v, el){
+  if(k==='color'){ NT.color = v; NT.erase = false; document.querySelectorAll('.nc').forEach(b=>b.classList.remove('on')); el.classList.add('on'); document.getElementById('nerase').classList.remove('on'); }
+  if(k==='size'){ NT.size = v; document.querySelectorAll('.nt[data-s]').forEach(b=>b.classList.remove('on')); el.classList.add('on'); }
+  if(k==='erase'){ NT.erase = !NT.erase; el.classList.toggle('on', NT.erase); }
+}
+function nundo(){ const im = NT.undo.pop(); if(!im) return; NT.ctx.putImageData(im,0,0); nsaveDraw(); }
+function nclear(){ NT.undo.push(NT.ctx.getImageData(0,0,NT.cv.width,NT.cv.height)); NT.ctx.clearRect(0,0,NT.cv.width,NT.cv.height); const x = loadNote(NT.id); delete x.img; saveNote(NT.id, x); }
+
+/* ================= notebook ================= */
+function openNotebook(){
+  document.getElementById('mbox').innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><h2>📒 Formula Notebook</h2><button class="btn g" onclick="closeModal()">Close ✕</button></div>
+  <h3>1. Information you need</h3>
+  <table><tr><th>Information</th><th>Why you need it</th></tr>
+  <tr><td>Mass (m)</td><td>Weight (mg) and inertia (ma)</td></tr><tr><td>Gravity (g = 9.8 m/s²)</td><td>To calculate weight: mg</td></tr>
+  <tr><td>Acceleration (a)</td><td>To apply Newton's second law</td></tr><tr><td>Direction of motion / of a</td><td>To set positive and negative directions</td></tr>
+  <tr><td>Other forces</td><td>To calculate the net force</td></tr><tr><td>Rope / pulley configuration</td><td>How objects are connected: same T, same a</td></tr></table>
+  <h3>2. The most important formula</h3><div class="formula">ΣF = ma &nbsp;&nbsp;(for EACH object separately)</div>
+  <p class="small">Choose + = direction of a. Forces along + are positive, forces against it are negative. ma is NOT a force; never draw it on an FBD.</p>
+  <h3>3. Three basic situations</h3>
+  <b>A. Hanging at rest (or constant velocity):</b><div class="formula">T − mg = 0 &nbsp;⇒&nbsp; T = mg</div>
+  <b>B. Accelerating up / down:</b><div class="formula">a ↑: T − mg = ma &nbsp;⇒&nbsp; T = m(g + a)</div><div class="formula">a ↓: mg − T = ma &nbsp;⇒&nbsp; T = m(g − a)</div>
+  <b>C. Two objects over a pulley (Atwood), m₁ > m₂:</b><div class="formula">m₁: m₁g − T = m₁a &nbsp;&nbsp;&nbsp; m₂: T − m₂g = m₂a</div><div class="formula">add ⇒ a = (m₁ − m₂)g / (m₁ + m₂), &nbsp; T = 2m₁m₂g / (m₁ + m₂)</div>
+  <h3>4. Other tools</h3>
+  <div class="formula">Friction: f = μₖ n &nbsp;&nbsp; (on a slope n = mg cos θ)</div>
+  <div class="formula">Incline: along slope mg sin θ, perpendicular mg cos θ</div>
+  <div class="formula">Kinematics: Δy = v₀t + ½at², &nbsp; v = v₀ + at, &nbsp; v² = v₀² + 2aΔy</div>
+  <h3>5. Newton's 3rd law</h3><p>A on B = −(B on A). Pairs act on <b>different</b> objects and are the same type. Forces that cancel on ONE object are balance (1st/2nd law), not a 3rd-law pair.</p>
+  <h3>6. Sanity checks</h3><p>a ↑ ⇒ T > mg · a ↓ ⇒ T < mg · Atwood: m₂g < T < m₁g · Units: N = kg·m/s².</p>`;
+  document.getElementById('modal').classList.add('show');
+}
+function closeModal(){ document.getElementById('modal').classList.remove('show'); }
+
+hud(); showMap();
+</script>
+</body>
+</html>
