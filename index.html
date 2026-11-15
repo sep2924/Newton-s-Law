@@ -162,7 +162,7 @@ function toast(t){ const el=document.getElementById('toast'); el.textContent=t; 
 function hud(){ document.getElementById('xp').textContent = `⭐ ${S.xp} XP`; document.getElementById('streak').textContent = `🔥 ${S.streak} streak`; }
 
 /* ================= SVG figure helpers ================= */
-const COL = {R:'#d63c4a', K:'#333', B:'#2a7ab0', O:'#e08a1e'};
+const COL = {R:'#d63c4a', K:'#333', B:'#2a7ab0', O:'#e08a1e', G:'#2e9e5b'};
 const DEFS = '<defs>' + Object.entries(COL).map(([k,c]) => `<marker id="ar${k}" markerWidth="4" markerHeight="4" refX="3.4" refY="2" orient="auto-start-reverse"><path d="M0,0 L4,2 L0,4z" fill="${c}"/></marker>`).join('') + '</defs>';
 const svg = (w,h,inner) => `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg" font-family="Georgia,serif">${DEFS}${inner}</svg>`;
 const ar = (x1,y1,x2,y2,c='R',w=3) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${COL[c]}" stroke-width="${w}" marker-end="url(#ar${c})"/>`;
@@ -228,6 +228,8 @@ function figIncline(o){
     s += `<line x1="${pa[0]}" y1="${pa[1]}" x2="${t1[0]}" y2="${t1[1]}" ${ROPE}/><line x1="${pb[0]}" y1="${pb[1]}" x2="${pc[0]-rr*0.2}" y2="${pc[1]-rr}" ${ROPE}/><circle cx="${pc[0]}" cy="${pc[1]}" r="${rr}" fill="#dfe3e6" stroke="#666" stroke-width="2"/>`;
     const [bx,by]=P(b.d,a.h); s += `<g transform="translate(${bx},${by}) rotate(${th})"><rect x="${-b.w/2}" y="${-b.h}" width="${b.w}" height="${b.h}" ${BLK}/><text x="0" y="${-b.h/2+5}" text-anchor="middle" font-size="13">${b.l}</text></g>`;
   }
+  if(o.push) s += ar(x0-70, yb-45, x0-6, yb-45,'R') + tx(x0-52,yb-54,'F',IT('R')) + `<rect x="${x0-80}" y="${yb}" width="${L+90}" height="7" fill="#b9c4c9"/>`;
+  if(o.wlabel) s += tx(x0+30, yb-22, o.wlabel,'font-size="14" font-style="italic"');
   return svg(o.W||320, yb+(o.hang?12:8), s);
 }
 function figRopes(){
@@ -256,6 +258,58 @@ function figCompound(lbl){
   return svg(215,248,s);
 }
 
+/* ---------- figures for the class problem set ---------- */
+function figPainter(a){
+  let s = CEIL(40,150) + `<line x1="110" y1="12" x2="110" y2="24" stroke="#555" stroke-width="3"/><line x1="94" y1="38" x2="94" y2="112" ${ROPE}/><line x1="126" y1="38" x2="126" y2="215" ${ROPE}/><circle cx="110" cy="38" r="16" fill="#dfe3e6" stroke="#666" stroke-width="2"/><circle cx="110" cy="38" r="3" fill="#666"/>`;
+  s += `<path d="M70,192 L70,112 L118,112 L118,192" fill="none" stroke="#555" stroke-width="3"/><line x1="60" y1="192" x2="128" y2="192" stroke="#8a5a2b" stroke-width="6"/>`;
+  s += `<circle cx="96" cy="132" r="9" fill="#f4dcd2" stroke="#555" stroke-width="1.5"/><path d="M96,141 L96,176 L112,188 L112,210 M96,150 L126,144" fill="none" stroke="#555" stroke-width="3" stroke-linecap="round"/>`;
+  s += tx(8,150,'painter','font-size="11"') + tx(8,163,'71 kg','font-size="12"') + tx(4,214,'chair 8.0 kg','font-size="11"');
+  s += ar(142,150,142,190,'R') + tx(150,176,'F',IT('R')) + ar(190,150,190,110,'O') + tx(198,134,'a',IT('O'));
+  return svg(220,222,s);
+}
+function figSleds(){
+  let s = `<rect x="5" y="80" width="330" height="9" fill="#dfe6ea"/>` + tx(10,102,'snow, μₖ = 0.10','font-size="11" fill="#555"');
+  s += `<rect x="20" y="48" width="86" height="32" rx="5" ${BLK}/>` + tx(63,69,'100 kg','text-anchor="middle" font-size="13"') + tx(63,40,'A','text-anchor="middle" font-size="14"');
+  s += `<line x1="106" y1="64" x2="150" y2="64" ${ROPE}/>` + tx(128,56,'1','text-anchor="middle" font-size="13"');
+  s += `<rect x="150" y="48" width="74" height="32" rx="5" ${BLK}/>` + tx(187,69,'80 kg','text-anchor="middle" font-size="13"') + tx(187,40,'B','text-anchor="middle" font-size="14"');
+  s += `<line x1="224" y1="64" x2="272" y2="64" ${ROPE}/>` + tx(248,56,'2','text-anchor="middle" font-size="13"') + tx(276,70,'🐕','font-size="26"') + ar(250,28,300,28,'O') + tx(306,33,'a',IT('O'));
+  return svg(340,108,s);
+}
+function figPushPair(){
+  return svg(210,120, `<line x1="5" y1="90" x2="205" y2="90" stroke="#555" stroke-width="2"/><rect x="80" y="62" width="28" height="28" fill="#cfd4d8" stroke="#666"/><rect x="108" y="30" width="60" height="60" fill="#a9afb5" stroke="#666"/>` + tx(94,81,'1','text-anchor="middle"') + tx(138,66,'2','text-anchor="middle"') + ar(20,76,76,76,'K') + tx(30,68,'Push','font-size="12"') + tx(105,112,'Exercise 12','text-anchor="middle" font-size="11" fill="#555"'));
+}
+function figTable(Ml, ml, cap){
+  let s = `<rect x="15" y="72" width="170" height="14" fill="#b9c4c9"/><rect x="150" y="86" width="22" height="92" fill="#b9c4c9"/>`;
+  s += `<rect x="35" y="30" width="54" height="42" ${BLK}/>` + tx(62,57,Ml,'text-anchor="middle" font-size="14" font-style="italic"');
+  s += `<line x1="89" y1="50" x2="194" y2="50" ${ROPE}/><line x1="204" y1="60" x2="204" y2="126" ${ROPE}/><line x1="180" y1="74" x2="192" y2="62" stroke="#666" stroke-width="5"/><circle cx="194" cy="60" r="10" fill="#dfe3e6" stroke="#666" stroke-width="2"/>`;
+  s += `<rect x="184" y="126" width="40" height="36" ${BLK}/>` + tx(204,149,ml,'text-anchor="middle" font-size="14" font-style="italic"');
+  if(cap) s += tx(100,196,cap,'text-anchor="middle" font-size="11" fill="#555"');
+  return svg(240,cap?202:184,s);
+}
+function figStackPulley(P){
+  let s = `<rect x="6" y="20" width="12" height="100" fill="#b9c4c9"/><rect x="6" y="108" width="300" height="10" fill="#b9c4c9"/><line x1="18" y1="62" x2="44" y2="62" stroke="#666" stroke-width="5"/>`;
+  s += `<line x1="44" y1="48" x2="130" y2="48" ${ROPE}/><line x1="44" y1="76" x2="118" y2="76" ${ROPE}/><circle cx="44" cy="62" r="14" fill="#dfe3e6" stroke="#666" stroke-width="2"/><circle cx="44" cy="62" r="3" fill="#666"/>`;
+  s += `<rect x="118" y="64" width="96" height="44" ${BLK}/>` + tx(166,91,'B  2.0 kg','text-anchor="middle" font-size="13"') + `<rect x="130" y="28" width="62" height="36" ${BLK}/>` + tx(161,51,'A  1.0 kg','text-anchor="middle" font-size="12"');
+  s += `<line x1="214" y1="86" x2="232" y2="86" ${ROPE}/>` + ar(232,86,286,86,'R') + tx(246,76,P,'font-size="13" fill="#d63c4a"');
+  return svg(312,124,s);
+}
+function figStack2(){
+  return svg(300,130, `<rect x="10" y="110" width="280" height="10" fill="#b9c4c9"/><rect x="40" y="70" width="130" height="40" fill="#d79b74" stroke="#555"/><rect x="58" y="26" width="94" height="44" fill="#d79b74" stroke="#555"/>` + tx(105,54,'4.0 kg','text-anchor="middle" font-size="14"') + tx(105,96,'3.0 kg','text-anchor="middle" font-size="14"') + `<line x1="152" y1="48" x2="205" y2="48" ${ROPE}/>` + ar(205,48,262,48,'R') + tx(232,36,'F',IT('R')));
+}
+function figTwo(){
+  let s = `<rect x="10" y="72" width="300" height="9" fill="#b9c4c9"/><rect x="30" y="34" width="56" height="38" fill="#e3bb6c" stroke="#777"/><rect x="150" y="34" width="56" height="38" fill="#eba873" stroke="#777"/>`;
+  s += tx(58,59,'A','text-anchor="middle" font-style="italic"') + tx(178,59,'B','text-anchor="middle" font-style="italic"') + `<line x1="86" y1="53" x2="150" y2="53" stroke="#777" stroke-width="2"/><line x1="206" y1="53" x2="226" y2="53" stroke="#777" stroke-width="2"/>` + tx(118,45,'1','text-anchor="middle" font-size="13"') + tx(214,45,'2','text-anchor="middle" font-size="13"') + ar(226,53,290,53,'R') + tx(256,40,'F',IT('R'));
+  return svg(320,90,s);
+}
+function figPerson(mp){
+  let s = CEIL(30,170) + `<line x1="84" y1="54" x2="84" y2="200" ${ROPE}/><line x1="136" y1="54" x2="136" y2="172" ${ROPE}/><circle cx="110" cy="54" r="26" fill="#dfe3e6" stroke="#666" stroke-width="2"/><path d="M103,12 L117,12 L112,54 L108,54 Z" fill="#cfd4d8" stroke="#666"/><circle cx="110" cy="54" r="3" fill="#666"/>` + tx(110,74,'10 kg','text-anchor="middle" font-size="10" fill="#555"');
+  s += `<circle cx="76" cy="122" r="8" fill="#d79b74" stroke="#555"/><path d="M78,130 L80,160 L70,176 M80,160 L88,178 M78,134 L84,108 M78,136 L86,112" fill="none" stroke="#b9764f" stroke-width="4" stroke-linecap="round"/>` + tx(14,150,mp+' kg','font-size="13"');
+  s += `<rect x="112" y="172" width="50" height="48" fill="#d79b74" stroke="#555"/>` + tx(168,202,'100 kg','font-size="13"') + `<rect x="30" y="220" width="170" height="9" fill="#b9c4c9"/>`;
+  return svg(230,234,s);
+}
+const fo = (id,l,a,ok,why) => ({id,l,a,ok,why});
+const dr = (prompt,forces,rel,extra) => Object.assign({type:'draw',ph:'fbd',prompt,forces,rel:rel||[]}, extra||{});
+
 /* ================= thinking-routine phases ================= */
 const PH = [
  ['info','Gather the information','m, g, a, direction of motion, other forces, rope/pulley setup'],
@@ -280,7 +334,8 @@ const LEVELS = [
  {n:5, name:'Action / Reaction', desc:"Newton's 3rd-law pairs compared with forces that balance by the 1st and 2nd laws"},
  {n:6, name:'One Object, Full Solve', desc:'Hanging at rest, accelerating up, accelerating down'},
  {n:7, name:'Connected Objects', desc:'ΣF = ma for EACH object; same T, same a'},
- {n:8, name:'Case Files: Pulleys & Inclines', desc:'Full problems from start to finish'}
+ {n:8, name:'Case Files: Pulleys & Inclines', desc:'Full problems from start to finish'},
+ {n:9, name:'Class Problem Set', desc:'Draw the FBD with arrow lengths, build ΣF = ma, find a, compare the net forces'}
 ];
 
 const MS = [
@@ -607,7 +662,150 @@ const MS = [
   {type:'num', ph:'solve', prompt:'T₂ (= T₃ = T₅ = F) = ?', sym:'T₂ = T₃ = T₅ = F', unit:'N', ans:mg/2, slips:[{v:mg,msg:'Two segments hold the lower pulley, so divide by 2.'}]},
   {type:'mcq', ph:'system', prompt:'The UPPER pulley hangs from T₄. Its rope pulls down on it with T₃ and T₅. So T₄ = ?', opts:[o('T₃ + T₅ = mg',1,'Balance on the upper pulley.'),o('T₃ = mg/2',0,'Both rope sides pull down on the upper pulley.'),o('0',0,'Something must hold the pulley up.')]},
   {type:'num', ph:'solve', prompt:'T₄ = ?', sym:'T₄', unit:'N', ans:mg, explain:`Answer to enter: T₁, T₂, T₃, T₄, T₅, F = ${f3(mg)}, ${f3(mg/2)}, ${f3(mg/2)}, ${f3(mg)}, ${f3(mg/2)}, ${f3(mg/2)} N. The movable pulley halves the force you need. ✓`}
- ]};}}
+ ]};}},
+/* ---------- LEVEL 9: CLASS PROBLEM SET ---------- */
+{id:'9a', lv:9, title:'The Painter Who Lifts Himself', rnd:true, make:()=>{ const a=R(0.1,0.6,0.1), M=79, T=M*(g+a)/2; return {
+ text:`A house painter uses a chair and pulley to lift himself up the side of a house. The painter's mass is [[71 kg|m_painter = 71 kg]] and the chair's mass is [[8.0 kg|m_chair = 8.0 kg]]. One end of the rope is [[tied to the chair|rope pulls UP on the chair|hidden]] and he [[pulls down on the other end|rope pulls UP on his hands (3rd law)|hidden]]. With what force must he pull to [[accelerate upward|a points up|hidden]] at [[${a} m/s²|a = ${a} m/s²]]?`,
+ fig: figPainter(a),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues. Two are about what the rope touches.', explain:'The rope touches the system in TWO places: where it is tied to the chair, and where he holds it.'},
+  {type:'mcq', ph:'system', prompt:'Choose the system that makes this easy:', opts:[o('Painter + chair together',1,'The forces between the painter and the chair become internal and cancel.'),o('The painter alone',0,"That works, but then the chair's push on him is an extra unknown."),o('The rope',0,'The rope is massless. It only carries tension.')]},
+  pr('system','He pulls DOWN on the rope with force F. What does the rope do to him?',[o('It pulls UP on him with force F',1),o('It pulls DOWN on him with force F'),o('Nothing')],[o("Newton's 3rd law: rope on hand = −(hand on rope)",1,'So his own pull comes back as an upward force on the system.'),o('a rope can only push'),o('he is inside the system, so no force acts on him')]),
+  bl('info','Count the forces on the system.',['Total mass: M = {} kg','Rope segments pulling UP on the system: {}','Each segment pulls with {}','Weight of the system: Mg = {} N'],[nb(79),nb(2),sl('T',['2T','T/2','Mg']),nb(774.2)]),
+  dr('Draw the free-body diagram of the system (painter + chair).',[fo('T','rope tied to the chair',90,1,'The rope pulls up where it is tied.'),fo('T′','rope in his hands',90,1,'3rd law: he pulls the rope down, the rope pulls him up.'),fo('Mg','weight of painter + chair',-90,1,'Gravity on the whole system.'),fo('F↓','his pull on the rope',-90,0,'That force acts ON THE ROPE, not on the system. Its 3rd-law partner (T′, upward) is what acts on him.'),fo('n','chair pushing up on the painter',90,0,'An internal force: it cancels with the painter pushing down on the chair.')],[['T','=','T′','it is one rope, so one tension'],['Mg','>','T','each rope segment carries only about half of the weight']]),
+  {type:'eq', ph:'law', prompt:'ΣF = Ma for the system (+ = up):', lhs:2, tiles:['T','2T','Mg','Ma','F'], ans:['+2T,-Mg=Ma']},
+  bl('solve','Substitute.',['T = M(g + a) / 2','T = {} × ({} + {}) / {}','Net force on the system: Ma = {} N, pointing {}'],[nb(79),nb(9.8),nb(a),nb(2),nb(79*a),UD('up')]),
+  {type:'num', ph:'solve', prompt:'His pull F equals the tension T. Calculate it.', sym:'F', unit:'N', ans:T, slips:[{v:M*(g+a),msg:'Two rope segments pull up on the system, so divide by 2.'},{v:71*(g+a)/2,msg:"Don't forget the chair's 8.0 kg."}], explain:`F = 79(9.8 + ${a})/2 = ${f3(T)} N`},
+  pr('check','His pull is only about half of the total weight (774 N). Is that reasonable?',[o('Yes',1),o('No, he must pull with at least the full weight')],[o('two segments of the same rope hold the system up, each with tension T',1,'This is why the arrangement helps him.'),o('the pulley cuts every force in half'),o('a person cannot lift more than their own weight')])
+ ]};}},
+{id:'9b', lv:9, title:'Block That Rides the Wedge', rnd:true, make:()=>{ const m1=R(1,3,0.5), m2=R(4,8,1), th=R(20,40,5), a=g*Math.tan(th*Math.PI/180), F=(m1+m2)*a; return {
+ text:`A block of mass [[m₁ = ${m1} kg|m₁ = ${m1} kg]] sits on a wedge of mass [[m₂ = ${m2} kg|m₂ = ${m2} kg]] with angle [[θ = ${th}°|θ = ${th}°]]. There is [[no friction|no friction anywhere|hidden]]. A horizontal force F pushes the wedge so that m₁ [[does not slip up or down the wedge|m₁ and m₂ share the same horizontal a|hidden]]. Find F.`,
+ fig: figIncline({th, x0:95, L:210, W:330, yb:190, push:true, wlabel:'m₂', blocks:[{d:95,w:50,h:34,l:'m₁'}], thLabel:'θ'}),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.', explain:'"Does not slip" does not mean "at rest". It means the block moves exactly like the wedge.'},
+  pr('sign','Which way does m₁ accelerate?',[o('Horizontally, the same as the wedge',1),o('Down along the slope'),o('It has no acceleration')],[o('it stays at the same spot on the wedge, so it must move exactly as the wedge moves',1),o('gravity always makes a block accelerate down a slope'),o('"does not slip" means it is at rest')]),
+  {type:'mcq', ph:'sign', prompt:'So which axes make this problem easy?', opts:[o('Horizontal and vertical',1,'Then a is purely along x, and a_y = 0.'),o('Tilted along the slope',0,'Tilted axes are best when a is along the slope. Here a is horizontal.')]},
+  dr('Draw the free-body diagram of the block m₁.',[fo('N','wedge pushing on the block',90-th,1,'Perpendicular to the slope surface.'),fo('mg','weight of m₁',-90,1,'Straight down.'),fo('f','friction along the slope',180-th,0,'There is no friction in this problem.'),fo('F','the horizontal push',0,0,'F touches the wedge, not the block.'),fo('ma','"force of acceleration"',0,0,'ma is not a force. It is what the forces add up to.')],[['N','>','mg','only the vertical part of N holds up the weight (N cos θ = mg), so N itself is bigger']],{slope:-th}),
+  bl('law','Write the two component equations for m₁.',['Vertical (a_y = 0):  N {} θ − m₁g = 0','Horizontal:  N {} θ = m₁a','Divide the second by the first:  a = g {} θ','a = 9.8 × tan({}°)'],[SC('cos'),SC('sin'),sl('tan',['sin','cos']),nb(th)]),
+  {type:'num', ph:'solve', prompt:'Calculate the acceleration.', sym:'a', unit:'m/s²', ans:a, slips:[{v:g*sinD(th),msg:'That is g sin θ, the acceleration of a block sliding freely. Here a = g tan θ.'}]},
+  {type:'mcq', ph:'system', prompt:'Now find F. Choose the system:', opts:[o('Block + wedge together',1,'N between them is internal. F is the only horizontal external force.'),o('The wedge alone',0,'Then the block pushing back on the wedge is also in the equation. Possible, but longer.'),o('The block alone',0,'F does not act on the block.')]},
+  {type:'eq', ph:'law', prompt:'ΣF = ma for block + wedge (horizontal):', lhs:1, tiles:['F','N','m₁g'], rhs:['(m₁+m₂)a','m₁a','m₂a','0'], ans:['+F=(m₁+m₂)a']},
+  {type:'num', ph:'solve', prompt:'Calculate F.', sym:'F', unit:'N', ans:F, slips:[{v:m2*a,msg:'F must accelerate BOTH the wedge and the block.'},{v:(m1+m2)*g*sinD(th),msg:'Use a = g tan θ, not g sin θ.'}], explain:`F = (m₁ + m₂) g tan θ = ${f3(F)} N`},
+  bl('check','Compare the net forces.',['Net force on m₁ = m₁a = {} N, pointing {}','Net force on m₂ = m₂a = {} N','Their sum = {} N, which equals {}'],[nb(m1*a),sl('horizontally',['down the slope','up the slope']),nb(m2*a),nb(F),sl('F',['N','m₁g'])]),
+  pr('check','If θ is made larger, the F needed…',[o('increases',1),o('decreases'),o('stays the same')],[o('a = g tan θ: a steeper slope needs a bigger sideways acceleration to hold the block up',1),o('on a steeper slope the block presses less, so less force is needed'),o('F depends only on the masses')])
+ ]};}},
+{id:'9c', lv:9, title:'Sled Dog and Two Sleds', rnd:true, make:()=>{ const T1=R(130,200,10), a=(T1-98)/100, T2=T1+78.4+80*a; return {
+ text:`A sled dog drags sleds A ([[100 kg|m_A = 100 kg]]) and B ([[80 kg|m_B = 80 kg]]) across the snow. The coefficient of kinetic friction between the sleds and the snow is [[μₖ = 0.10|μₖ = 0.10]]. The tension in rope 1 (between A and B) is [[${T1} N|T₁ = ${T1} N]]. The sleds are [[tied together|same a for A and B|hidden]]. Find the acceleration and the tension in rope 2.`,
+ fig: figSleds(),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  bl('info','Get the friction forces ready.',['n_A = m_A g = {} N','f_A = μₖ n_A = {} N','n_B = {} N','f_B = {} N'],[nb(980),nb(98),nb(784),nb(78.4)]),
+  dr('Draw the free-body diagram of sled A (the back sled).',[fo('n','snow pushing up on A',90,1,'Contact with the snow.'),fo('w','weight of A',-90,1,'Gravity.'),fo('T₁','rope 1 pulling A forward',0,1,'Rope 1 is the only thing pulling A.'),fo('f','kinetic friction on A',180,1,'Opposes the sliding.'),fo('T₂','rope 2',0,0,'Rope 2 touches sled B and the dog, not sled A.'),fo('dog','the pull of the dog',0,0,'The dog does not touch A. A only feels rope 1.')],[['n','=','w','no vertical acceleration'],['T₁','>','f',`T₁ = ${T1} N is bigger than f_A = 98 N, so A speeds up`]]),
+  {type:'eq', ph:'law', prompt:'ΣF = ma for sled A (+ = forward):', lhs:2, tiles:['T₁','T₂','f_A','f_B','m_Aa','m_Ba','0'], ans:['+T₁,-f_A=m_Aa']},
+  {type:'num', ph:'solve', prompt:'Calculate a.', sym:'a', unit:'m/s²', ans:a, slips:[{v:T1/100,msg:'Subtract the friction on A first.'},{v:(T1-98)/180,msg:'This equation is for sled A alone: divide by 100 kg.'}], explain:`a = (${T1} − 98)/100 = ${f3(a)} m/s²`},
+  {type:'mcq', ph:'system', prompt:'Rope 1 pulls A forward with T₁. What does rope 1 do to sled B?', opts:[o('It pulls B BACKWARD with the same T₁',1,'A rope pulls inward on both of its ends.'),o('It pulls B forward with T₁',0,'A rope pulls each end toward its middle.'),o('Nothing',0,'It is tied to B.')]},
+  dr('Draw the free-body diagram of sled B (the front sled).',[fo('n','snow pushing up on B',90,1,'Contact with the snow.'),fo('w','weight of B',-90,1,'Gravity.'),fo('T₂','rope 2 pulling B forward',0,1,'The dog pulls through rope 2.'),fo('T₁','rope 1 pulling B backward',180,1,'Sled A drags behind.'),fo('f','kinetic friction on B',180,1,'Opposes the sliding.'),fo('w_A','weight of sled A',-90,0,'That acts on A.')],[['n','=','w','no vertical acceleration'],['T₂','>','T₁','T₂ must beat T₁ AND friction to speed B up']]),
+  {type:'eq', ph:'law', prompt:'ΣF = ma for sled B (+ = forward):', lhs:3, tiles:['T₁','T₂','f_A','f_B','m_Aa','m_Ba','0'], ans:['+T₂,-T₁,-f_B=m_Ba']},
+  bl('solve','Substitute.',['T₂ = T₁ + f_B + m_B a','T₂ = {} + {} + {} × {}'],[nb(T1),nb(78.4),nb(80),nb(a)]),
+  {type:'num', ph:'solve', prompt:'Calculate T₂.', sym:'T₂', unit:'N', ans:T2, explain:`T₂ = ${f3(T2)} N`},
+  bl('check','Compare the net forces.',['Net force on A = m_A a = {} N','Net force on B = m_B a = {} N','Check with the forces on B: T₂ − T₁ − f_B = {} N'],[nb(100*a),nb(80*a),nb(80*a)]),
+  pr('check','Which sled has the larger NET force?',[o('Sled A',1),o('Sled B'),o('They are equal')],[o('they share the same a, and A has more mass: F_net = ma',1),o('B is closer to the dog'),o('T₂ is bigger than T₁')])
+ ]};}},
+{id:'9d', lv:9, title:'Acceleration Constraints', make:()=>({
+ text:`An acceleration constraint says how the accelerations of connected objects are linked. Write it in <b>components</b>, such as (a₁)ₓ = (a₂)ᵧ, with x to the right and y up.`,
+ fig: figPushPair() + figTable('1','2','Exercise 13'),
+ steps:[
+  {type:'mcq', ph:'link', prompt:'Exercise 12: block 1 is pushed against block 2. The constraint is…', opts:[o('(a₁)ₓ = (a₂)ₓ',1,'They stay in contact, so they move together along x.'),o('(a₁)ₓ = −(a₂)ₓ',0,'They move in the same direction.'),o('(a₁)ₓ = (a₂)ᵧ',0,'Both blocks move horizontally.'),o('None: different masses have different accelerations',0,'Staying in contact forces the same a, whatever the masses.')]},
+  pr('check','In exercise 12, which block has the larger net force?',[o('Block 2, the bigger one',1),o('Block 1, the one being pushed'),o('They are the same')],[o('same a, more mass: F_net = ma',1),o('the push acts directly on block 1'),o("Newton's 3rd law makes all the forces equal")]),
+  {type:'mcq', ph:'link', prompt:'Exercise 13: block 1 slides right (+x) on the table while block 2 moves down (−y). The constraint is…', opts:[o('(a₁)ₓ = −(a₂)ᵧ',1,'When block 1 goes +x, block 2 goes −y, by the same amount.'),o('(a₁)ₓ = (a₂)ᵧ',0,'Signs matter: block 2 moves in the −y direction.'),o('(a₁)ₓ = (a₂)ₓ',0,'Block 2 moves vertically.'),o('(a₁)ᵧ = (a₂)ᵧ',0,'Block 1 has no vertical motion.')]},
+  bl('link','Use the constraint.',['Block 1 moves 3 cm to the right  →  block 2 moves {} cm {}','If (a₁)ₓ = +2 m/s², then (a₂)ᵧ = {} m/s²','Atwood machine (two hanging blocks):  (a₁)ᵧ = {} (a₂)ᵧ'],[nb(3),UD('down'),nb(-2),PM('−')]),
+  {type:'mcq', ph:'link', prompt:'What physical fact is behind the rope constraints?', opts:[o('The rope has a fixed length',1,'Whatever length leaves one side must arrive on the other.'),o("Newton's 3rd law",0,'The 3rd law is about forces, not about how far things move.'),o('The blocks have equal mass',0,'The constraint holds for any masses.')]}
+ ]})},
+{id:'9e', lv:9, title:'Block A on Block B with a Pulley', rnd:true, make:()=>{ const P=R(16,30,2), a=(P-5.88-8.82)/3, T=2.94+a; return {
+ text:`Block A ([[1.0 kg|m_A = 1.0 kg]]) sits on top of block B ([[2.0 kg|m_B = 2.0 kg]]). The lower block B is pulled to the right by a rope with tension [[P = ${P} N|P = ${P} N]]. A [[rope over a pulley on the wall connects A and B|A moves left when B moves right; same T, same size of a|hidden]]. The coefficient of kinetic friction is [[μₖ = 0.30|μₖ = 0.30]] between the blocks and [[the same between B and the table|μₖ = 0.30 at the table too|hidden]]. Find the acceleration and the rope tension.`,
+ fig: figStackPulley(P+' N'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  pr('link','B moves to the right. Which way does A move?',[o('To the left',1),o('To the right, riding on B'),o('It stays still')],[o("the rope runs around the pulley: when B pulls its end away, A's end is pulled toward the pulley",1),o('friction from B carries A along'),o('the two rope pulls on A cancel')]),
+  bl('info','Get the normal and friction forces ready.',['Normal force of B on A: {} N','Normal force of the table on B: {} N, because it supports {} kg','Friction between A and B: f_AB = 0.30 × {} = {} N','Friction from the table on B: f_table = 0.30 × {} = {} N'],[nb(9.8),nb(29.4),nb(3),nb(9.8),nb(2.94),nb(29.4),nb(8.82)],'The table holds up BOTH blocks, so its normal force uses 3.0 kg.'),
+  dr('Draw the free-body diagram of block A (the top block). It slides to the LEFT.',[fo('w','weight of A',-90,1,'Gravity.'),fo('n','B pushing up on A',90,1,'A rests on B.'),fo('T','rope pulling A toward the pulley',180,1,'The pulley is on the left.'),fo('f','friction from B on A',0,1,'A slides left over B, so friction on A points right.'),fo('P','the pull P',0,0,'P is applied to block B, not A.'),fo('f←','friction pointing left',180,0,'Friction opposes the sliding, and A slides left.')],[['n','=','w','no vertical acceleration'],['T','>','f','A speeds up to the left']]),
+  {type:'fbd', ph:'fbd', prompt:'Now block B (the bottom block). Seven forces act on it. Click them all.', forces:[
+   {l:'w_B, weight of B', a:-90, ok:1, why:'Gravity.'},{l:'n, table pushing up on B', a:90, ok:1, why:'B rests on the table.'},{l:'n_A on B, A pressing down on B', a:-90, ok:1, why:'3rd-law partner of B pushing up on A.'},{l:'P, the pull to the right', a:0, ok:1, why:'Applied to B.'},{l:'T, rope pulling B toward the pulley', a:180, ok:1, why:'The same rope, the same tension.'},{l:'f_A on B, friction from A', a:180, ok:1, why:'3rd-law partner of the friction on A, so it points left.'},{l:'f_table, friction from the table', a:180, ok:1, why:'B slides right, so table friction points left.'},
+   {l:'w_A, weight of A', a:-90, ok:0, why:'Earth pulls on A, not on B. B feels A only through contact: n_A on B.'},{l:'f_A on B pointing right', a:0, ok:0, why:'B slides right under A, so the friction from A opposes that.'}]},
+  {type:'eq', ph:'law', prompt:'ΣF = ma for A (+ = left, the way A accelerates):', lhs:2, tiles:['T','P','f_AB','f_table','m_Aa','m_Ba'], ans:['+T,-f_AB=m_Aa']},
+  {type:'eq', ph:'law', prompt:'ΣF = ma for B (+ = right):', lhs:4, tiles:['T','P','f_AB','f_table','m_Aa','m_Ba'], ans:['+P,-T,-f_AB,-f_table=m_Ba']},
+  bl('solve','Add the two equations so that T cancels.',['P − 2f_AB − f_table = (m_A + m_B)a','{} − {} − {} = {} × a'],[nb(P),nb(5.88),nb(8.82),nb(3)]),
+  {type:'num', ph:'solve', prompt:'Calculate a.', sym:'a', unit:'m/s²', ans:a, slips:[{v:(P-2.94-8.82)/3,msg:'f_AB appears twice: once on A and once (its 3rd-law partner) on B.'},{v:(P-5.88-5.88)/3,msg:'The table supports both blocks: f_table = 0.30 × 29.4 N.'}]},
+  {type:'num', ph:'solve', prompt:'From the A equation, T = f_AB + m_A a. Calculate T.', sym:'T', unit:'N', ans:T},
+  bl('check','Compare the net forces.',['Net force on A = {} N, pointing {}','Net force on B = {} N, pointing {}'],[nb(a),sl('left',['right']),nb(2*a),sl('right',['left'])],'Same size of a, and B has twice the mass, so twice the net force.')
+ ]};}},
+{id:'9f', lv:9, title:'Maximum Pull Without Slipping', rnd:true, make:()=>{ const us=R(0.4,0.7,0.1), uk=+(us-0.2).toFixed(2), fs=us*4*g, a=fs/3, F=7*a; return {
+ text:`A [[4.0 kg|m_top = 4.0 kg]] block sits on a [[3.0 kg|m_bottom = 3.0 kg]] block. A rope pulls the TOP block with force F. The coefficient of static friction between the blocks is [[${us}|μₛ = ${us}]], the coefficient of kinetic friction between them is ${uk}, and there is [[no friction|the floor is frictionless|hidden]] between the 3.0 kg block and the floor. What is the maximum F such that the two blocks [[do not slip|same a for both; the friction is STATIC|hidden]]?`,
+ fig: figStack2(),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues. One number in the text is a trap.', explain:`The kinetic coefficient ${uk} is a distractor. The blocks do not slip, so the friction between them is static.`},
+  pr('system','What force makes the BOTTOM block accelerate?',[o('Static friction from the top block, pointing forward',1),o('The rope force F'),o('Nothing: it cannot accelerate')],[o('it is the only horizontal force on the bottom block: F touches only the top block and the floor is frictionless',1,'Friction can push an object forward!'),o('F passes through the top block unchanged'),o('friction always opposes motion, so it cannot push anything forward')]),
+  dr('Draw the free-body diagram of the BOTTOM block (3.0 kg).',[fo('w','weight of the bottom block',-90,1,'Gravity.'),fo('n','floor pushing up',90,1,'Contact with the floor.'),fo('n′','top block pressing down',-90,1,'The top block rests on it.'),fo('fₛ','static friction from the top block',0,1,'This is what drags the bottom block forward.'),fo('F','the rope force',0,0,'The rope is tied to the top block only.'),fo('f','friction from the floor',180,0,'The floor is frictionless.')],[['n','>','w','the floor supports BOTH blocks']]),
+  bl('info','Find the largest friction the surfaces can supply.',['Normal force between the blocks: n′ = {} kg × 9.8 = {} N','fₛ,max = μₛ n′ = {} × {} = {} N','The coefficient you did NOT use: {}'],[nb(4),nb(39.2),nb(us),nb(39.2),nb(fs),sl('μₖ',['μₛ','g'])]),
+  {type:'eq', ph:'law', prompt:'ΣF = ma for the bottom block (horizontal):', lhs:1, tiles:['fₛ','F','n'], rhs:['m_bottom·a','m_top·a','(m_top+m_bottom)a','0'], ans:['+fₛ=m_bottom·a']},
+  {type:'num', ph:'solve', prompt:'Largest acceleration the bottom block can get:', sym:'a_max', unit:'m/s²', ans:a, slips:[{v:fs/4,msg:'Friction accelerates the BOTTOM block: divide by 3.0 kg.'},{v:fs/7,msg:'For the bottom block alone the mass is 3.0 kg.'}]},
+  dr('Draw the free-body diagram of the TOP block (4.0 kg).',[fo('w','weight of the top block',-90,1,'Gravity.'),fo('n','bottom block pushing up',90,1,'It rests on the bottom block.'),fo('F','rope pulling forward',0,1,'The rope is tied to this block.'),fo('fₛ','static friction from the bottom block',180,1,'3rd-law partner of the friction that pushes the bottom block forward.'),fo('n floor','the floor pushing up',90,0,'The floor does not touch the top block.')],[['n','=','w','no vertical acceleration'],['F','>','fₛ','the top block also accelerates forward']]),
+  {type:'mcq', ph:'system', prompt:'Now find F. Choose the system:', opts:[o('Both blocks together: F = (m_top + m_bottom)a',1,'The friction between them is internal, and both share a_max.'),o('The bottom block alone',0,'F does not act on the bottom block.'),o('Set F = fₛ,max',0,'Then the top block would have zero net force and could not accelerate with the bottom one.')]},
+  {type:'num', ph:'solve', prompt:'Calculate the maximum F.', sym:'F', unit:'N', ans:F, slips:[{v:fs,msg:'That is fₛ,max alone. F must ALSO accelerate the top block: F − fₛ = m_top a.'},{v:us*7*g,msg:'The normal force between the blocks is only the weight of the TOP block.'},{v:uk*4*g,msg:'That uses the kinetic coefficient. Nothing is sliding.'}], explain:`F = 7.0 × ${f3(a)} = ${f3(F)} N`},
+  bl('check','Compare the net forces.',['Net force on the top block: F − fₛ = {} N','Net force on the bottom block: fₛ = {} N','Ratio top : bottom = {} : 3, the same as the mass ratio'],[nb(4*a),nb(fs),nb(4)]),
+  pr('check','If F is made bigger than this maximum…',[o('the top block slides forward over the bottom one',1),o('both blocks just accelerate faster together'),o('the bottom block shoots out ahead')],[o('static friction cannot supply more than μₛn′, so the bottom block cannot keep up',1,'After that the friction is kinetic, which is even smaller.'),o('a bigger force always gives a bigger shared acceleration'),o('the bottom block is lighter')])
+ ]};}},
+{id:'9g', lv:9, title:'Concept: Which Rope Pulls Harder?', make:()=>({
+ text:`Blocks A and B are connected by rope 1 and are pulled across a [[frictionless|no friction|hidden]] surface by rope 2, which is attached to block B. The applied force is strong enough to make the blocks [[speed up|a ≠ 0, pointing forward|hidden]]. Compare the tensions in ropes 1 and 2.`,
+ fig: figTwo(),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Find the two hidden clues.'},
+  dr('Draw the free-body diagram of block B. Think about the arrow lengths.',[fo('n','surface pushing up',90,1,'Contact.'),fo('w','weight of B',-90,1,'Gravity.'),fo('T₂','rope 2 pulling forward',0,1,'Rope 2 is attached to B.'),fo('T₁','rope 1 pulling backward',180,1,'Block A drags behind.'),fo('f','friction',180,0,'The surface is frictionless.')],[['n','=','w','no vertical acceleration'],['T₂','>','T₁','B accelerates forward, so the net force on B must point forward']]),
+  pr('check','How do the two tensions compare?',[o('T₂ is bigger than T₁',1),o('They are equal'),o('T₁ is bigger than T₂'),o('It cannot be decided without knowing a')],[o('with the same a, T₂ accelerates A and B while T₁ accelerates only A',1,'T₁ = m_A a and T₂ = (m_A + m_B)a.'),o("Newton's 2nd law makes the tensions equal"),o("Newton's 3rd law makes the tensions equal")]),
+  {type:'mcq', ph:'system', prompt:"Why doesn't Newton's 3rd law make T₁ = T₂?", opts:[o('They are not an action/reaction pair: they come from two different ropes',1,'The pair for rope 1 is "rope 1 on B" and "B on rope 1".'),o('The 3rd law does not apply to moving objects',0,'It always applies.'),o('The 3rd law only applies to gravity',0,'It applies to every force.')]},
+  bl('solve','Put in numbers: m_A = 2 kg, m_B = 3 kg, a = 2 m/s².',['T₁ = m_A a = {} N','T₂ = (m_A + m_B)a = {} N','Net force on B = T₂ − T₁ = {} N','Net force on A = {} N'],[nb(4),nb(10),nb(6),nb(4)]),
+  pr('check','Now the blocks glide at CONSTANT velocity on the frictionless surface. Then…',[o('T₁ = T₂ = 0',1),o('T₁ = T₂, both bigger than zero'),o('T₂ is still bigger than T₁')],[o('a = 0 and there is no friction, so no block needs any net force',1,'Motion itself needs no force. Only changing the motion does.'),o('a moving object always needs a force to keep it moving'),o('the front rope always works harder')])
+ ]})},
+{id:'9h', lv:9, title:'Table Block and Hanging Block (M and M/4)', make:()=>({
+ text:`A block of mass [[M|M]] rests on a horizontal, [[frictionless|no friction|hidden]] table. It is connected by a [[massless string over a massless, frictionless pulley|same T, same size of a|hidden]] to a hanging mass [[m = M/4|m = M/4]]. What is the magnitude of the acceleration of the two masses?`,
+ fig: figTable('M','m'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  dr('Draw the free-body diagram of the block M on the table.',[fo('n','table pushing up',90,1,'Contact with the table.'),fo('Mg','weight of M',-90,1,'Gravity.'),fo('T','string pulling toward the pulley',0,1,'The only horizontal force.'),fo('mg','weight of the hanging block',0,0,"The hanging block's weight acts on the hanging block. M feels only the string: T.")],[['n','=','Mg','no vertical acceleration']]),
+  dr('Draw the free-body diagram of the hanging block m.',[fo('T','string pulling up',90,1,'The string.'),fo('mg','weight of m',-90,1,'Gravity.'),fo('n','normal force',90,0,'Nothing touches it from below.')],[['mg','>','T','m accelerates downward, so the net force points down']]),
+  {type:'eq', ph:'law', prompt:'ΣF = ma for M (horizontal, + = toward the pulley):', lhs:1, tiles:['T','mg','Mg'], rhs:['Ma','ma','0'], ans:['+T=Ma']},
+  {type:'eq', ph:'law', prompt:'ΣF = ma for m (+ = down):', lhs:2, tiles:['T','mg','Mg','Ma','ma','0'], ans:['+mg,-T=ma']},
+  bl('solve','Add the equations so that T cancels.',['mg = ({})a','With m = M/4:  (M/4)g = ({} × M/4)a','a = g / {}'],[sl('M + m',['M','m','M − m']),nb(5),nb(5)]),
+  {type:'mcq', ph:'check', prompt:'A common wrong answer is a = g/4 (from mg = Ma). What did it miss?', opts:[o('The hanging block has to be accelerated too: the total mass is M + m',1,'The pull mg must accelerate both blocks.'),o('It forgot friction',0,'The table is frictionless.'),o('It used the wrong value of g',0,'g is fine.')]},
+  bl('check','Compare the forces.',['T = Ma = Mg / {}','Weight of the hanging block: mg = Mg / {}','So T is {} mg','Net force on M = Mg / {};   net force on m = mg − T = Mg / {}'],[nb(5),nb(4),sl('less than',['equal to','more than']),nb(5),nb(20)]),
+  pr('check','The net force on M is…',[o('4 times the net force on m',1),o('equal to the net force on m'),o('one quarter of the net force on m')],[o('same a, and M has 4 times the mass: F_net = ma',1),o('the string pulls both blocks with the same T'),o('only the hanging block feels gravity')])
+ ]})},
+{id:'9i', lv:9, title:'Person, Pulley and Concrete Block', rnd:true, make:()=>{ const mp=R(50,75,5), T=mp*g, n=980-T, C=2*T+98; return {
+ text:`A [[${mp} kg|m_person = ${mp} kg]] person hangs from one end of a rope that passes over a pulley of mass [[10.0 kg|m_pulley = 10.0 kg]] attached to the ceiling. The other end is tied to a [[100 kg|m_block = 100 kg]] concrete block [[resting on the floor|the floor pushes up on the block with n|hidden]]. The system is [[in equilibrium|a = 0 for every object|hidden]]. Find the rope tension, the normal force on the block, and the force the ceiling exerts on the pulley.`,
+ fig: figPerson(mp),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.', explain:'Equilibrium means ΣF = 0 for the person, for the block, and for the pulley, each one separately.'},
+  dr('Start with the simplest object. Draw the free-body diagram of the PERSON.',[fo('T','rope pulling up',90,1,'The person holds the rope.'),fo('w','weight of the person',-90,1,'Gravity.'),fo('n','floor pushing up',90,0,'The person is hanging, not standing.')],[['T','=','w','equilibrium: the two forces balance']]),
+  {type:'num', ph:'solve', prompt:'Calculate the tension.', sym:'T', unit:'N', ans:T, explain:`T = ${mp} × 9.8 = ${f3(T)} N`},
+  dr('Draw the free-body diagram of the concrete BLOCK.',[fo('T','rope pulling up',90,1,'The same rope, the same tension.'),fo('n','floor pushing up',90,1,'The block rests on the floor.'),fo('w','weight of the block',-90,1,'Gravity: 980 N.'),fo('w_p','weight of the person',-90,0,"That acts on the person. The block feels the person only through the rope: T.")],[['w','>','T','the rope alone cannot lift the block'],['w','>','n','the floor only has to supply what the rope does not']]),
+  {type:'eq', ph:'law', prompt:'ΣF = 0 for the block (+ = up, M = 100 kg):', lhs:3, tiles:['T','n','Mg','2T'], rhs:['0','Ma'], ans:['+T,+n,-Mg=0']},
+  {type:'num', ph:'solve', prompt:'Calculate the normal force on the block.', sym:'n', unit:'N', ans:n, slips:[{v:980,msg:'The rope holds up part of the weight: n = Mg − T.'}], explain:`n = 980 − ${f3(T)} = ${f3(n)} N`},
+  {type:'fbd', ph:'fbd', prompt:'Now the PULLEY. Click every force that acts on it.', forces:[{l:'C, ceiling pulling up',a:90,ok:1,why:'The pulley is attached to the ceiling.'},{l:'w, weight of the pulley (98 N)',a:-90,ok:1,why:'This pulley has mass.'},{l:'T, left rope pulling down',a:-90,ok:1,why:'The rope pulls on the pulley on the left side.'},{l:'T, right rope pulling down',a:-90,ok:1,why:'And again on the right side.'},{l:'Weight of the person',a:-90,ok:0,why:'That acts on the person. The pulley feels only the rope.'},{l:'Weight of the block (980 N)',a:-90,ok:0,why:'The pulley feels only the rope tension, and the floor carries part of the block.'}]},
+  bl('solve','Balance the pulley.',['C − m_pulley g − 2T = 0','C = {} + 2 × {}'],[nb(98),nb(T)]),
+  {type:'num', ph:'solve', prompt:'Calculate the force of the ceiling on the pulley.', sym:'C', unit:'N', ans:C, slips:[{v:2*T,msg:'This pulley has mass: add its weight, 98 N.'},{v:(mp+110)*g,msg:'The floor carries part of the block, so the ceiling does not hold everything.'},{v:T+98,msg:'The rope pulls down on BOTH sides of the pulley.'}]},
+  bl('check','Check with the whole system.',['Total weight of person + block + pulley: {} N','Held by the ceiling: {} N','Held by the floor: {} N'],[nb((mp+110)*g),nb(C),nb(n)],'Ceiling + floor = total weight. ✓'),
+  pr('check','The person lets go of the rope. The force of the floor on the block…',[o('increases to 980 N',1),o('stays the same'),o('drops to zero')],[o('the tension becomes zero, so the floor must hold the whole block',1),o('the block never moved, so nothing changes'),o('without the rope the block is weightless')])
+ ]};}},
+{id:'9j', lv:9, title:'Concept: Net Force Check', make:()=>({
+ text:`Newton's 2nd law is about the <b>net</b> force: ΣF = ma. These questions have nothing to plug in. Decide what the net force must be, and why.`,
+ fig:'',
+ steps:[
+  pr('law','An elevator moves upward at constant speed. The net force on it is…',[o('zero',1),o('upward'),o('downward')],[o('constant velocity means a = 0, so ΣF = ma = 0',1),o('moving up needs a net upward force'),o('gravity always wins by a little')]),
+  pr('law','A 2 kg block and a 6 kg block are tied together and accelerate together. The net force on the 6 kg block is…',[o('3 times the net force on the 2 kg block',1),o('equal to it'),o('one third of it')],[o('same a, 3 times the mass: F_net = ma',1),o('the rope pulls both with the same tension'),o('heavier blocks are harder to push')]),
+  pr('law','A skydiver falls at constant (terminal) speed. The air drag is…',[o('equal to the weight',1),o('less than the weight'),o('greater than the weight')],[o('a = 0, so the forces must balance',1),o('the skydiver is still moving down, so the weight must be bigger'),o('drag slows things, so it must be bigger')]),
+  pr('law','A ball is thrown straight up (ignore air). At the top of its flight, the net force on it is…',[o('mg, downward',1),o('zero'),o('mg, upward')],[o('gravity is the only force during the whole flight',1),o('v = 0 at the top, so the force is zero'),o('the force of the throw is still pushing it')]),
+  bl('check','Sum it up.',['a = 0  →  net force = {} N','A 5 kg block with a = 3 m/s²  →  net force = {} N','The net force always points the same way as {}','Doubling the net force on the same mass makes the acceleration {}'],[nb(0),nb(15),sl('the acceleration',['the velocity','the biggest single force']),sl('double',['half','the same'])])
+ ]})}
 ];
 
 /* ================= EXTRA: fill-in-the-blank and answer+reason steps ================= */
@@ -707,6 +905,52 @@ const EXTRA = {
  [END, bl('check','What the pulley system does for you.',['Rope segments holding up the lower pulley: {}','F = mg / {}','To raise the block 1 m you pull {} m of rope','The ceiling holds T₂ + T₄ = {} N in total'],[nb(2),nb(2),nb(2),nb(1.5*v.mg)],'Half the force, twice the rope. Check: the ceiling carries mg + F.')]]
 };
 
+/* ---------- step: draw the free-body diagram (direction + length) ---------- */
+const vAng = v => Math.atan2(-v[1], v[0])*180/Math.PI;
+const aDiff = (a,b) => { let d = Math.abs(a-b) % 360; return d > 180 ? 360-d : d; };
+function drawInner(s){
+  const cx=160, cy=150; let h = DEFS;
+  if(s.slope!=null){ const r=s.slope*Math.PI/180, dx=Math.cos(r), dy=-Math.sin(r); h += `<line x1="${cx-150*dx}" y1="${cy+18-150*dy}" x2="${cx+150*dx}" y2="${cy+18+150*dy}" stroke="#9aa" stroke-width="2" stroke-dasharray="6 4"/>`; }
+  h += `<rect x="${cx-22}" y="${cy-18}" width="44" height="36" fill="#f4dcd2" stroke="#999" opacity=".55" ${s.slope!=null?`transform="rotate(${-s.slope} ${cx} ${cy})"`:''}/>`;
+  const drawn = Object.keys(s.vec).map(Number).sort((a,b)=>a-b);
+  drawn.forEach(i => { const v=s.vec[i], f=s.forces[i], L=Math.hypot(v[0],v[1])||1, ux=v[0]/L, uy=v[1]/L;
+    const k = drawn.filter(j=>j<i && aDiff(vAng(s.vec[j]), vAng(v))<14).length, off = k*11;
+    const sx=cx-uy*off, sy=cy+ux*off, c = s.st.solved ? 'G' : (s.act===i ? 'B' : 'R');
+    h += ar(sx,sy,sx+v[0],sy+v[1],c,3.5) + tx(sx+v[0]+ux*15, sy+v[1]+uy*15+4, f.id, `text-anchor="middle" font-size="13" font-style="italic" fill="${COL[c]}"`); });
+  return h + `<circle cx="${cx}" cy="${cy}" r="6" fill="#111"/>`;
+}
+function stepDraw(s, box, head){
+  s.vec = s.vec || {}; if(s.act===undefined) s.act = null;
+  box.innerHTML = `${head}<div class="q">✍️ ${s.prompt}</div><div class="small" style="margin:-6px 0 10px"><b>1.</b> Click a force in the list. <b>2.</b> Drag on the grid, away from the black dot, to draw its arrow. Both the <b>direction</b> and the <b>length</b> are graded: a longer arrow means a bigger force. Not every force in the list belongs.</div>
+  <div class="fbdwrap"><svg id="dsvg" viewBox="0 0 320 300" width="320" height="300" style="touch-action:none;cursor:crosshair;max-width:100%;height:auto">${drawInner(s)}</svg>
+  <div class="forces">${s.forces.map((f,i)=>`<button class="fbtn ${s.act===i?'sel':''} ${s.vec[i]?'ok':''}" data-i="${i}" onclick="pickForce(${i})">${s.vec[i]?'✓':'✏️'} <b class="m">${f.id}</b>: ${f.l}</button>`).join('')}<button class="nt" onclick="eraseForce()">🧽 Erase the selected arrow</button></div></div>
+  <div class="hz"></div><div class="fbz"><div class="btns"><button class="btn" onclick="checkDraw()">Check diagram</button></div><div id="dfb"></div></div>`;
+  const el = document.getElementById('dsvg'); let down = false;
+  const pos = e => { const r = el.getBoundingClientRect(); return [(e.clientX-r.left)*320/r.width-160, (e.clientY-r.top)*300/r.height-150]; };
+  const again = () => stepDraw(s, box, document.querySelector('#step .phase').outerHTML);
+  el.onpointerdown = e => { if(s.st.solved) return; if(s.act==null){ toast('First click a force in the list, then drag from the black dot.'); return; } e.preventDefault(); try{ el.setPointerCapture(e.pointerId); }catch(_){ } down = true; s.vec[s.act] = pos(e); el.innerHTML = drawInner(s); };
+  el.onpointermove = e => { if(!down) return; s.vec[s.act] = pos(e); el.innerHTML = drawInner(s); };
+  el.onpointerup = el.onpointercancel = () => { if(!down) return; down = false; const v = s.vec[s.act]; if(Math.hypot(v[0],v[1]) < 22){ delete s.vec[s.act]; toast('Too short: drag further away from the dot.'); } again(); };
+}
+function pickForce(i){ const s = cur.d.steps[cur.i]; if(s.st.solved) return; s.act = i; stepDraw(s, document.getElementById('step'), document.querySelector('#step .phase').outerHTML); }
+function eraseForce(){ const s = cur.d.steps[cur.i]; if(s.st.solved || s.act==null) return; delete s.vec[s.act]; stepDraw(s, document.getElementById('step'), document.querySelector('#step .phase').outerHTML); }
+function checkDraw(){
+  const s = cur.d.steps[cur.i]; if(s.st.solved) return; const box = document.getElementById('step'), fb = document.getElementById('dfb');
+  const drawn = Object.keys(s.vec).map(Number), wrong = drawn.filter(i=>!s.forces[i].ok), missed = s.forces.map((f,i)=>i).filter(i=>s.forces[i].ok && !s.vec[i]);
+  const msgs = wrong.map(i=>`✗ <b>${s.forces[i].id}</b> does not belong: ${s.forces[i].why}`);
+  if(missed.length) msgs.push(`🔎 You are missing <b>${missed.length}</b> force${missed.length>1?'s':''}. What touches the object? Gravity always acts.`);
+  drawn.filter(i=>s.forces[i].ok && aDiff(vAng(s.vec[i]), s.forces[i].a) > 22).forEach(i=>msgs.push(`↻ <b>${s.forces[i].id}</b> points the wrong way. Think about which way that force pushes or pulls.`));
+  if(!msgs.length){ const len = id => { const i = s.forces.findIndex(f=>f.id===id); return Math.hypot(s.vec[i][0], s.vec[i][1]); };
+    s.rel.forEach(([A,op,B,why]) => { const a = len(A), b = len(B);
+      if(op==='>' && !(a > 1.12*b)) msgs.push(`📏 Draw <b>${A}</b> clearly LONGER than <b>${B}</b>: ${why}.`);
+      if(op==='=' && Math.abs(a-b) > 0.22*Math.max(a,b)) msgs.push(`📏 <b>${A}</b> and <b>${B}</b> should be the SAME length: ${why}.`); }); }
+  if(msgs.length){ miss(s); fb.innerHTML = `<div class="fb bad">${msgs.join('<br>')}</div>`; return; }
+  s.act = null; addChips(['FBD: ' + s.forces.filter(f=>f.ok).map(f=>f.id).join(', ')]);
+  stepDraw(s, box, document.querySelector('#step .phase').outerHTML);
+  solve(s, box, s.forces.filter(f=>f.ok).map(f=>`<br>• <b>${f.id}</b>: ${f.why}`).join('') + s.rel.map(r=>`<br>📏 ${r[0]} ${r[1]} ${r[2]}: ${r[3]}.`).join(''));
+  document.getElementById('dsvg').innerHTML = drawInner(s);
+}
+
 /* ---------- step: fill in the blanks ---------- */
 function stepBlank(s, box, head){
   let k = 0;
@@ -760,7 +1004,7 @@ function pvShow(id, el){
   if(!PV[id]){ const d = m.make(); let n = d.steps.length; if(EXTRA[id]) n += EXTRA[id](d.v||{}).length;
     let t = d.text.replace(/\[\[(.+?)\]\]/g, (_,x)=>x.split('|')[0]).replace(/<[^>]+>/g,''); if(t.length>260) t = t.slice(0,257)+'…';
     const kinds = new Set(d.steps.map(s=>s.type)); if(EXTRA[id]) EXTRA[id](d.v||{}).forEach(e=>kinds.add(e[1].type));
-    const names = {clue:'clue hunt',mcq:'multiple choice',multi:'select all',num:'calculate',eq:'equation builder',fbd:'free-body diagram',blank:'fill in the blanks',pair:'answer + reason'};
+    const names = {clue:'clue hunt',mcq:'multiple choice',multi:'select all',num:'calculate',eq:'equation builder',fbd:'free-body diagram',blank:'fill in the blanks',pair:'answer + reason',draw:'draw the FBD (direction + length)'};
     PV[id] = {t, fig:d.fig, meta:`${n} steps · ${[...kinds].map(k=>names[k]).join(', ')}${m.rnd?' · 🎲 numbers change each play':''}`}; }
   const pv = document.getElementById('pv'), c = PV[id];
   pv.innerHTML = `<div class="pt">${m.title}</div><div class="px">${c.t}</div>${c.fig?`<div class="pf">${c.fig}</div>`:''}<div class="pm">${c.meta}</div>`;
@@ -869,7 +1113,7 @@ function renderStep(){
   renderText(); renderChips();
   const box = document.getElementById('step');
   const head = `<div class="phase">Step ${cur.i+1}/${d.steps.length} · ${PH[PHI[s.ph]][1]}</div>`;
-  ({clue:stepClue, mcq:stepMcq, multi:stepMulti, num:stepNum, eq:stepEq, fbd:stepFbd, blank:stepBlank, pair:stepPair})[s.type](s, box, s.st.solved && cur.i<cur.max ? head.replace('<div class="phase">','<div class="phase" style="background:#fff3d6;color:#8a6200">👀 Reviewing · ') : head);
+  ({clue:stepClue, mcq:stepMcq, multi:stepMulti, num:stepNum, eq:stepEq, fbd:stepFbd, blank:stepBlank, pair:stepPair, draw:stepDraw})[s.type](s, box, s.st.solved && cur.i<cur.max ? head.replace('<div class="phase">','<div class="phase" style="background:#fff3d6;color:#8a6200">👀 Reviewing · ') : head);
   if(s.st.solved) review(s, box);
   document.getElementById('stepnav').innerHTML = cur.i>0 && !s.st.solved ? `<a href="#" onclick="goStep(${cur.i-1});return false">← Look back at the previous step</a> &nbsp;·&nbsp; or click any ✓ step in the bar above. Your place is kept.` : '';
 }
