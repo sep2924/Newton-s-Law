@@ -59,7 +59,8 @@ h2{font-size:22px;margin-bottom:6px}.lead{color:var(--mute);margin-bottom:16px;l
 .checklist li small{display:block;color:var(--mute);font-size:12px}
 .tracker{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap}
 .tk{flex:1;min-width:60px;text-align:center;font-size:11.5px;padding:6px 3px;border-radius:7px;background:#fff;color:var(--mute);border:1px solid var(--line)}
-.tk.on{background:var(--blue);color:#fff;font-weight:700;border-color:var(--blue)}.tk.ok{background:#d9f0e1;color:#1f7a45;border-color:#bfe3c9}
+.tk.go{cursor:pointer}.tk.go:hover{border-color:var(--blue)}
+.tk.on{background:var(--blue);color:#fff;font-weight:700;border-color:var(--blue)}.tk.ok{background:#d9f0e1;color:#1f7a45;border-color:#bfe3c9}.tk.ok.on{background:#f0b400;color:#3a2a00;border-color:#f0b400;font-weight:700}
 .phase{display:inline-block;background:var(--blueL);color:var(--blue);font-size:12px;font-weight:700;border-radius:20px;padding:4px 10px;margin-bottom:10px}
 .q{font-size:17px;font-weight:700;line-height:1.45;margin-bottom:12px}
 .opts{display:grid;gap:9px}
@@ -793,9 +794,9 @@ function showMap(){
 const skey = id => 'physdet_save_' + id;
 function hasSave(id){ try{ return !!localStorage.getItem(skey(id)); }catch(e){ return false; } }
 function saveMission(){
-  try{ localStorage.setItem(skey(cur.m.id), JSON.stringify({d:cur.d, i:cur.i, chips:cur.chips, found:[...cur.found], gained:cur.gained}, (k,v)=> v instanceof Set ? {__set:[...v]} : v));
+  try{ localStorage.setItem(skey(cur.m.id), JSON.stringify({d:cur.d, i:cur.max, chips:cur.chips, found:[...cur.found], gained:cur.gained}, (k,v)=> v instanceof Set ? {__set:[...v]} : v));
     const x = loadNote(cur.m.id); x.text = document.getElementById('ntext').value; if(x.text || x.img) saveNote(cur.m.id, x);
-    toast(`💾 Saved at step ${cur.i+1} of ${cur.d.steps.length}. Your answers, clue board and notes will be here when you come back.`);
+    toast(`💾 Saved at step ${cur.max+1} of ${cur.d.steps.length}. Your answers, clue board and notes will be here when you come back.`);
   }catch(e){ toast('Could not save: browser storage is full.'); }
 }
 function resetMission(){
@@ -808,11 +809,11 @@ function startMission(id){
   pvHide();
   const m = MS.find(x=>x.id===id);
   let sv = null; try{ sv = JSON.parse(localStorage.getItem(skey(id)) || 'null', (k,v)=> v && v.__set ? new Set(v.__set) : v); }catch(e){}
-  if(sv && sv.d && sv.d.steps){ cur = {m, d:sv.d, i:sv.i, chips:sv.chips, found:new Set(sv.found), gained:sv.gained, newChip:-1}; renderMission(); window.scrollTo(0,0); toast(`Resumed from your saved spot (step ${sv.i+1}). Press Reset to start over.`); return; }
+  if(sv && sv.d && sv.d.steps){ cur = {m, d:sv.d, i:sv.i, max:sv.i, chips:sv.chips, found:new Set(sv.found), gained:sv.gained, newChip:-1}; renderMission(); window.scrollTo(0,0); toast(`Resumed from your saved spot (step ${sv.i+1}). Press Reset to start over.`); return; }
   const d = m.make();
   if(EXTRA[m.id]){ const ex = EXTRA[m.id](d.v||{}), out = []; d.steps.forEach((st,i)=>{ ex.filter(e=>e[0]===i).forEach(e=>out.push(e[1])); out.push(st); }); ex.filter(e=>e[0]>=d.steps.length).forEach(e=>out.push(e[1])); d.steps = out; }
   d.steps.forEach(s=>{ s.st={tries:0,hint:false,solved:false}; });
-  cur = {m, d, i:0, chips:[...(d.chips||[])].map(t=>({t})), found:new Set(), gained:0, newChip:-1};
+  cur = {m, d, i:0, max:0, chips:[...(d.chips||[])].map(t=>({t})), found:new Set(), gained:0, newChip:-1};
   if(!d.steps.some(s=>s.type==='clue')) tokens(d.text).filter(t=>t.clue).forEach((t,i)=>{ cur.found.add(i); cur.chips.push({t:t.mean}); });
   renderMission(); window.scrollTo(0,0);
 }
@@ -837,6 +838,7 @@ function renderMission(){
    <div>
     <div class="tracker" id="tracker"></div>
     <div class="card" id="step"></div>
+    <div class="small" id="stepnav" style="margin:-8px 4px 14px"></div>
     <div class="card checklist"><h4>🧠 Physicist's Checklist</h4><ol id="cl">${PH.map(p=>`<li data-p="${p[0]}"><div>${p[1]}<small>${p[2]}</small></div></li>`).join('')}</ol></div>
    </div></div>`;
   initNotes(); renderStep();
@@ -861,12 +863,30 @@ function addChips(arr,u){ if(!arr) return; cur.newChip = cur.chips.length; arr.f
 
 function renderStep(){
   const {d} = cur, s = d.steps[cur.i];
-  document.getElementById('tracker').innerHTML = d.steps.map((x,i)=>`<div class="tk ${i<cur.i?'ok':i===cur.i?'on':''}">${i<cur.i?'✓':(i+1)} ${SHORT[PHI[x.ph]]}</div>`).join('');
+  cur.max = Math.max(cur.max||0, cur.i);
+  document.getElementById('tracker').innerHTML = d.steps.map((x,i)=>`<div class="tk ${x.st.solved?'ok':''} ${i===cur.i?'on':''} ${i<=cur.max?'go':''}" ${i<=cur.max?`onclick="goStep(${i})" title="${i===cur.max?'Where you left off':'Review this step'}"`:''}>${x.st.solved?'✓':(i+1)} ${SHORT[PHI[x.ph]]}</div>`).join('');
   document.querySelectorAll('#cl li').forEach(li=>li.classList.toggle('on', PHI[li.dataset.p]===PHI[s.ph]));
   renderText(); renderChips();
   const box = document.getElementById('step');
   const head = `<div class="phase">Step ${cur.i+1}/${d.steps.length} · ${PH[PHI[s.ph]][1]}</div>`;
-  ({clue:stepClue, mcq:stepMcq, multi:stepMulti, num:stepNum, eq:stepEq, fbd:stepFbd, blank:stepBlank, pair:stepPair})[s.type](s, box, head);
+  ({clue:stepClue, mcq:stepMcq, multi:stepMulti, num:stepNum, eq:stepEq, fbd:stepFbd, blank:stepBlank, pair:stepPair})[s.type](s, box, s.st.solved && cur.i<cur.max ? head.replace('<div class="phase">','<div class="phase" style="background:#fff3d6;color:#8a6200">👀 Reviewing · ') : head);
+  if(s.st.solved) review(s, box);
+  document.getElementById('stepnav').innerHTML = cur.i>0 && !s.st.solved ? `<a href="#" onclick="goStep(${cur.i-1});return false">← Look back at the previous step</a> &nbsp;·&nbsp; or click any ✓ step in the bar above. Your place is kept.` : '';
+}
+
+/* ---------- going back to review earlier steps ---------- */
+function goStep(k){ if(k<0 || k>cur.max) return; cur.i = k; renderStep(); }
+function review(s, box){
+  const q = sel => [...box.querySelectorAll(sel)];
+  if(s.type==='mcq') s.opts.forEach((op,i)=>{ if(op.ok){ const b = box.querySelector(`.opt[data-i="${i}"]`); b.classList.add('ok'); b.innerHTML += `<span class="why">${op.why||''}</span>`; } });
+  if(s.type==='multi') s.opts.forEach((op,i)=>{ if(op.ok){ const b = box.querySelector(`.opt[data-i="${i}"]`); b.classList.add('ok'); b.innerHTML = '☑ ' + op.t + `<span class="why">${op.why||''}</span>`; } });
+  if(s.type==='num') document.getElementById('numin').value = f3(s.ans);
+  if(s.type==='blank') q('[data-b]').forEach(el=>{ const b = s.blanks[+el.dataset.b]; el.value = b.opts ? b.a : f3(b.a); el.classList.add('ok'); });
+  if(s.type==='pair') q('.opt.sel').forEach(b=>b.classList.add('ok'));
+  if(s.type==='fbd') q('.fbtn.sel').forEach(b=>b.classList.add('ok'));
+  q('button,input,select').forEach(e=>{ e.disabled = true; e.style.cursor = 'default'; });
+  const last = cur.i === cur.d.steps.length-1, behind = cur.i < cur.max;
+  box.querySelector('.fbz').innerHTML = `<div class="fb ok">✅ <b>You solved this step.</b> This is your finished work.${s.explain?`<div style="margin-top:6px">${s.explain}</div>`:''}</div><div class="btns">${cur.i>0?`<button class="btn g" onclick="goStep(${cur.i-1})">← Previous step</button>`:''}${behind?`<button class="btn g" onclick="goStep(${cur.i+1})">Next step →</button><button class="btn" onclick="goStep(${cur.max})">⏭ Back to where I left off (step ${cur.max+1})</button>`:`<button class="btn gr" id="nextb" onclick="nextStep()">${last?'Close the case 🏁':'Next step →'}</button>`}</div>`;
 }
 
 /* ---------- scoring ---------- */
