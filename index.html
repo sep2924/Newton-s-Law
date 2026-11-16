@@ -398,6 +398,53 @@ function figPuck(d){
   return svg(310,178,s);
 }
 
+/* ---------- figures for the Chapter 8 class examples (top view + side view) ---------- */
+function figTop(o){ o=o||{};
+  const cx=95, cy=92, Rr=60, a=40*Math.PI/180, bx=cx+Rr*Math.cos(a), by=cy-Rr*Math.sin(a), tx_=-Math.sin(a), ty_=-Math.cos(a);
+  let s = `<circle cx="${cx}" cy="${cy}" r="${Rr}" fill="none" stroke="#000" stroke-width="2" stroke-dasharray="9 7"/><line x1="${cx}" y1="${cy}" x2="${bx}" y2="${by}" stroke="#5b8fd0" stroke-width="3"/><circle cx="${cx}" cy="${cy}" r="3" fill="#333"/>`;
+  s += ar(bx,by,bx+44*tx_,by+44*ty_,'R') + tx(bx+44*tx_+10,by+44*ty_+2,'v',IT('R'));
+  if(o.ar) s += ar(bx-10*Math.cos(a)+8*tx_*0,by+10*Math.sin(a),bx-40*Math.cos(a),by+40*Math.sin(a),'O') + tx(bx-24*Math.cos(a)+12*Math.sin(a)+4,by+24*Math.sin(a)+12*Math.cos(a)+8,'aᵣ',IT('O'));
+  if(o.at) s += ar(bx+14*Math.cos(a),by-14*Math.sin(a),bx+14*Math.cos(a)+30*tx_,by-14*Math.sin(a)+30*ty_,'O') + tx(bx+14*Math.cos(a)+30*tx_+4,by-14*Math.sin(a)+30*ty_-4,'aₜ',IT('O'));
+  s += `<circle cx="${bx}" cy="${by}" r="9" fill="#111"/>` + tx(cx,176,'top view','text-anchor="middle" font-size="12" fill="#555"');
+  return svg(200,182,s);
+}
+function figSideTable(){
+  let s = `<line x1="15" y1="100" x2="215" y2="100" stroke="#555" stroke-width="4"/><line x1="50" y1="30" x2="50" y2="100" stroke="#333" stroke-dasharray="5 4"/><line x1="50" y1="90" x2="160" y2="90" stroke="#5b8fd0" stroke-width="3"/><rect x="160" y="80" width="30" height="20" fill="#111"/>`;
+  s += tx(50,24,'axis (centre)','text-anchor="middle" font-size="11"') + `<line x1="150" y1="60" x2="70" y2="60" stroke="#333" marker-end="url(#arK)"/>` + tx(110,52,'r-axis: toward the centre','text-anchor="middle" font-size="11"') + tx(115,128,'side view','text-anchor="middle" font-size="12" fill="#555"');
+  return svg(230,134,s);
+}
+function figRuler(){
+  let s = `<ellipse cx="110" cy="52" rx="78" ry="8" fill="none" stroke="#333" stroke-dasharray="4 3"/><line x1="110" y1="70" x2="110" y2="150" stroke="#000" stroke-width="2.5"/><line x1="25" y1="70" x2="195" y2="70" stroke="#000" stroke-width="3"/><rect x="170" y="58" width="18" height="12" fill="#5b8fd0" stroke="#333"/><ellipse cx="110" cy="136" rx="22" ry="5" fill="none" stroke="#333" stroke-dasharray="3 3"/>`;
+  s += `<line x1="112" y1="88" x2="178" y2="88" stroke="#333" marker-end="url(#arK)" marker-start="url(#arK)"/>` + tx(145,102,'r','text-anchor="middle" font-style="italic" font-size="13"') + tx(196,52,'penny','font-size="11"') + tx(110,168,'side view','text-anchor="middle" font-size="12" fill="#555"');
+  return svg(240,174,s);
+}
+function figBank(th){
+  const t=Math.tan(th*Math.PI/180), top=150-160*t, my=150-80*t;
+  let s = `<polygon points="50,150 210,150 210,${top}" fill="#dfe6ea" stroke="#777"/><g transform="translate(130,${my}) rotate(${-th})"><rect x="-22" y="-22" width="44" height="22" rx="4" fill="#b9b3d6" stroke="#555"/></g>` + tx(86,146,'θ','font-size="13" font-style="italic"');
+  s += `<line x1="110" y1="${my-40}" x2="30" y2="${my-40}" stroke="#333" marker-end="url(#arK)"/>` + tx(34,my-48,'toward the centre of the curve','font-size="11"') + tx(130,170,'side view: the car is driving into the page','text-anchor="middle" font-size="12" fill="#555"');
+  return svg(260,176,s);
+}
+function figSpinner(){
+  let s = `<ellipse cx="110" cy="38" rx="70" ry="10" fill="none" stroke="#333" stroke-dasharray="4 3"/><path d="M40,38 L40,150 L180,150 L180,38" fill="none" stroke="#555" stroke-width="4"/><line x1="110" y1="20" x2="110" y2="160" stroke="#333" stroke-dasharray="5 4"/><rect x="164" y="84" width="14" height="22" fill="#8fbf8f" stroke="#333"/>`;
+  s += `<line x1="112" y1="128" x2="176" y2="128" stroke="#333" marker-end="url(#arK)" marker-start="url(#arK)"/>` + tx(144,142,'r','text-anchor="middle" font-style="italic" font-size="13"') + tx(190,98,'leaf','font-size="11"') + tx(110,14,'axis','text-anchor="middle" font-size="11"') + tx(110,178,'side view','text-anchor="middle" font-size="12" fill="#555"');
+  return svg(230,184,s);
+}
+function figCone(L, th){
+  const r=th*Math.PI/180, px=170, py=22, Ls=112, bx=px-Ls*Math.sin(r), by=py+Ls*Math.cos(r);
+  let s = `<line x1="${px-40}" y1="${py}" x2="${px+40}" y2="${py}" stroke="#000" stroke-width="3"/>`;
+  for(let k=-36;k<=36;k+=12) s += `<line x1="${px+k}" y1="${py}" x2="${px+k+8}" y2="${py-9}" stroke="#000"/>`;
+  s += `<ellipse cx="${px}" cy="${by}" rx="${Ls*Math.sin(r)}" ry="12" fill="none" stroke="#333" stroke-dasharray="4 3"/><line x1="${px}" y1="${py}" x2="${px}" y2="${by}" stroke="#333" stroke-dasharray="5 4"/><line x1="${px}" y1="${py}" x2="${bx}" y2="${by}" stroke="#000" stroke-width="3.5"/><circle cx="${bx}" cy="${by}" r="10" fill="#fff" stroke="#000" stroke-width="3"/>`;
+  s += tx(px-14,py+34,'θ','font-size="14" font-style="italic"') + tx((px+bx)/2-22,(py+by)/2,'L','font-size="15" font-style="italic"') + tx((px+bx)/2,by-6,'r','text-anchor="middle" font-size="13" font-style="italic"') + tx(bx,by+28,'m','text-anchor="middle" font-size="14" font-style="italic"') + tx(px,by+44,'side view','text-anchor="middle" font-size="12" fill="#555"');
+  return svg(px+Ls*Math.sin(r)+16, by+50, s);
+}
+function figToy(th){
+  const t=Math.tan(th*Math.PI/180), ex=280, ey=125-150*t, bxp=130+0.8*150, byp=125-0.8*150*t;
+  let s = `<line x1="130" y1="180" x2="130" y2="125" stroke="#000" stroke-width="3"/><line x1="130" y1="125" x2="${ex}" y2="${ey}" stroke="#000" stroke-width="3"/><line x1="130" y1="125" x2="200" y2="125" stroke="#333" stroke-dasharray="4 3"/>` + tx(172,121,'θ','font-size="13" font-style="italic"');
+  s += `<ellipse cx="130" cy="${byp-12}" rx="${bxp-130}" ry="9" fill="none" stroke="#333" stroke-dasharray="4 3"/><g transform="translate(${bxp},${byp}) rotate(${-th})"><rect x="-10" y="-16" width="20" height="16" fill="#5b8fd0" stroke="#333"/></g>`;
+  s += `<line x1="132" y1="${byp+22}" x2="${bxp}" y2="${byp+22}" stroke="#333" marker-end="url(#arK)" marker-start="url(#arK)"/>` + tx((130+bxp)/2,byp+38,'r','text-anchor="middle" font-style="italic" font-size="13"') + `<ellipse cx="130" cy="168" rx="20" ry="5" fill="none" stroke="#333" stroke-dasharray="3 3"/>` + tx(160,196,'side view','text-anchor="middle" font-size="12" fill="#555"');
+  return svg(300,202,s);
+}
+
 /* ================= thinking-routine phases ================= */
 const PH = [
  ['info','Gather the information','m, g, a, direction of motion, other forces, rope/pulley setup'],
@@ -427,12 +474,15 @@ const LEVELS = [
  {n:10, name:'Basic Concepts of Circular Motion', desc:'Period, rpm and ω; why a points to the centre; top and bottom of a vertical circle'},
  {n:11, name:'Horizontal Circles and Orbits', desc:'One force toward the centre: tension, electric force, gravity, a wall'},
  {n:12, name:'Vertical Circles', desc:'Ferris wheels, bumps and strings: the sign of mg changes between top and bottom'},
- {n:13, name:'Motion in a Plane', desc:'Treat x and y separately, each with its own acceleration'}
+ {n:13, name:'Motion in a Plane', desc:'Treat x and y separately, each with its own acceleration'},
+ {n:14, name:'Class Examples: the r-t-z Method', desc:'Radial and tangential acceleration; axes r, t and z; what produces the acceleration'},
+ {n:15, name:'Class Example 2: Set Up the Diagram', desc:'Hill, penny on a ruler, banked curve, salad spinner: FBD in side view, then the r-t-z equations'},
+ {n:16, name:'Class Examples 3 to 6: Full Solves', desc:'Conical pendulum, cannonball orbit, penny flying off, the spinning toy'}
 ];
 
 const CHAPTERS = [
  {n:7, title:"Newton's Laws: Ropes, Pulleys and Inclines", levels:[1,2,3,4,5,6,7,8,9]},
- {n:8, title:'Circular Motion and Motion in a Plane', levels:[10,11,12,13]}
+ {n:8, title:'Circular Motion and Motion in a Plane', levels:[10,11,12,13,14,15,16]}
 ];
 const MS = [
 /* ---------- LEVEL 1: CLUE HUNT ---------- */
@@ -1082,7 +1132,142 @@ const MS = [
   bl('solve','Horizontal motion during that time.',['x = v_edge t + ½ a t²','x = {} × {} + ½ × {} × {}²'],[nb(ve),nb(t),nb(a),nb(t)]),
   {type:'num', ph:'solve', prompt:'Distance from the base of the table:', sym:'x', unit:'m', ans:x, slips:[{v:ve*t,msg:'That treats the puck as an ordinary projectile. The rocket is still pushing, so add ½at².'}]},
   pr('check','Does the thrust change how long the puck takes to fall?',[o('No',1),o('Yes, it falls sooner'),o('Yes, it stays up longer')],[o('the thrust is horizontal, and the vertical motion depends only on vertical forces',1),o('a faster object falls faster'),o('the rocket holds the puck up')])
- ]};}}
+ ]};}},
+/* ---------- LEVEL 14: CLASS EXAMPLES, r-t-z METHOD ---------- */
+{id:'14a', lv:14, title:'Example 1A: Uniform Circular Motion', rnd:true, make:()=>{ const v=R(2,5,0.5), r=R(0.4,1,0.1), ar_=v*v/r, T=0.5*ar_; return {
+ text:`A [[0.50 kg|m = 0.50 kg]] block attached to a string on a [[frictionless horizontal|no friction; n and mg cancel|hidden]] table moves in a circle of radius [[${r} m|r = ${r} m]] at a [[constant speed|uniform circular motion: ω is constant, so a_t = 0|hidden]] of [[${v} m/s|v = ${v} m/s]].`,
+ fig: figTop({ar:true}) + figSideTable(),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  {type:'mcq', ph:'info', prompt:'The angular acceleration α is the rate of change of ω. Here α is…', opts:[o('zero',1,'Constant speed on a fixed circle means constant ω.'),o('v² / r',0,'That is the radial acceleration, not α.'),o('ω / T',0,'ω is not changing, so its rate of change is zero.')], add:['α = 0']},
+  bl('law','The parts of the acceleration.',['Radial (centripetal):  a_r = v² / r = {}² / {} = {} m/s², pointing {}','Tangential:  a_t = {} m/s², because the speed is {}','Total acceleration:  a = {} m/s², pointing {}'],[nb(v),nb(r),nb(ar_),sl('toward the centre',['along v','away from the centre']),nb(0),sl('constant',['increasing','decreasing']),nb(ar_),sl('toward the centre',['along v','away from the centre'])]),
+  {type:'mcq', ph:'law', prompt:'What "produces" this acceleration?', opts:[o('The tension in the string',1,'It is the only force with a part toward the centre.'),o('The velocity of the block',0,'Velocity is not a force. Only forces produce acceleration.'),o('A separate centripetal force',0,'"Centripetal" is just the name for the net inward force. Here that is the tension.'),o('The normal force of the table',0,'It is vertical and cancels the weight.')]},
+  dr('Draw the free-body diagram in the SIDE VIEW. The centre of the circle is to the LEFT.',[fo('n','table pushing up',90,1,'Contact with the table.'),fo('mg','weight',-90,1,'Gravity.'),fo('T','string pulling toward the centre',180,1,'The only horizontal force.'),fo('Fc','"centripetal force"',180,0,'Not a separate force. The tension IS the centripetal force.'),fo('F out','outward force',0,0,'No object pushes the block outward.')],[['n','=','mg','no acceleration along z']]),
+  bl('law',"Newton's 2nd law along each axis (r toward the centre, t along the motion, z up).",['r:  {} = m v² / r','t:  ΣF_t = {}','z:  n − mg = {}'],[sl('T',['n','mg','T − mg']),nb(0),nb(0)]),
+  {type:'num', ph:'solve', prompt:'Calculate the tension.', sym:'T', unit:'N', ans:T},
+  pr('check','Is the net force constant?',[o('No: its size is constant but its direction keeps changing',1),o('Yes'),o('No: its size keeps changing')],[o('it always points at the centre, and that direction rotates as the block moves',1),o('the speed is constant, so the force is constant'),o('the string stretches and relaxes each lap')])
+ ]};}},
+{id:'14b', lv:14, title:'Example 1B: Speeding Up on a Circle', make:()=>({
+ text:`Now the ball on the string is [[speeding up|there is a tangential acceleration a_t, along v|hidden]]: it is in non-uniform circular motion. At this instant the radius is [[0.50 m|r = 0.50 m]], the speed is [[2.0 m/s|v = 2.0 m/s]], and the speed is increasing at [[6.0 m/s²|a_t = 6.0 m/s²]].`,
+ fig: figTop({ar:true, at:true}),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  bl('law','Two parts of the acceleration.',['a_r = v² / r = {} m/s², pointing toward the {}','a_t = {} m/s², pointing {} v'],[nb(8),sl('centre',['outside']),nb(6),sl('the same way as',['opposite to','perpendicular to'])]),
+  dr('Sketch the two parts of the acceleration at the dot. Picture the centre to the LEFT and the ball moving UP the page.',[fo('aᵣ','radial part',180,1,'Toward the centre.'),fo('aₜ','tangential part',90,1,'Along v, because the ball speeds up.'),fo('a out','outward part',0,0,'Acceleration never points away from the centre in circular motion.')],[['aᵣ','>','aₜ','8 m/s² is bigger than 6 m/s²']],{acc:true}),
+  {type:'mcq', ph:'sign', prompt:'The total acceleration is the vector sum of the two parts. It points…', opts:[o('inward and forward, between the centre direction and v',1,'Neither part is zero.'),o('exactly at the centre',0,'That is only true when the speed is constant.'),o('exactly along v',0,'Then the ball would not turn.')]},
+  bl('solve','Size of the total acceleration.',['|a| = √(a_r² + a_t²) = √({}² + {}²) = {} m/s²'],[nb(8),nb(6),nb(10)]),
+  pr('law','The net force on the ball points…',[o('the same way as the total acceleration',1),o('exactly at the centre'),o('exactly along v')],[o('ΣF = ma always: the net force is parallel to a',1),o('in circular motion the net force always points at the centre'),o('a force points along the motion it causes')]),
+  pr('check','Is the net force constant?',[o('No: both its direction and its size change',1),o('Yes'),o('Only its direction changes')],[o('the direction rotates, and as v grows the radial part m v²/r grows',1),o('a_t is constant, so the force is constant'),o('the radius is constant, so the size is constant')])
+ ]})},
+{id:'14c', lv:14, title:'The r-t-z Strategy', make:()=>({
+ text:`Problem-solving strategy for circular motion. <b>Model</b>: make simplifying assumptions. <b>Visualize</b>: draw the picture with the r-axis pointing toward the centre of the circle, then a free-body diagram. <b>Solve</b>: write Newton's 2nd law along r, t and z. <b>Assess</b>: check units and whether the answer is reasonable.`,
+ fig: figTop({ar:true}),
+ steps:[
+  bl('sign','The three axes.',['The r-axis points {}','The t-axis points {}','The z-axis points {}'],[sl('toward the centre of the circle',['away from the centre','along the velocity']),sl('along the tangent, the direction of motion',['toward the centre','straight up']),sl('perpendicular to the plane of the circle',['toward the centre','along the velocity'])]),
+  bl('law',"Newton's 2nd law on each axis.",['r:  ΣF_r = m a_r = m v² / {} = m {}² r','t:  ΣF_t = m {}','z:  ΣF_z = {}, because the object stays in the plane of the circle'],[sl('r',['T','m']),sl('ω',['v','α']),sl('a_t',['a_r','g']),nb(0)]),
+  {type:'mcq', ph:'law', prompt:'In UNIFORM circular motion, ΣF_t equals…', opts:[o('zero',1,'The speed is constant, so a_t = 0.'),o('m v² / r',0,'That is the r equation.'),o('mg',0,'The weight is only one force, and it may not even lie along t.')]},
+  {type:'multi', ph:'fbd', prompt:'Which of these can appear on a free-body diagram?', opts:[o('Tension',1,'A real contact force.'),o('Weight',1,'Gravity.'),o('Normal force',1,'A real contact force.'),o('Friction',1,'A real contact force.'),o('Centripetal force',0,'A name for the net inward force, not an extra arrow.'),o('ma',0,'The result of the forces, not a force.'),o('Centrifugal force',0,'Not a real force in an inertial frame.')]},
+  pr('sign','A force points toward the centre of the circle. In the r equation it is…',[o('positive',1),o('negative')],[o('the r-axis is chosen to point toward the centre',1),o('inward forces oppose the motion'),o('forces toward the centre are always subtracted')]),
+  {type:'mcq', ph:'solve', prompt:"After Newton's law gives the acceleration, how do you get velocities and positions?", opts:[o('Kinematics',1,'For example v = ωr, T = 2πr/v.'),o("Newton's 3rd law",0,'That relates pairs of forces.'),o('They cannot be found',0,'Kinematics connects a, v and position.')]}
+ ]})},
+/* ---------- LEVEL 15: CLASS EXAMPLE 2, SET UP THE DIAGRAM ---------- */
+{id:'15a', lv:15, title:'Example 2a: Car on Top of a Hill', make:()=>({
+ text:`A car of mass [[m|m]] drives over the [[top of a hill|the centre of the circle is BELOW the car|hidden]] of radius [[r|r]] at [[constant speed|a_t = 0, a = v²/r|hidden]] [[v|v]]. Draw the free-body diagram, include the r-t-z axes, and write Newton's 2nd law.`,
+ fig: figBump(),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  {type:'mcq', ph:'sign', prompt:'Which way does the r-axis point for the car at the top?', opts:[o('Straight down',1,'Toward the centre of the hill.'),o('Straight up',0,'The centre of the circle is below the car.'),o('Forward',0,'That is the t-axis.')]},
+  dr('Draw the free-body diagram (side view).',[fo('n','road pushing up',90,1,'Contact with the road.'),fo('mg','weight',-90,1,'Gravity.'),fo('F fwd','force of the forward motion',0,0,'Motion needs no force. At constant speed there is no net force along t.'),fo('Fc','"centripetal force"',-90,0,'Not a separate force. It is mg − n.')],[['mg','>','n','the net force must point down, toward the centre']]),
+  bl('law',"Newton's 2nd law.",['r (down):  {} − {} = m v² / r','t:  ΣF_t = {}'],[sl('mg',['n','T']),sl('n',['mg','T']),nb(0)]),
+  pr('check','Going over the hill, the driver feels…',[o('lighter than usual',1),o('heavier than usual'),o('normal')],[o('n is smaller than mg',1),o('the car is higher up'),o('the speed is constant')])
+ ]})},
+{id:'15b', lv:15, title:'Example 2b: Penny on a Rotating Ruler', make:()=>({
+ text:`A penny of mass [[m|m]] sits on a horizontal ruler that rotates at [[constant speed|a_t = 0|hidden]]. The penny is a distance [[r|r]] from the axis and [[does not slide|the friction is STATIC|hidden]].`,
+ fig: figRuler() + figTop({ar:true}),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  pr('law','Which force points toward the centre and turns the penny?',[o('Static friction from the ruler',1),o('The normal force'),o('No force is needed')],[o('it is the only horizontal force the flat ruler can exert on the penny',1),o('the normal force always points at the centre'),o('an object in motion stays in circular motion')]),
+  dr('Draw the free-body diagram in the SIDE VIEW. The axis (centre) is to the LEFT.',[fo('n','ruler pushing up',90,1,'Contact.'),fo('mg','weight',-90,1,'Gravity.'),fo('fₛ','static friction toward the centre',180,1,'Without friction the penny would slide outward along the ruler, so friction points inward.'),fo('f out','friction pointing outward',0,0,'Friction opposes the outward slipping, so it points inward.'),fo('Fc','"centripetal force"',180,0,'Not a separate force. Friction plays that role.')],[['n','=','mg','no acceleration along z']]),
+  bl('law',"Newton's 2nd law on each axis.",['r:  {} = m v² / r','z:  {} − {} = 0','t:  ΣF_t = {}'],[sl('fₛ',['n','mg']),sl('n',['mg','fₛ']),sl('mg',['n','fₛ']),nb(0)]),
+  {type:'mcq', ph:'check', prompt:'The penny is moving. Why is the friction static, not kinetic?', opts:[o('The penny does not slide relative to the ruler surface',1,'Static or kinetic depends on slipping between the two surfaces.'),o('Because the speed is constant',0,'Constant speed does not decide the type of friction.'),o('Because the ruler is aluminum',0,'The material sets the coefficient, not the type.')]}
+ ]})},
+{id:'15c', lv:15, title:'Example 2c: Car on a Banked Curve', make:()=>({
+ text:`A car of mass [[m|m]] rounds a curve banked at angle [[θ|θ]] at [[constant speed|a_t = 0|hidden]], with [[no friction|only n and mg act|hidden]]. The car moves in a [[horizontal circle|a points horizontally toward the centre, not along the slope|hidden]].`,
+ fig: figBank(20),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  pr('sign','Which way does the acceleration point?',[o('Horizontally, toward the centre of the curve',1),o('Down the slope'),o('Perpendicular to the slope')],[o('the circle the car follows lies in a horizontal plane',1),o('objects on a slope accelerate along the slope'),o('the normal force is the only tilted force')]),
+  {type:'mcq', ph:'sign', prompt:'So how should the axes be chosen?', opts:[o('r horizontal toward the centre, z vertical',1,'Match the axes to the acceleration.'),o('Tilted: one along the slope, one perpendicular to it',0,'That was right for sliding down an incline, where a is along the slope. Here a is horizontal.')]},
+  dr('Draw the free-body diagram in the SIDE VIEW. The centre of the curve is to the LEFT.',[fo('n','road pushing perpendicular to the surface',110,1,'Tilted toward the centre.'),fo('mg','weight',-90,1,'Straight down.'),fo('f','friction along the slope',20,0,'There is no friction in this problem.'),fo('Fc','"centripetal force"',180,0,'Not a separate force. It is the horizontal part of n.')],[['n','>','mg','only the vertical part of n holds up the weight: n cos θ = mg']],{slope:20}),
+  bl('law',"Newton's 2nd law on each axis.",['r:  n {} θ = m v² / r','z:  n {} θ − mg = 0','Divide r by z:  tan θ = {}'],[SC('sin'),SC('cos'),sl('v² / (g r)',['g r / v²','v / (g r)'])]),
+  pr('check','A faster car on the same radius needs…',[o('a steeper bank',1),o('a flatter bank'),o('the same bank')],[o('tan θ = v²/(gr) grows with v',1),o('a faster car presses harder on the road'),o('the bank angle depends only on the mass')])
+ ]})},
+{id:'15d', lv:15, title:'Example 2d: Salad Spinner (Centrifuge)', make:()=>({
+ text:`A lettuce leaf of mass [[m|m]] is pressed against the vertical wall of a salad spinner of radius [[r|r]] spinning at [[constant angular speed|a_t = 0|hidden]] [[ω|ω]]. The leaf [[does not slide down the wall|static friction balances the weight|hidden]].`,
+ fig: figSpinner() + figTop({ar:true}),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  pr('law','What pushes the leaf toward the centre?',[o('The normal force of the wall',1),o('A centrifugal force'),o('Friction')],[o('the wall is what touches the leaf, and it pushes perpendicular to itself, toward the axis',1),o('spinning creates an outward force that pins the leaf'),o('friction always points toward the centre')]),
+  dr('Draw the free-body diagram in the SIDE VIEW. The wall is on the right; the axis (centre) is to the LEFT.',[fo('n','wall pushing toward the axis',180,1,'The centripetal force here.'),fo('fₛ','static friction, up the wall',90,1,'It stops the leaf from sliding down.'),fo('mg','weight',-90,1,'Gravity.'),fo('F out','centrifugal force, outward',0,0,'Not a real force. The leaf presses on the wall because it would otherwise go straight.')],[['fₛ','=','mg','no acceleration along z']]),
+  bl('law',"Newton's 2nd law on each axis.",['r:  {} = m ω² r','z:  {} − mg = 0','No sliding requires fₛ ≤ μₛ × {}'],[sl('n',['fₛ','mg']),sl('fₛ',['n','mg']),sl('n',['mg','fₛ'])]),
+  {type:'mcq', ph:'check', prompt:'Why does the water leave through the holes in the basket?', opts:[o('At a hole there is no wall to push the water inward, so it keeps going straight along the tangent',1,'No inward force, no circular motion.'),o('A centrifugal force throws it straight outward',0,'Seen from above, the drops leave along the tangent, not straight outward.'),o('Water is lighter than lettuce',0,'Mass does not decide this.')]}
+ ]})},
+/* ---------- LEVEL 16: CLASS EXAMPLES, FULL SOLVES ---------- */
+{id:'16a', lv:16, title:'Example 3: Ball on a String (Conical Pendulum)', rnd:true, make:()=>{ const L=R(1,1.6,0.1), th=R(35,55,1), m=R(2,7,0.5), T=m*9.8/cosD(th), a=9.8*Math.tan(th*Math.PI/180), r=L*sinD(th), v=Math.sqrt(a*r); return {
+ text:`A ball is attached to a string and moves in a [[horizontal circle|a points horizontally toward the centre|hidden]] in [[UCM|uniform circular motion: a_t = 0|hidden]]. The string has length [[L = ${L} m|L = ${L} m]], the ball has mass [[m = ${m} kg|m = ${m} kg]], and the angle between the string and the vertical is [[θ = ${th}°|θ = ${th}°]]. Find the tension, the centripetal acceleration and the speed of the ball.`,
+ fig: figCone(L,th) + figTop({ar:true}),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  {type:'mcq', ph:'info', prompt:'What is the radius of the circle?', opts:[o('r = L sin θ',1,'The horizontal distance from the ball to the vertical line under the pivot.'),o('r = L',0,'L is the string, which is tilted. The circle is smaller.'),o('r = L cos θ',0,'That is the vertical drop below the pivot.')], add:['r = L sin θ']},
+  dr('Draw the free-body diagram in the SIDE VIEW. The centre of the circle is to the RIGHT of the ball.',[fo('T','string pulling along the string',90-th,1,'Up and toward the centre.'),fo('mg','weight',-90,1,'Gravity.'),fo('Fc','"centripetal force"',0,0,'Not a separate force. It is the horizontal part of T.'),fo('F out','outward force',180,0,'No object pushes the ball outward.')],[['T','>','mg','only the vertical part of T holds up the weight: T cos θ = mg']]),
+  bl('law',"Newton's 2nd law on each axis.",['z:  T {} θ − mg = 0','r:  T {} θ = m a_r'],[SC('cos'),SC('sin')]),
+  bl('solve','Tension from the z equation.',['T = mg / cos θ = {} × 9.8 / cos({}°)'],[nb(m),nb(th)]),
+  {type:'num', ph:'solve', prompt:'Calculate the tension.', sym:'T', unit:'N', ans:T, slips:[{v:m*9.8*cosD(th),msg:'Divide by cos θ: T cos θ = mg.'},{v:m*9.8,msg:'That is the weight. The tilted string must pull harder than mg.'}]},
+  bl('solve','Divide the r equation by the z equation.',['a_r = g {} θ'],[sl('tan',['sin','cos'])]),
+  {type:'num', ph:'solve', prompt:'Calculate the centripetal acceleration.', sym:'a_r', unit:'m/s²', ans:a},
+  bl('solve','Speed from a_r = v² / r.',['r = L sin θ = {} m','v = √(a_r × r)'],[nb(r)]),
+  {type:'num', ph:'solve', prompt:'Calculate the speed.', sym:'v', unit:'m/s', ans:v, slips:[{v:Math.sqrt(a*L),msg:'Use the radius r = L sin θ, not the string length L.'}]},
+  pr('check','If the ball is made to go faster, the angle θ…',[o('increases: the string swings out more',1),o('decreases'),o('stays the same')],[o('a_r = g tan θ must grow, so tan θ grows',1),o('a faster ball pulls the string straighter down'),o('the angle depends only on the length')])
+ ]};}},
+{id:'16b', lv:16, title:'Example 4: Cannonball Around the Earth', make:()=>({
+ text:`You stand on a mountain and shoot a cannonball [[horizontally|v is tangent to the Earth: the start of a circular orbit|hidden]]. [[Ignore air resistance|gravity is the only force|hidden]]. At what speed must you shoot so that it flies around the Earth in circular motion? Use [[R = 6400 km|r = 6400 km = 6.4e6 m|hidden]] and [[g = 10 m/s²|g = 10 m/s²]].`,
+ fig: figOrbit('Earth','cannonball','R = 6400 km'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues. Watch the units.'},
+  {type:'fbd', ph:'fbd', prompt:'Click the forces on the cannonball while it is in flight.', forces:[{l:'Weight mg, toward the centre of the Earth',a:-90,ok:1,why:'Gravity is the only force.'},{l:'Force of the cannon',a:0,ok:0,why:'The cannon stopped pushing when the ball left the barrel.'},{l:'Centrifugal force, outward',a:90,ok:0,why:'Not a real force.'},{l:'Normal force',a:90,ok:0,why:'Nothing touches the ball.'}]},
+  {type:'eq', ph:'law', prompt:'ΣF = ma along r (toward the centre of the Earth):', lhs:1, tiles:['mg','n','F_cannon'], rhs:['mv²/r','0'], ans:['+mg=mv²/r']},
+  bl('solve','Solve for v.',['The mass cancels:  v = √(g × r)','r = {} m','v = √({} × {})'],[nb(6.4e6),nb(10),nb(6.4e6)]),
+  {type:'num', ph:'solve', prompt:'Calculate the speed.', sym:'v', unit:'m/s', ans:8000, slips:[{v:Math.sqrt(64000),msg:'Convert 6400 km to metres first.'}]},
+  bl('check','Get a feeling for the answer.',['In km/s:  {} km/s','Time for one trip around:  T = 2πr / v = {} s, which is about {} minutes'],[nb(8),nb(5027),nb(84)]),
+  {type:'mcq', ph:'check', prompt:'If you shoot slower than this, the cannonball…', opts:[o('hits the ground: gravity bends its path more sharply than the Earth curves away',1,'An orbit is a fall that keeps missing the ground.'),o('still orbits, only more slowly',0,'A circular orbit at this radius needs exactly this speed.'),o('flies off into space',0,'That would need a higher speed, not a lower one.')]}
+ ]})},
+{id:'16c', lv:16, title:'Example 5: Penny Flies Off the Ruler', rnd:true, make:()=>{ const rc=R(8,12,1), r=rc/100, Tp=R(0.8,1.2,0.05), om=2*Math.PI/Tp, mu=om*om*r/9.8; return {
+ text:`A penny is placed on a rotating aluminum ruler, [[${rc} cm|r = ${rc} cm = ${r} m|hidden]] from the axis. The apparatus is slowly sped up. At the [[maximum rotation rate|static friction is at its maximum: fₛ = μₛ n|hidden]] (the penny has "just" flown off) you measure the rotation period [[T = ${Tp} s|T = ${Tp} s]]. Find the coefficient of static friction.`,
+ fig: figRuler() + figTop({ar:true}),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  {type:'mcq', ph:'info', prompt:'The worksheet asks: knowing only the period T, can you find μₛ?', opts:[o('No: you also need the distance r of the penny from the axis',1,'The mass is not needed, but r is. Here it has been measured for you.'),o('Yes, T is enough',0,'The friction needed is mω²r, which depends on r.'),o('No: you need the mass of the penny',0,'The mass will cancel.')]},
+  dr('Draw the free-body diagram in the SIDE VIEW. The axis (centre) is to the LEFT.',[fo('n','ruler pushing up',90,1,'Contact.'),fo('mg','weight',-90,1,'Gravity.'),fo('fₛ','static friction toward the centre',180,1,'The force that turns the penny.'),fo('F out','outward force',0,0,'No object pushes the penny outward. It "flies off" along the tangent when friction is not enough.')],[['n','=','mg','no acceleration along z']]),
+  bl('law',"Newton's 2nd law, and the limit.",['r:  fₛ = m ω² r','z:  n = {}','At the maximum rate:  fₛ = {} × n'],[sl('mg',['mω²r','μₛ']),sl('μₛ',['m','g'])]),
+  bl('solve','Combine.',['μₛ m g = m ω² r, so the {} cancels','μₛ = ω² r / {}','ω = 2π / T = {} rad/s'],[sl('mass',['radius','period']),sl('g',['m','T']),nb(om)]),
+  {type:'num', ph:'solve', prompt:'Calculate μₛ.', sym:'μₛ', unit:'(no units)', ans:mu, slips:[{v:om*om*rc/9.8,msg:'Use r in metres.'}]},
+  pr('check','A heavier coin at the same spot flies off…',[o('at the same rotation rate',1),o('at a lower rate'),o('at a higher rate')],[o('the mass cancels: both the friction available and the force needed scale with m',1),o('a heavier coin has more friction'),o('a heavier coin needs more force')]),
+  pr('check','A penny placed farther from the axis flies off…',[o('at a lower rotation rate',1),o('at a higher rotation rate'),o('at the same rate')],[o('the force needed, mω²r, grows with r while the friction available stays μₛmg',1),o('the outer end of the ruler moves more slowly'),o('distance from the axis does not matter')])
+ ]};}},
+{id:'16d', lv:16, title:'Example 6: The Spinning Toy', make:()=>({
+ text:`A child's toy consists of a rotating bar and a small block of mass [[m|m]] that rests on it. The bar is inclined at [[θ = 25°|θ = 25°]], and the coefficient of static friction is [[μₛ = 0.87|μₛ = 0.87]]. The block [[spins in a horizontal circle|a is horizontal, toward the axis|hidden]] of radius [[r = 0.15 m|r = 0.15 m]]. The bar rotates at the [[maximum constant speed for which the block remains on the bar|friction is at its maximum, fₛ = μₛ n|hidden]]. Show that the period of rotation is 0.518 s.`,
+ fig: figToy(25),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  pr('sign','At the MAXIMUM speed, the block is about to slide…',[o('up the bar, outward',1),o('down the bar, inward')],[o('going too fast, it needs more inward force than it can get, so it drifts outward, which is up the incline',1),o('gravity always pulls a block down an incline'),o('spinning pushes things toward the axis')]),
+  {type:'mcq', ph:'fbd', prompt:'So the static friction on the block points…', opts:[o('down the incline, toward the axis',1,'Friction opposes the slipping that is about to happen.'),o('up the incline, away from the axis',0,'That would be the case at the MINIMUM speed, when the block is about to slide down.'),o('horizontally',0,'Friction acts along the surface.')]},
+  dr('Draw the free-body diagram in the SIDE VIEW. The axis (centre) is to the LEFT; the bar rises to the right.',[fo('n','bar pushing perpendicular to its surface',115,1,'Tilted toward the axis.'),fo('mg','weight',-90,1,'Straight down.'),fo('fₛ','static friction, down the incline',205,1,'Opposes sliding up and outward.'),fo('f up','friction up the incline',25,0,'That is the direction at the minimum speed, not the maximum.'),fo('Fc','"centripetal force"',180,0,'Not a separate force. It is the horizontal parts of n and fₛ.')],[['n','>','mg','n must hold up the weight AND the downward part of the friction']],{slope:25}),
+  bl('law',"Newton's 2nd law with r horizontal and z vertical.",['r:  n {} θ + fₛ {} θ = m ω² r','z:  n {} θ − fₛ {} θ − mg = 0','At the limit:  fₛ = {} n'],[SC('sin'),SC('cos'),SC('cos'),SC('sin'),sl('μₛ',['m','g'])]),
+  bl('solve','Put fₛ = μₛ n into both equations and divide r by z. Then n and m cancel.',['ω² r / g = (sin θ + μₛ cos θ) / (cos θ − μₛ sin θ)','Top:  sin 25° + 0.87 × cos 25° = {}','Bottom:  cos 25° − 0.87 × sin 25° = {}','Ratio = {}'],[nb(1.211),nb(0.5386),nb(2.249)]),
+  bl('solve','Solve for ω.',['ω² = 9.8 × {} / 0.15 = {}','ω = {} rad/s'],[nb(2.249),nb(146.9),nb(12.12)]),
+  {type:'num', ph:'solve', prompt:'Period: T = 2π / ω.', sym:'T', unit:'s', ans:0.5184, slips:[{v:12.12,msg:'That is ω. The period is 2π / ω.'}]},
+  {type:'mcq', ph:'check', prompt:'The mass of the block never appeared in the answer. Why?', opts:[o('Every term in both equations is proportional to m, so it cancels',1,'Weight, normal force, friction and mω²r all scale with m.'),o('The block is too small to matter',0,'Any size of block gives the same period.'),o('It was forgotten',0,'It cancelled exactly.')]}
+ ]})}
 ];
 
 /* ================= EXTRA: fill-in-the-blank and answer+reason steps ================= */
@@ -1198,14 +1383,14 @@ function drawInner(s){
 }
 function stepDraw(s, box, head){
   s.vec = s.vec || {}; if(s.act===undefined) s.act = null;
-  box.innerHTML = `${head}<div class="q"> ${s.prompt}</div><div class="small" style="margin:-6px 0 10px"><b>1.</b> Click a force in the list. <b>2.</b> Drag on the grid, away from the black dot, to draw its arrow. Both the <b>direction</b> and the <b>length</b> are graded: a longer arrow means a bigger force. Not every force in the list belongs.</div>
+  box.innerHTML = `${head}<div class="q"> ${s.prompt}</div><div class="small" style="margin:-6px 0 10px"><b>1.</b> Click an arrow name in the list. <b>2.</b> Drag on the grid, away from the black dot, to draw its arrow. Both the <b>direction</b> and the <b>length</b> are graded: a longer arrow means a bigger quantity. Not everything in the list belongs.</div>
   <div class="fbdwrap"><svg id="dsvg" viewBox="0 0 320 300" width="320" height="300" style="touch-action:none;cursor:crosshair;max-width:100%;height:auto">${drawInner(s)}</svg>
   <div class="forces">${s.forces.map((f,i)=>`<button class="fbtn ${s.act===i?'sel':''} ${s.vec[i]?'ok':''}" data-i="${i}" onclick="pickForce(${i})">${s.vec[i]?'✓':''} <b class="m">${f.id}</b>: ${f.l}</button>`).join('')}<button class="nt" onclick="eraseForce()"> Erase the selected arrow</button></div></div>
   <div class="hz"></div><div class="fbz"><div class="btns"><button class="btn" onclick="checkDraw()">Check diagram</button></div><div id="dfb"></div></div>`;
   const el = document.getElementById('dsvg'); let down = false;
   const pos = e => { const r = el.getBoundingClientRect(); return [(e.clientX-r.left)*320/r.width-160, (e.clientY-r.top)*300/r.height-150]; };
   const again = () => stepDraw(s, box, document.querySelector('#step .phase').outerHTML);
-  el.onpointerdown = e => { if(s.st.solved) return; if(s.act==null){ toast('First click a force in the list, then drag from the black dot.'); return; } e.preventDefault(); try{ el.setPointerCapture(e.pointerId); }catch(_){ } down = true; s.vec[s.act] = pos(e); el.innerHTML = drawInner(s); };
+  el.onpointerdown = e => { if(s.st.solved) return; if(s.act==null){ toast('First click a name in the list, then drag from the black dot.'); return; } e.preventDefault(); try{ el.setPointerCapture(e.pointerId); }catch(_){ } down = true; s.vec[s.act] = pos(e); el.innerHTML = drawInner(s); };
   el.onpointermove = e => { if(!down) return; s.vec[s.act] = pos(e); el.innerHTML = drawInner(s); };
   el.onpointerup = el.onpointercancel = () => { if(!down) return; down = false; const v = s.vec[s.act]; if(Math.hypot(v[0],v[1]) < 22){ delete s.vec[s.act]; toast('Too short: drag further away from the dot.'); } again(); };
 }
@@ -1215,14 +1400,14 @@ function checkDraw(){
   const s = cur.d.steps[cur.i]; if(s.st.solved) return; const box = document.getElementById('step'), fb = document.getElementById('dfb');
   const drawn = Object.keys(s.vec).map(Number), wrong = drawn.filter(i=>!s.forces[i].ok), missed = s.forces.map((f,i)=>i).filter(i=>s.forces[i].ok && !s.vec[i]);
   const msgs = wrong.map(i=>`✗ <b>${s.forces[i].id}</b> does not belong: ${s.forces[i].why}`);
-  if(missed.length) msgs.push(` You are missing <b>${missed.length}</b> force${missed.length>1?'s':''}. What touches the object? Gravity always acts.`);
-  drawn.filter(i=>s.forces[i].ok && aDiff(vAng(s.vec[i]), s.forces[i].a) > 22).forEach(i=>msgs.push(`↻ <b>${s.forces[i].id}</b> points the wrong way. Think about which way that force pushes or pulls.`));
+  if(missed.length) msgs.push(`You are missing <b>${missed.length}</b> arrow${missed.length>1?'s':''}.${s.acc?'':' What touches the object? Gravity always acts.'}`);
+  drawn.filter(i=>s.forces[i].ok && aDiff(vAng(s.vec[i]), s.forces[i].a) > 22).forEach(i=>msgs.push(`↻ <b>${s.forces[i].id}</b> points the wrong way.${s.acc?'':' Think about which way that force pushes or pulls.'}`));
   if(!msgs.length){ const len = id => { const i = s.forces.findIndex(f=>f.id===id); return Math.hypot(s.vec[i][0], s.vec[i][1]); };
     s.rel.forEach(([A,op,B,why]) => { const a = len(A), b = len(B);
       if(op==='>' && !(a > 1.12*b)) msgs.push(` Draw <b>${A}</b> clearly LONGER than <b>${B}</b>: ${why}.`);
       if(op==='=' && Math.abs(a-b) > 0.22*Math.max(a,b)) msgs.push(` <b>${A}</b> and <b>${B}</b> should be the SAME length: ${why}.`); }); }
   if(msgs.length){ miss(s); fb.innerHTML = `<div class="fb bad">${msgs.join('<br>')}</div>`; return; }
-  s.act = null; addChips(['FBD: ' + s.forces.filter(f=>f.ok).map(f=>f.id).join(', ')]);
+  s.act = null; addChips([(s.acc?'Sketch: ':'FBD: ') + s.forces.filter(f=>f.ok).map(f=>f.id).join(', ')]);
   stepDraw(s, box, document.querySelector('#step .phase').outerHTML);
   solve(s, box, s.forces.filter(f=>f.ok).map(f=>`<br>• <b>${f.id}</b>: ${f.why}`).join('') + s.rel.map(r=>`<br> ${r[0]} ${r[1]} ${r[2]}: ${r[3]}.`).join(''));
   document.getElementById('dsvg').innerHTML = drawInner(s);
@@ -1656,6 +1841,9 @@ function openNotebook(){
   <div class="formula">Net force toward the centre = m v² / r &nbsp; (choose + toward the centre)</div>
   <div class="formula">Vertical circle on a seat: bottom n − mg = mv²/r, &nbsp; top mg − n = mv²/r</div>
   <div class="formula">Ball on a string: top T + mg = mv²/r, &nbsp; bottom T − mg = mv²/r, &nbsp; ω_min = √(g/L)</div>
+  <div class="formula">r-t-z axes: r toward the centre, t along the motion, z perpendicular to the circle</div>
+  <div class="formula">ΣF_r = m v²/r = m ω² r, &nbsp; ΣF_t = m a_t, &nbsp; ΣF_z = 0</div>
+  <div class="formula">Banked curve (no friction): tan θ = v²/(g r). &nbsp; Conical pendulum: a_r = g tan θ, r = L sin θ</div>
   <p class="small">"Centripetal force" is a name for the net inward force, never an extra arrow on the diagram. In two dimensions, treat x and y separately.</p>
   <h3>7. Sanity checks</h3><p>a ↑ ⇒ T > mg · a ↓ ⇒ T < mg · Atwood: m₂g < T < m₁g · Units: N = kg·m/s².</p>`;
   document.getElementById('modal').classList.add('show');
