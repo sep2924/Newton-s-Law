@@ -165,6 +165,7 @@ a{color:#0000ee}.pv{border:2px solid #000;background:#fff}
 .chbar .cn{font-size:24px;font-weight:bold}.chbar .ct{font-size:18px}.chbar .cp{margin-left:auto;font-size:15px}.chbar a{color:#fff}
 .chbar.soon{background:#c0c0c0;color:#555;border:1px dashed #000;margin-bottom:16px}
 .chbody{border:1px solid #000;border-top:0;padding:16px;margin-bottom:18px;background:#f4f4f4}
+.ctab{border-collapse:collapse;margin-left:14px;align-self:center}.ctab td,.ctab th{border:1px solid #000;padding:2px 10px;font-size:14px;text-align:center}
 .rnd{font-size:12px;color:#555;text-decoration:none;display:inline-block}
 </style>
 </head>
@@ -189,7 +190,8 @@ const S = {xp:0, streak:0, best:0, done:{}, unlockAll:false};
 try { Object.assign(S, JSON.parse(localStorage.getItem('physdet1') || '{}')); } catch(e) {}
 function save(){ try{ localStorage.setItem('physdet1', JSON.stringify(S)); }catch(e){} }
 const R = (a,b,s=1) => { const n = Math.round((b-a)/s); return +(a + s*Math.floor(Math.random()*(n+1))).toFixed(4); };
-function f3(x){ if(!isFinite(x)) return '?'; if(x===0) return '0'; const d = Math.max(0, 2-Math.floor(Math.log10(Math.abs(x)))); return String(+x.toFixed(d)); }
+function pnum(str){ return parseFloat(String(str).replace(/\s/g,'').replace(',', '.').replace('−','-').replace(/[x×*]10\^?/i,'e')); }
+function f3(x){ if(!isFinite(x)) return '?'; if(x===0) return '0'; if(Math.abs(x)>=1e6 || Math.abs(x)<1e-3) return x.toExponential(2).replace('e+','e'); const d = Math.max(0, 2-Math.floor(Math.log10(Math.abs(x)))); return String(+x.toFixed(d)); }
 const o = (t,ok,why='') => ({t, ok:!!ok, why});
 const sinD = d => Math.sin(d*Math.PI/180), cosD = d => Math.cos(d*Math.PI/180);
 function shuffle(a){ a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
@@ -345,6 +347,57 @@ function figPerson(mp){
 const fo = (id,l,a,ok,why) => ({id,l,a,ok,why});
 const dr = (prompt,forces,rel,extra) => Object.assign({type:'draw',ph:'fbd',prompt,forces,rel:rel||[]}, extra||{});
 
+/* ---------- figures for Chapter 8 ---------- */
+function figCircle(rl){
+  let s = `<circle cx="100" cy="92" r="62" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="5 4"/><circle cx="100" cy="92" r="3" fill="#333"/><line x1="100" y1="92" x2="162" y2="92" ${ROPE}/><circle cx="162" cy="92" r="10" ${BLK}/>`;
+  s += tx(126,108,rl||'r','font-size="13" font-style="italic"') + ar(162,80,162,34,'B') + tx(168,52,'v',IT('B')) + ar(150,84,116,84,'O') + tx(128,76,'a',IT('O')) + tx(100,172,'seen from above','text-anchor="middle" font-size="11" fill="#555"');
+  return svg(200,178,s);
+}
+function figFerris(rl){
+  let s = `<circle cx="110" cy="98" r="62" fill="none" stroke="#777" stroke-width="3"/>`;
+  for(let k=0;k<8;k++){ const a=k*Math.PI/4; s += `<line x1="110" y1="98" x2="${110+62*Math.cos(a)}" y2="${98+62*Math.sin(a)}" stroke="#aaa"/>`; }
+  s += `<circle cx="110" cy="98" r="4" fill="#555"/><rect x="98" y="26" width="24" height="18" ${BLK}/><rect x="98" y="152" width="24" height="18" ${BLK}/>`;
+  s += tx(130,34,'top','font-size="12"') + tx(130,172,'bottom','font-size="12"') + tx(132,112,rl||'r','font-size="13" font-style="italic"');
+  s += ar(84,36,84,66,'O') + tx(70,56,'a',IT('O')) + ar(84,166,84,136,'O') + tx(70,156,'a',IT('O')) + `<path d="M178,60 A70,70 0 0 1 186,98" fill="none" stroke="#333" stroke-width="1.5" marker-end="url(#arK)"/>`;
+  return svg(220,182,s);
+}
+function figGraph(mn, mx){
+  const y0=Math.floor(mn/100)*100, y1=Math.ceil(mx/100)*100, X=t=>46+t*8, Y=F=>150-(F-y0)*120/(y1-y0), mid=(mn+mx)/2, amp=(mx-mn)/2;
+  let pts=''; for(let t=0;t<=24;t+=0.5) pts += `${X(t)},${Y(mid-amp*Math.cos(2*Math.PI*(t-5)/22)).toFixed(1)} `;
+  let s = `<line x1="46" y1="150" x2="250" y2="150" stroke="#000"/><line x1="46" y1="150" x2="46" y2="20" stroke="#000"/>`;
+  for(let F=y0;F<=y1;F+=100) s += `<line x1="42" y1="${Y(F)}" x2="246" y2="${Y(F)}" stroke="#ddd"/>` + tx(38,Y(F)+4,F,'text-anchor="end" font-size="11"');
+  [0,10,20].forEach(t=> s += tx(X(t),164,t,'text-anchor="middle" font-size="11"'));
+  s += `<polyline points="${pts}" fill="none" stroke="#d63c4a" stroke-width="2.5"/>` + tx(X(5),Y(mn)+14,'min '+mn+' N','text-anchor="middle" font-size="11" fill="#b03a36"') + tx(X(16),Y(mx)-6,'max '+mx+' N','text-anchor="middle" font-size="11" fill="#b03a36"');
+  s += tx(148,178,'Time (seconds)','text-anchor="middle" font-size="11"') + `<text transform="translate(12,90) rotate(-90)" text-anchor="middle" font-size="11">Scale reading (N)</text>`;
+  return svg(260,184,s);
+}
+function figBump(){
+  let s = `<path d="M10,150 L70,150 A52,52 0 0 1 174,150 L234,150" fill="none" stroke="#999" stroke-width="5"/><path d="M70,150 A52,52 0 0 0 174,150" fill="none" stroke="#bbb" stroke-dasharray="4 4"/>`;
+  s += `<rect x="104" y="80" width="36" height="15" rx="4" fill="#b9b3d6" stroke="#555"/>` + tx(122,72,'M','text-anchor="middle" font-style="italic"') + ar(142,88,186,88,'B') + tx(176,80,'v',IT('B')) + ar(96,82,96,36,'R') + tx(82,50,'n',IT('R'));
+  return svg(244,162,s);
+}
+function figVert(vt, vb, rl){
+  let s = `<circle cx="120" cy="98" r="62" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="5 4"/><circle cx="120" cy="98" r="3" fill="#333"/><line x1="120" y1="98" x2="120" y2="36" ${ROPE}/><line x1="120" y1="98" x2="120" y2="160" stroke="#c9a45a" stroke-width="2" stroke-dasharray="3 3"/><circle cx="120" cy="36" r="9" ${BLK}/><circle cx="120" cy="160" r="9" fill="#f4dcd2" stroke="#999" stroke-dasharray="2 2"/>`;
+  s += ar(108,36,66,36,'B') + tx(8,30,'top: '+vt,'font-size="12"') + ar(132,160,188,160,'B') + tx(150,180,'bottom: '+vb,'font-size="12"') + tx(126,74,rl||'r = 1.08 m','font-size="11"');
+  return svg(250,188,s);
+}
+function figLTrack(){
+  let s = `<path d="M40,118 L176,118 L176,48" fill="none" stroke="#888" stroke-width="7"/><circle cx="152" cy="96" r="18" ${BLK}/>` + `<line x1="130" y1="96" x2="40" y2="96" stroke="#333" stroke-dasharray="5 4" marker-end="url(#arK)"/>` + tx(40,84,'to the centre of the circle','font-size="11"') + tx(108,142,'cross-section of the L-shaped track','text-anchor="middle" font-size="11" fill="#555"') + tx(184,84,'wall','font-size="11" fill="#555"') + tx(46,110,'floor','font-size="11" fill="#555"');
+  return svg(230,150,s);
+}
+function figOrbit(big, small, cap){
+  let s = `<circle cx="100" cy="92" r="42" fill="#d5d8db" stroke="#888"/>` + tx(100,96,big,'text-anchor="middle" font-size="13"') + `<circle cx="100" cy="92" r="54" fill="none" stroke="#888" stroke-dasharray="5 4"/><rect x="94" y="32" width="12" height="12" fill="#f4dcd2" stroke="#555"/>` + tx(100,24,small,'text-anchor="middle" font-size="11"') + ar(108,38,150,38,'B') + tx(152,34,'v',IT('B'));
+  if(cap) s += tx(100,166,cap,'text-anchor="middle" font-size="11" fill="#555"');
+  return svg(200,cap?172:156,s);
+}
+function figPuck(d){
+  let s = `<rect x="14" y="62" width="160" height="10" fill="#b9c4c9"/><rect x="156" y="72" width="16" height="92" fill="#b9c4c9"/><rect x="14" y="164" width="290" height="8" fill="#b9c4c9"/>`;
+  s += `<rect x="34" y="50" width="26" height="12" fill="#f4dcd2" stroke="#555"/><path d="M34,53 L22,56 L34,59 Z" fill="#e08a1e"/>` + ar(62,56,96,56,'R') + tx(70,46,'thrust','font-size="11" fill="#d63c4a"');
+  s += `<line x1="60" y1="86" x2="172" y2="86" stroke="#333" marker-end="url(#arK)" marker-start="url(#arK)"/>` + tx(116,100,d+' m','text-anchor="middle" font-size="12"') + `<line x1="190" y1="64" x2="190" y2="162" stroke="#333" marker-end="url(#arK)" marker-start="url(#arK)"/>` + tx(196,118,'1.20 m','font-size="12"');
+  s += `<path d="M174,56 Q250,62 286,160" fill="none" stroke="#2a7ab0" stroke-width="1.5" stroke-dasharray="5 4"/>` + tx(232,156,'x = ?','text-anchor="middle" font-size="13" fill="#b03a36" font-weight="bold"');
+  return svg(310,178,s);
+}
+
 /* ================= thinking-routine phases ================= */
 const PH = [
  ['info','Gather the information','m, g, a, direction of motion, other forces, rope/pulley setup'],
@@ -370,12 +423,16 @@ const LEVELS = [
  {n:6, name:'One Object, Full Solve', desc:'Hanging at rest, accelerating up, accelerating down'},
  {n:7, name:'Connected Objects', desc:'ΣF = ma for EACH object; same T, same a'},
  {n:8, name:'Case Files: Pulleys & Inclines', desc:'Full problems from start to finish'},
- {n:9, name:'Class Problem Set', desc:'Draw the FBD with arrow lengths, build ΣF = ma, find a, compare the net forces'}
+ {n:9, name:'Class Problem Set', desc:'Draw the FBD with arrow lengths, build ΣF = ma, find a, compare the net forces'},
+ {n:10, name:'Basic Concepts of Circular Motion', desc:'Period, rpm and ω; why a points to the centre; top and bottom of a vertical circle'},
+ {n:11, name:'Horizontal Circles and Orbits', desc:'One force toward the centre: tension, electric force, gravity, a wall'},
+ {n:12, name:'Vertical Circles', desc:'Ferris wheels, bumps and strings: the sign of mg changes between top and bottom'},
+ {n:13, name:'Motion in a Plane', desc:'Treat x and y separately, each with its own acceleration'}
 ];
 
 const CHAPTERS = [
  {n:7, title:"Newton's Laws: Ropes, Pulleys and Inclines", levels:[1,2,3,4,5,6,7,8,9]},
- {n:8, title:'', levels:[]}
+ {n:8, title:'Circular Motion and Motion in a Plane', levels:[10,11,12,13]}
 ];
 const MS = [
 /* ---------- LEVEL 1: CLUE HUNT ---------- */
@@ -844,7 +901,188 @@ const MS = [
   pr('law','A skydiver falls at constant (terminal) speed. The air drag is…',[o('equal to the weight',1),o('less than the weight'),o('greater than the weight')],[o('a = 0, so the forces must balance',1),o('the skydiver is still moving down, so the weight must be bigger'),o('drag slows things, so it must be bigger')]),
   pr('law','A ball is thrown straight up (ignore air). At the top of its flight, the net force on it is…',[o('mg, downward',1),o('zero'),o('mg, upward')],[o('gravity is the only force during the whole flight',1),o('v = 0 at the top, so the force is zero'),o('the force of the throw is still pushing it')]),
   bl('check','Sum it up.',['a = 0  →  net force = {} N','A 5 kg block with a = 3 m/s²  →  net force = {} N','The net force always points the same way as {}','Doubling the net force on the same mass makes the acceleration {}'],[nb(0),nb(15),sl('the acceleration',['the velocity','the biggest single force']),sl('double',['half','the same'])])
- ]})}
+ ]})},
+/* ---------- CHAPTER 8, LEVEL 10: BASIC CONCEPTS ---------- */
+{id:'10a', lv:10, title:'Speed, Period and rpm', rnd:true, make:()=>{ const r=R(0.5,3,0.5), Tp=R(2,8,1), v=2*Math.PI*r/Tp, om=2*Math.PI/Tp; return {
+ text:`Uniform circular motion means going around a circle at <b>constant speed</b>. A ball on a string moves in a circle of radius [[${r} m|r = ${r} m]] and takes [[${Tp} s|T = ${Tp} s (the period)]] for [[each full lap|one lap = one circumference, 2πr|hidden]].`,
+ fig: figCircle('r'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.', explain:'The time for one lap has its own name and symbol: the period, T.'},
+  bl('info','The vocabulary of going around.',['The time for one lap is called the {}','Distance around one lap: 2π × {} m = {} m','Speed: v = distance / time = 2πr / T = {} m/s'],[sl('period T',['frequency f','radius r']),nb(r),nb(2*Math.PI*r),nb(v)]),
+  bl('info','Angular velocity ω says how fast the angle changes.',['One full lap is {} radians (give 3 digits)','ω = 2π / T = {} rad/s','Check: v = ω r = {} × {} = {} m/s'],[nb(6.28),nb(om),nb(om),nb(r),nb(v)]),
+  bl('info','Converting rpm (revolutions per minute).',['Laps per second: f = 1 / T = {} rev/s','Laps per minute: {} rpm','From rpm to rad/s: multiply by 2π and divide by {}','So 60 rpm = {} rad/s'],[nb(1/Tp),nb(60/Tp),nb(60),nb(6.283)]),
+  pr('check','The string is made twice as long, but the ball still takes the same time per lap. Its speed…',[o('doubles',1),o('stays the same'),o('is cut in half')],[o('v = 2πr/T: twice the distance in the same time',1),o('the same period always means the same speed'),o('a longer string slows the ball down')])
+ ]};}},
+{id:'10b', lv:10, title:'The Acceleration Points to the Centre', make:()=>({
+ text:`A car drives around a circular track at a [[constant speed|the SIZE of v does not change|hidden]]. Its [[direction keeps changing|v changes direction, so a is not zero|hidden]]. Acceleration is the rate of change of velocity, and velocity includes direction.`,
+ fig: figCircle('r'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Find the two hidden clues.'},
+  pr('sign','The speed is constant. Is the car accelerating?',[o('Yes',1),o('No')],[o('the direction of v keeps changing, and any change in v is an acceleration',1),o('constant speed means zero acceleration'),o('only a change in speed counts as acceleration')]),
+  {type:'mcq', ph:'sign', prompt:'Which way does the acceleration point?', opts:[o('Toward the centre of the circle',1,'This is called centripetal ("centre-seeking") acceleration.'),o('Along the direction of motion (the tangent)',0,'That would change the speed, and the speed is constant.'),o('Away from the centre',0,'Nothing pushes the car outward. Without an inward force it would go straight.')]},
+  bl('law','The size of the centripetal acceleration.',['a = v² / {}','Using v = ωr, the same thing is a = {}² × r','A car at v = 10 m/s on a circle of r = 50 m:  a = {} m/s²','Doubling the speed makes a {} times bigger'],[sl('r',['T','m','2π']),sl('ω',['v','T']),nb(2),nb(4)]),
+  pr('law',"By Newton's 2nd law, the NET force on the car points…",[o('toward the centre',1),o('forward, along the motion'),o('outward')],[o('ΣF = ma, and a points toward the centre',1),o('a force is needed to keep an object moving forward'),o('you feel thrown outward in a turn, so there must be an outward force')]),
+  {type:'fbd', ph:'fbd', prompt:'A car turns on a flat road (the centre of the turn is to the left). Click the real forces on the car.', forces:[{l:'Weight mg',a:-90,ok:1,why:'Gravity.'},{l:'Normal force n from the road',a:90,ok:1,why:'Contact with the road.'},{l:'Static friction from the road, toward the centre',a:180,ok:1,why:'This is the force that turns the car.'},{l:'Centripetal force',a:180,ok:0,why:'Not a separate force. "Centripetal" is a name for the NET force toward the centre. Here friction plays that role.'},{l:'Centrifugal force, outward',a:0,ok:0,why:'No object pushes the car outward. That feeling is your body trying to keep going straight.'}]},
+  bl('check','Sum it up.',['Net force toward the centre = m × {}','"Centripetal force" is a {}','If the string on a whirling ball breaks, the ball moves {}'],[sl('v²/r',['v/r','g','r/v²']),sl('name for the net inward force',['new force made by the circle','force caused by the motion']),sl('in a straight line along the tangent',['straight outward from the centre','in a spiral'])])
+ ]})},
+{id:'10c', lv:10, title:'Top and Bottom of a Vertical Circle', make:()=>({
+ text:`A [[60 kg|m = 60 kg]] rider sits on a scale on a Ferris wheel turning at [[constant speed|a = v²/r, always toward the centre|hidden]]. The centripetal acceleration is [[2.0 m/s²|a = 2.0 m/s²]]. Compare the scale reading (the normal force n) at the bottom and at the top.`,
+ fig: figFerris('r'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  pr('sign','At the BOTTOM of the circle, the acceleration points…',[o('up',1),o('down'),o('forward')],[o('the centre of the circle is above the rider',1),o('gravity always makes a point down'),o('a points along the motion')]),
+  dr('Draw the free-body diagram of the rider at the BOTTOM.',[fo('n','scale pushing up',90,1,'Contact with the scale.'),fo('mg','weight',-90,1,'Gravity.'),fo('Fc','"centripetal force"',90,0,'Not a separate force. It is the name for the net force, n − mg.')],[['n','>','mg','the net force must point up, toward the centre']]),
+  {type:'eq', ph:'law', prompt:'ΣF = ma at the bottom (+ = toward the centre = up):', lhs:2, tiles:['n','mg','mv²/r','0'], ans:['+n,-mg=mv²/r']},
+  pr('sign','At the TOP of the circle, the acceleration points…',[o('down',1),o('up')],[o('the centre of the circle is now below the rider',1),o('the rider was moving upward on the way to the top'),o('the seat pushes up on the rider')]),
+  dr('Draw the free-body diagram of the rider at the TOP.',[fo('n','scale pushing up',90,1,'The scale still pushes up.'),fo('mg','weight',-90,1,'Gravity.'),fo('Fc','"centripetal force"',-90,0,'Not a separate force.')],[['mg','>','n','the net force must point down, toward the centre']]),
+  {type:'eq', ph:'law', prompt:'ΣF = ma at the top (+ = toward the centre = down):', lhs:2, tiles:['n','mg','mv²/r','0'], ans:['+mg,-n=mv²/r']},
+  bl('solve','Put in the numbers (m = 60 kg, a = 2.0 m/s²).',['Bottom:  n = m(g {} a) = {} N','Top:  n = m(g {} a) = {} N','True weight: mg = {} N','Average of the top and bottom readings = {} N'],[PM('+'),nb(708),PM('−'),nb(468),nb(588),nb(588)],'The average of the two readings is exactly mg. That trick finds the mass from a scale graph.'),
+  pr('check','Where does the rider feel heaviest?',[o('At the bottom',1),o('At the top'),o('The same everywhere')],[o('there n must beat mg to give an upward net force',1),o('at the top the rider is highest above the ground'),o('the speed is constant, so nothing changes')]),
+  pr('check','A ball on a STRING is at the top of a vertical circle. The tension and the weight point…',[o('both down, toward the centre',1),o('in opposite directions')],[o('a string can only pull, and the centre is below the ball: T + mg = mv²/r',1),o('tension always points up'),o('the tension must balance the weight')])
+ ]})},
+/* ---------- LEVEL 11: HORIZONTAL CIRCLES AND ORBITS ---------- */
+{id:'11a', lv:11, title:'Block Whirling on a Table', rnd:true, make:()=>{ const rpm=R(40,80,5), rc=R(40,70,2), r=rc/100, om=rpm*2*Math.PI/60, v=om*r, T=0.2*om*om*r; return {
+ text:`A [[200 g|m = 200 g = 0.200 kg|hidden]] block on a [[${rc} cm|r = ${rc} cm = ${r} m|hidden]]-long string swings in a circle on a [[horizontal, frictionless|no friction; weight and normal force cancel|hidden]] table at [[${rpm} rpm|${rpm} revolutions per minute]]. Find the speed of the block and the tension in the string.`,
+ fig: figCircle(rc+' cm'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues. Watch the units.', explain:'Grams and centimetres must become kilograms and metres before they go into ΣF = ma.'},
+  bl('info','Convert everything to SI units first.',['m = {} kg','r = {} m','ω = {} rpm × 2π / 60 = {} rad/s'],[nb(0.2),nb(r),nb(rpm),nb(om)]),
+  {type:'num', ph:'solve', prompt:'Speed: v = ωr.', sym:'v', unit:'m/s', ans:v, slips:[{v:rpm*r,msg:'Convert rpm to rad/s first (× 2π / 60).'},{v:om*rc,msg:'Use the radius in metres.'}]},
+  dr('Draw the free-body diagram of the block, seen from the SIDE. The centre of the circle is to the LEFT.',[fo('n','table pushing up',90,1,'Contact with the table.'),fo('mg','weight',-90,1,'Gravity.'),fo('T','string pulling toward the centre',180,1,'The only horizontal force.'),fo('Fc','"centripetal force"',180,0,'Not a separate force. Here the tension IS the centripetal force.'),fo('F out','outward force',0,0,'No object pushes the block outward.')],[['n','=','mg','no vertical acceleration']]),
+  {type:'eq', ph:'law', prompt:'ΣF = ma toward the centre:', lhs:1, tiles:['T','mg','n'], rhs:['mv²/r','0','mg'], ans:['+T=mv²/r']},
+  bl('solve','Substitute.',['T = m v² / r = {} × {}² / {}'],[nb(0.2),nb(v),nb(r)]),
+  {type:'num', ph:'solve', prompt:'Calculate the tension.', sym:'T', unit:'N', ans:T, slips:[{v:0.2*v*v,msg:'Divide by r.'},{v:1.96,msg:'That is the weight. The weight is cancelled by the table; the string supplies mv²/r.'}]},
+  pr('check','The same block is swung at twice the rpm. The tension becomes…',[o('4 times as large',1),o('twice as large'),o('the same')],[o('T = mω²r, and ω is squared',1),o('tension is proportional to the speed'),o('the string and the block have not changed')])
+ ]};}},
+{id:'11b', lv:11, title:'Electron in the Bohr Atom', make:()=>({
+ text:`In the Bohr model of the hydrogen atom, an electron (mass [[m = 9.1 × 10⁻³¹ kg|m = 9.1e-31 kg]]) [[orbits|uniform circular motion|hidden]] a proton at a distance of [[5.3 × 10⁻¹¹ m|r = 5.3e-11 m]]. The proton pulls on the electron with an electric force of [[8.2 × 10⁻⁸ N|F = 8.2e-8 N]]. How many revolutions per second does the electron make?`,
+ fig: figOrbit('proton','electron',''),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.', explain:'Type powers of ten with the letter e: 9.1 × 10⁻³¹ is typed 9.1e-31.'},
+  {type:'mcq', ph:'unknown', prompt:'The answer is asked in rev/s. Which quantity is that?', opts:[o('The frequency f = ω / 2π',1,'One revolution is 2π radians.'),o('The angular velocity ω',0,'ω is in rad/s. You will find it first, then convert.'),o('The period T',0,'The period is seconds per revolution, the inverse of what is asked.')], add:['f = ?'], u:true},
+  {type:'mcq', ph:'law', prompt:'Which force is the net force toward the centre?', opts:[o('The electric pull of the proton',1,'It is the only force that matters here.'),o("The electron's weight mg",0,'mg is about 9e-30 N, unimaginably smaller than 8.2e-8 N.'),o('A tension',0,'There is no string.')]},
+  {type:'mcq', ph:'law', prompt:'No speed is given, and you want revolutions. Which form of ΣF = ma is best?', opts:[o('F = m ω² r',1,'It contains ω directly.'),o('F = m v² / r',0,'Correct, but you would then need an extra step from v to ω.'),o('F = mg',0,'Gravity is not the force here.')]},
+  bl('solve','Solve for ω step by step.',['ω² = F / (m × r)','m × r = {}','ω² = {}','ω = {} rad/s'],[nb(4.823e-41),nb(1.7e33),nb(4.123e16)]),
+  {type:'num', ph:'solve', prompt:'Convert to revolutions per second: f = ω / 2π.', sym:'f', unit:'rev/s', ans:6.562e15, slips:[{v:4.123e16,msg:'That is ω in rad/s. Divide by 2π to get revolutions.'}]},
+  {type:'mcq', ph:'check', prompt:'About 6.6 × 10¹⁵ revolutions every second. Is such a huge number believable?', opts:[o('Yes: the force is enormous compared with the tiny mass, and the orbit is tiny',1,'a = F/m is about 9 × 10²² m/s².'),o('No: nothing can go around that often',0,'On atomic scales this is normal.'),o('No: it should equal the speed of light',0,'A frequency and a speed are different quantities.')]}
+ ]})},
+{id:'11c', lv:11, title:'Satellite Skimming the Moon', rnd:true, make:()=>{ const Tm=R(108,112,1), Ts=Tm*60, om=2*Math.PI/Ts, a=om*om*1.74e6; return {
+ text:`A satellite orbits the moon [[very near the surface|orbit radius = radius of the moon|hidden]] with a period of [[${Tm} min|T = ${Tm} min]]. The satellite is [[in orbit|gravity is the only force: it is in free fall|hidden]]. What is the free-fall acceleration on the surface of the moon?`,
+ fig: figOrbit('Moon','satellite','R = 1.74 × 10⁶ m'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  {type:'mcq', ph:'info', prompt:'One number you need is not in the problem text. Which one?', opts:[o('The radius of the moon, from a table: 1.74 × 10⁶ m',1,'Problems often expect you to look up astronomical data.'),o('The mass of the satellite',0,'It cancels out.'),o('The speed of the satellite',0,'You can get it from r and T.')], add:['r = 1.74e6 m']},
+  {type:'mcq', ph:'law', prompt:"Why does the satellite's centripetal acceleration EQUAL the free-fall acceleration at the surface?", opts:[o('Gravity is the only force on it, and it is at (almost) the surface',1,'An orbit is free fall that keeps missing the ground.'),o('Because it moves at constant speed',0,'Constant speed alone says nothing about the size of a.'),o('Because it is weightless',0,'Gravity still pulls on it. That pull is what bends its path.')]},
+  bl('info','Convert and compute ω.',['T = {} min × 60 = {} s','ω = 2π / T = {} rad/s','r = {} m'],[nb(Tm),nb(Ts),nb(om),nb(1.74e6)]),
+  bl('law','Choose the formula.',['a = ω² × {}'],[sl('r',['T','m','v'])]),
+  {type:'num', ph:'solve', prompt:'Calculate the free-fall acceleration.', sym:'g_moon', unit:'m/s²', ans:a, slips:[{v:Math.pow(2*Math.PI/Tm,2)*1.74e6,msg:'Convert the period from minutes to seconds.'}]},
+  {type:'mcq', ph:'check', prompt:"Compared with g on Earth (9.8 m/s²), your answer is about…", opts:[o('one sixth',1,'That matches the well-known value for the moon.'),o('six times bigger',0,'Check the size of your number.'),o('the same',0,'The moon is much smaller than Earth.')]}
+ ]};}},
+{id:'11d', lv:11, title:'Ball in the L-Shaped Track', rnd:true, make:()=>{ const rpm=R(40,90,10), om=rpm*2*Math.PI/60, Fw=0.02*om*om*0.2, Fn=0.196, Fnet=Math.hypot(Fw,Fn); return {
+ text:`A [[20 g|m = 20 g = 0.020 kg|hidden]] ball rolls around a [[40 cm-diameter|r = 0.20 m, because the radius is half the diameter|hidden]] L-shaped track at [[${rpm} rpm|${rpm} revolutions per minute]]. [[Rolling friction can be neglected|no friction force|hidden]]. What is the magnitude of the net force that the track exerts on the ball?`,
+ fig: figLTrack(),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues. One of them is a trap.', explain:'The problem gives the DIAMETER. Circular-motion formulas use the radius.'},
+  {type:'mcq', ph:'system', prompt:'The L-shaped track touches the ball in two places. What does each part do?', opts:[o('The floor pushes up; the outer wall pushes toward the centre',1,'Two separate normal forces.'),o('Only the floor pushes on the ball',0,'Then nothing would turn the ball.'),o('Only the wall pushes on the ball',0,'Then nothing would hold up its weight.')]},
+  dr('Draw the forces on the ball in the cross-section. The centre of the circle is to the LEFT.',[fo('n₁','floor pushing up',90,1,'Holds up the weight.'),fo('mg','weight',-90,1,'Gravity.'),fo('n₂','wall pushing toward the centre',180,1,'This is the force that turns the ball.'),fo('f','friction',0,0,'Friction is neglected.'),fo('F out','outward force',0,0,'No object pushes the ball outward.')],[['n₁','=','mg','no vertical acceleration']]),
+  bl('info','SI units.',['r = {} m','m = {} kg','ω = {} rad/s'],[nb(0.2),nb(0.02),nb(om)]),
+  bl('law','One equation for each direction.',['Vertical (a = 0):  n₁ = mg = {} N','Toward the centre:  n₂ = m ω² r = {} N'],[nb(Fn),nb(Fw)]),
+  {type:'mcq', ph:'solve', prompt:"The track's two forces are perpendicular. How do you combine them?", opts:[o('Pythagoras: √(n₁² + n₂²)',1,'They are vectors at right angles.'),o('Add them: n₁ + n₂',0,'Only forces along the same line add like that.'),o('Subtract them',0,'They are not opposite.')]},
+  {type:'num', ph:'solve', prompt:'Net force of the track on the ball:', sym:'F_track', unit:'N', ans:Fnet, slips:[{v:Fw,msg:"That is only the wall's part. The floor also pushes on the ball."},{v:Fw+Fn,msg:'The two forces are perpendicular: use Pythagoras.'},{v:Math.hypot(Fn,0.02*om*om*0.4),msg:'Use the radius (0.20 m), not the diameter.'}]},
+  pr('check','The net force on the ball from ALL forces (track and gravity) is…',[o('just n₂, toward the centre',1),o('the answer you just calculated'),o('zero')],[o('n₁ cancels the weight, leaving only the inward push',1),o('the track is the only thing touching the ball'),o('the speed is constant, so the forces balance')])
+ ]};}},
+/* ---------- LEVEL 12: VERTICAL CIRCLES ---------- */
+{id:'12a', lv:12, title:'Ferris Wheel and the Bathroom Scale', rnd:true, make:()=>{ const m0=R(50,75,5), a0=R(1,1.6,0.1), mn=Math.round(m0*(9.8-a0)), mx=Math.round(m0*(9.8+a0)), m=(mn+mx)/19.6, a=(mx-mn)/(2*m), v=Math.sqrt(a*16); return {
+ text:`A woman rides on a Ferris wheel of radius [[16 m|r = 16 m]] that [[maintains the same speed|uniform circular motion: a = v²/r toward the centre|hidden]]. She sits on a digital bathroom scale and records the scale reading against time (see the graph). The graph has a minimum value of [[${mn} N|n_min = ${mn} N]] and a maximum value of [[${mx} N|n_max = ${mx} N]]. Use [[g = 9.80 m/s²|g = 9.80 m/s²]]. What is the woman's mass?`,
+ fig: figGraph(mn,mx),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  {type:'mcq', ph:'unknown', prompt:'What does the scale actually read?', opts:[o('The normal force n it exerts on her',1,'A scale never measures weight directly.'),o('Her true weight mg',0,'Then the reading would not change during the ride.'),o('Her mass',0,'A scale measures a force.')]},
+  pr('sign','Where on the wheel is the reading SMALLEST?',[o('At the top',1),o('At the bottom'),o('Halfway up')],[o('at the top a points down, so mg must be bigger than n',1),o('at the top she is farthest from the Earth'),o('at the bottom the seat is underneath her')]),
+  {type:'eq', ph:'law', prompt:'ΣF = ma at the TOP (+ = down, toward the centre):', lhs:2, tiles:['mg','n_min','n_max','ma','0'], ans:['+mg,-n_min=ma']},
+  {type:'eq', ph:'law', prompt:'ΣF = ma at the BOTTOM (+ = up, toward the centre):', lhs:2, tiles:['mg','n_min','n_max','ma','0'], ans:['+n_max,-mg=ma']},
+  bl('solve','Add the two equations so that ma cancels.',['Top:  n_min = mg − ma','Bottom:  n_max = mg + ma','Add:  n_min + n_max = {} × mg','m = (n_min + n_max) / (2g) = ({} + {}) / {}'],[nb(2),nb(mn),nb(mx),nb(19.6)]),
+  {type:'num', ph:'solve', prompt:'Calculate her mass.', sym:'m', unit:'kg', ans:m, slips:[{v:mx/9.8,msg:'That assumes n = mg at the bottom. At the bottom n is bigger than mg.'},{v:mn/9.8,msg:'That assumes n = mg at the top. At the top n is smaller than mg.'}]},
+  bl('solve','Now subtract the equations to get more.',['n_max − n_min = {} × ma','a = {} m/s²','v = √(a r) = {} m/s'],[nb(2),nb(a),nb(v)]),
+  pr('check','Her true weight mg is…',[o('exactly halfway between the minimum and maximum readings',1),o('equal to the maximum reading'),o('equal to the minimum reading')],[o('the scale reads mg − ma at the top and mg + ma at the bottom',1),o('the scale is most accurate at the bottom'),o('the scale is most accurate at the top')])
+ ]};}},
+{id:'12b', lv:12, title:'County Fair Ferris Wheel', rnd:true, make:()=>{ const r=R(10,15,1), Tp=R(30,45,1), v=2*Math.PI*r/Tp, a=v*v/r, m=780/9.8, top=m*(9.8-a), bot=m*(9.8+a); return {
+ text:`At the county fair you ride the Ferris wheel. You estimate the radius of the wheel to be [[${r} m|r = ${r} m]], and each loop around takes [[${Tp} s|T = ${Tp} s]]. Earlier in the day you weighed yourself at [[780 N|true weight mg = 780 N]]. You had also eaten too many candy apples and elephant ears. Find your speed, your acceleration, and your apparent weight at the top and at the bottom.`,
+ fig: figFerris(r+' m'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues. Most of the story is decoration.'},
+  bl('solve','Speed around the circle.',['v = 2πr / T = 2π × {} / {}'],[nb(r),nb(Tp)]),
+  {type:'num', ph:'solve', prompt:'Calculate your speed.', sym:'v', unit:'m/s', ans:v},
+  bl('solve','Centripetal acceleration.',['a = v² / r = {}² / {}'],[nb(v),nb(r)]),
+  {type:'num', ph:'solve', prompt:'Calculate your acceleration.', sym:'a', unit:'m/s²', ans:a, slips:[{v:v/r,msg:'Square the speed: a = v²/r.'}]},
+  bl('info','Get ready for the forces.',['Your mass: m = 780 / 9.8 = {} kg','"Apparent weight" means the {}'],[nb(79.59),sl('normal force from the seat',['force of gravity','mass times g'])]),
+  {type:'eq', ph:'law', prompt:'ΣF = ma at the TOP (+ = down, toward the centre):', lhs:2, tiles:['mg','n','ma','0'], ans:['+mg,-n=ma']},
+  {type:'num', ph:'solve', prompt:'Apparent weight at the top: n = mg − ma.', sym:'n_top', unit:'N', ans:top, slips:[{v:bot,msg:'At the top a points down, so n is LESS than 780 N.'}]},
+  {type:'eq', ph:'law', prompt:'ΣF = ma at the BOTTOM (+ = up, toward the centre):', lhs:2, tiles:['mg','n','ma','0'], ans:['+n,-mg=ma']},
+  {type:'num', ph:'solve', prompt:'Apparent weight at the bottom: n = mg + ma.', sym:'n_bottom', unit:'N', ans:bot},
+  {type:'mcq', ph:'check', prompt:'Your apparent weight changes by only a few percent. Why so little?', opts:[o('The centripetal acceleration is much smaller than g',1,'A slow, large wheel gives a small v²/r.'),o('Your true weight changes during the ride',0,'mg is 780 N the whole time.'),o('The seat absorbs the difference',0,'The seat force IS the apparent weight.')]}
+ ]};}},
+{id:'12c', lv:12, title:'Six Carts Over the Bump', make:()=>({
+ text:`Six roller-coaster carts pass over the same semicircular bump. The table gives the mass M of each cart and the [[normal force n|n points up, away from the centre|hidden]] of the track on the cart [[at the top of the bump|a points DOWN, toward the centre of the bump|hidden]]. Rank the speeds of the carts as each passes over the top.`,
+ fig: figBump() + '<table class="ctab"><tr><th>Cart</th><th>n (N)</th><th>M (kg)</th></tr><tr><td>A</td><td>200</td><td>400</td></tr><tr><td>B</td><td>300</td><td>300</td></tr><tr><td>C</td><td>800</td><td>800</td></tr><tr><td>D</td><td>800</td><td>100</td></tr><tr><td>E</td><td>400</td><td>100</td></tr><tr><td>F</td><td>400</td><td>200</td></tr></table>',
+ steps:[
+  {type:'clue', ph:'info', prompt:'Find the two hidden direction clues.'},
+  dr('Draw the free-body diagram of a cart at the top of the bump.',[fo('n','track pushing up',90,1,'Contact with the track.'),fo('Mg','weight',-90,1,'Gravity.'),fo('Fc','"centripetal force"',-90,0,'Not a separate force. It is the net force, Mg − n.')],[['Mg','>','n','the net force must point down, toward the centre of the bump']]),
+  {type:'eq', ph:'law', prompt:'ΣF = ma at the top (+ = down, toward the centre):', lhs:2, tiles:['Mg','n','Mv²/r','0'], ans:['+Mg,-n=Mv²/r']},
+  bl('solve','Rearrange to see what the speed depends on.',['Divide by M:  v² / r = g − {}','So a BIGGER n/M means a {} speed'],[sl('n/M',['n','M/n','n × M']),sl('smaller',['bigger'])]),
+  bl('solve','Compute n/M for each cart (in N/kg).',['A: 200 / 400 = {}','B: 300 / 300 = {}','C: 800 / 800 = {}','D: 800 / 100 = {}','E: 400 / 100 = {}','F: 400 / 200 = {}'],[nb(0.5),nb(1),nb(1),nb(8),nb(4),nb(2)]),
+  {type:'mcq', ph:'solve', prompt:'Rank the carts from largest speed to smallest.', opts:[o('A > B = C > F > E > D',1,'Smallest n/M first. B and C tie.'),o('D > E > F > B = C > A',0,'That puts the largest n/M first, which is the SLOWEST cart.'),o('C > A > B > F > E > D',0,'Mass alone does not decide the speed.'),o('C = D > E = F > B > A',0,'That ranks by n alone.')]},
+  {type:'mcq', ph:'check', prompt:'Carts B and C have different masses and different normal forces, yet the same speed. Why?', opts:[o('Only the ratio n/M matters, and it is 1 N/kg for both',1,'v² = r(g − n/M).'),o('It is a coincidence of rounding',0,'It is exact.'),o('All carts on the same bump have the same speed',0,'The other carts have different speeds.')]},
+  pr('check','A cart goes over the top so fast that n = 0. Then…',[o('it is on the verge of leaving the track, with v² = gr',1),o('it has stopped'),o('its weight has become zero')],[o('gravity alone supplies Mv²/r; any faster and gravity is not enough',1),o('no normal force means no motion'),o('no normal force means no gravity')])
+ ]})},
+{id:'12d', lv:12, title:'Ball on a String, Vertical Circle', rnd:true, make:()=>{ const vt=R(4,6,0.5), vb=Math.sqrt(vt*vt+4*9.8*1.08), Tt=0.3*vt*vt/1.08-2.94, Tb=0.3*vb*vb/1.08+2.94; return {
+ text:`A [[300 g|m = 300 g = 0.300 kg|hidden]] ball moves in a [[vertical circle|a points toward the centre: down at the top, up at the bottom|hidden]] on a [[1.08 m|r = 1.08 m]]-long string. The speed at the top is [[${vt} m/s|v_top = ${vt} m/s]] and the speed at the bottom is [[${f3(vb)} m/s|v_bottom = ${f3(vb)} m/s]]. Find the gravitational force on the ball and the tension in the string at the top and at the bottom.`,
+ fig: figVert(vt+' m/s', f3(vb)+' m/s'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  {type:'num', ph:'solve', prompt:'Gravitational force on the ball: F_G = mg.', sym:'F_G', unit:'N', ans:2.94, slips:[{v:2940,msg:'Convert grams to kilograms.'}]},
+  dr('Draw the free-body diagram at the TOP. The centre of the circle is BELOW the ball.',[fo('T','string pulling toward the centre',-90,1,'A string can only pull, and the centre is below.'),fo('mg','weight',-90,1,'Gravity.'),fo('T↑','string pushing up',90,0,'A string cannot push.'),fo('Fc','"centripetal force"',-90,0,'Not a separate force. It is T + mg.')],[]),
+  {type:'eq', ph:'law', prompt:'ΣF = ma at the top (+ = down, toward the centre):', lhs:2, tiles:['T','mg','mv²/r','0'], ans:['+T,+mg=mv²/r']},
+  bl('solve','Substitute for the top.',['T_top = m v² / r − mg','T_top = {} × {}² / {} − {}'],[nb(0.3),nb(vt),nb(1.08),nb(2.94)]),
+  {type:'num', ph:'solve', prompt:'Tension at the top:', sym:'T_top', unit:'N', ans:Tt, slips:[{v:0.3*vt*vt/1.08+2.94,msg:'At the top the weight HELPS the string pull toward the centre, so subtract mg.'},{v:0.3*vt*vt/1.08,msg:'Part of mv²/r is supplied by gravity. Subtract mg.'}]},
+  dr('Draw the free-body diagram at the BOTTOM. The centre is ABOVE the ball.',[fo('T','string pulling up',90,1,'Toward the centre.'),fo('mg','weight',-90,1,'Gravity.'),fo('Fc','"centripetal force"',90,0,'Not a separate force. It is T − mg.')],[['T','>','mg','the net force must point up, toward the centre']]),
+  {type:'eq', ph:'law', prompt:'ΣF = ma at the bottom (+ = up, toward the centre):', lhs:2, tiles:['T','mg','mv²/r','0'], ans:['+T,-mg=mv²/r']},
+  {type:'num', ph:'solve', prompt:'Tension at the bottom: T = mv²/r + mg.', sym:'T_bottom', unit:'N', ans:Tb, slips:[{v:0.3*vb*vb/1.08-2.94,msg:'At the bottom the string must ALSO hold up the weight, so add mg.'}]},
+  {type:'mcq', ph:'check', prompt:'Why is the tension so much larger at the bottom?', opts:[o('The ball is faster there AND the string must also beat the weight',1,'Two effects in the same direction.'),o('Only because the ball is faster',0,'That is half the story: the sign of mg also flips.'),o('Because gravity is stronger at the bottom',0,'mg is the same everywhere.')]}
+ ]};}},
+{id:'12e', lv:12, title:'Slowest Swing That Stays Taut', make:()=>({
+ text:`You swing a ball of mass [[m|m]] in a vertical circle on a string of length [[L|r = L]]. There is a minimum angular velocity ω_min you must maintain if the ball is to complete the full circle [[without the string going slack at the top|at the limit, T = 0 at the top|hidden]]. Find ω_min, then evaluate it in rpm for a 65 g ball tied to a [[1.2 m|L = 1.2 m]] string.`,
+ fig: figVert('slowest here','fastest here','r = L'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues. One number in the text is not needed.', explain:'The 65 g is a distractor: the mass will cancel.'},
+  {type:'mcq', ph:'info', prompt:'What is the tension when the string is just about to go slack?', opts:[o('T = 0',1,'"Slack" means the string stops pulling.'),o('T = mg',0,'Slack means no pull at all.'),o('T = mv²/r',0,'That would be the tension if there were no gravity.')], add:['T_top = 0 at the limit']},
+  {type:'eq', ph:'law', prompt:'ΣF = ma at the top (+ = down, toward the centre), using a = ω²L:', lhs:2, tiles:['T','mg','mω²L','0'], ans:['+T,+mg=mω²L']},
+  bl('solve','Apply the limit.',['Set T = {}','mg = m ω² L, so the {} cancels','ω_min = √( {} / {} )'],[nb(0),sl('mass m',['length L','g']),sl('g',['L','m']),sl('L',['g','m'])]),
+  {type:'num', ph:'solve', prompt:'Evaluate ω_min for L = 1.2 m.', sym:'ω_min', unit:'rad/s', ans:Math.sqrt(9.8/1.2)},
+  bl('solve','Convert to rpm.',['rpm = ω × 60 / (2π) = {} × 60 / 6.283'],[nb(2.858)]),
+  {type:'num', ph:'solve', prompt:'ω_min in revolutions per minute:', sym:'ω_min', unit:'rpm', ans:Math.sqrt(9.8/1.2)*60/(2*Math.PI), slips:[{v:Math.sqrt(9.8/1.2)*60,msg:'Also divide by 2π: one revolution is 2π radians.'},{v:Math.sqrt(9.8/1.2),msg:'That is still in rad/s.'}]},
+  pr('check','A heavier ball on the same string needs…',[o('the same ω_min',1),o('a larger ω_min'),o('a smaller ω_min')],[o('the mass cancels: ω_min = √(g/L)',1),o('a heavier ball needs more force, so it must go faster'),o('a heavier ball has more inertia, so it can go slower')]),
+  {type:'mcq', ph:'check', prompt:'You swing slower than ω_min. What happens near the top?', opts:[o('Gravity is more than mω²L can use, so the ball falls inside the circle and the string goes slack',1,'The string cannot push outward to compensate.'),o('The string stretches',0,'A slack string has no tension at all.'),o('The ball stops at the top',0,'It still has speed; it just leaves the circular path.')]}
+ ]})},
+/* ---------- LEVEL 13: MOTION IN A PLANE ---------- */
+{id:'13a', lv:13, title:'Rocket Puck Off the Table', rnd:true, make:()=>{ const Ft=R(3,5,0.2), d=R(2,3.5,0.1), a=Ft/0.6, ve=Math.sqrt(2*a*d), t=Math.sqrt(2*1.2/9.8), x=ve*t+0.5*a*t*t; return {
+ text:`A rocket-powered hockey puck has a thrust of [[${Ft} N|F_thrust = ${Ft} N]] and a total mass of [[0.600 kg|m = 0.600 kg]]. It is [[released from rest|v₀ = 0|hidden]] on a [[frictionless|thrust is the only horizontal force|hidden]] table, [[${d} m|distance to the edge d = ${d} m]] from the edge of a [[1.20 m|drop height h = 1.20 m]] drop. The front of the rocket is [[pointed directly toward the edge|the thrust stays horizontal, even in the air|hidden]]. How far does the puck land from the base of the table?`,
+ fig: figPuck(d),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  {type:'mcq', ph:'system', prompt:'How should you organise this problem?', opts:[o('Two stages: on the table (one dimension), then in the air (two dimensions)',1,'The speed at the edge links the two stages.'),o('One stage: treat it all as projectile motion',0,'On the table the puck cannot fall.'),o('Use circular motion',0,'Nothing moves in a circle here.')]},
+  {type:'eq', ph:'law', prompt:'Stage 1, on the table. ΣF = ma (horizontal):', lhs:1, tiles:['F_thrust','mg','n'], rhs:['ma','0'], ans:['+F_thrust=ma']},
+  {type:'num', ph:'solve', prompt:'Acceleration along the table:', sym:'a', unit:'m/s²', ans:a},
+  bl('solve','Speed at the edge.',['v² = v₀² + 2ad,  with v₀ = {}','v_edge = √(2 × {} × {})'],[nb(0),nb(a),nb(d)]),
+  {type:'num', ph:'solve', prompt:'Speed at the edge of the table:', sym:'v_edge', unit:'m/s', ans:ve},
+  pr('sign','Stage 2, in the air. The rocket is still firing. The horizontal acceleration is now…',[o('the same a as on the table',1),o('zero'),o('g')],[o('the thrust still acts and the mass is unchanged; gravity only acts vertically',1),o('a projectile always has constant horizontal velocity'),o('once in the air, gravity is the only force')]),
+  {type:'fbd', ph:'fbd', prompt:'Click the forces on the puck while it is in the air.', forces:[{l:'Thrust, horizontal',a:0,ok:1,why:'The rocket keeps firing.'},{l:'Weight mg, down',a:-90,ok:1,why:'Gravity.'},{l:'Normal force from the table',a:90,ok:0,why:'The puck has left the table.'},{l:'"Force of the forward motion"',a:0,ok:0,why:'Motion is not a force.'}]},
+  bl('solve','Vertical motion decides the time in the air.',['a_y = {} m/s² downward, and the starting vertical speed is {}','h = ½ g t²,  so  t = √(2 × {} / 9.8)'],[nb(9.8),nb(0),nb(1.2)]),
+  {type:'num', ph:'solve', prompt:'Time in the air:', sym:'t', unit:'s', ans:t},
+  bl('solve','Horizontal motion during that time.',['x = v_edge t + ½ a t²','x = {} × {} + ½ × {} × {}²'],[nb(ve),nb(t),nb(a),nb(t)]),
+  {type:'num', ph:'solve', prompt:'Distance from the base of the table:', sym:'x', unit:'m', ans:x, slips:[{v:ve*t,msg:'That treats the puck as an ordinary projectile. The rocket is still pushing, so add ½at².'}]},
+  pr('check','Does the thrust change how long the puck takes to fall?',[o('No',1),o('Yes, it falls sooner'),o('Yes, it stays up longer')],[o('the thrust is horizontal, and the vertical motion depends only on vertical forces',1),o('a faster object falls faster'),o('the rocket holds the puck up')])
+ ]};}}
 ];
 
 /* ================= EXTRA: fill-in-the-blank and answer+reason steps ================= */
@@ -1003,7 +1241,7 @@ function checkBlank(){
   const els = [...box.querySelectorAll('[data-b]')]; const bad = [];
   if(els.some(e=>e.value.trim()==='')){ document.getElementById('bfb').innerHTML = `<div class="fb bad">Fill in every blank first.</div>`; return; }
   els.forEach(el => { const b = s.blanks[+el.dataset.b], raw = el.value.trim(); let ok;
-    if(b.opts) ok = raw === b.a; else { const v = parseFloat(raw.replace(',', '.')); ok = isFinite(v) && near(v, b.a); }
+    if(b.opts) ok = raw === b.a; else { const v = pnum(raw); ok = isFinite(v) && near(v, b.a); }
     el.classList.toggle('ok', ok); el.classList.toggle('bad', !ok); if(!ok) bad.push(b); });
   if(!bad.length){ els.forEach(e=>e.disabled=true); solve(s, box); return; }
   miss(s);
@@ -1271,13 +1509,13 @@ function checkMulti(){
 
 /* ---------- step: numeric ---------- */
 function stepNum(s, box, head){
-  box.innerHTML = `${head}<div class="q">${s.prompt}</div><div class="numrow"><span class="m">${s.sym} =</span><input id="numin" type="text" inputmode="decimal" placeholder="number" onkeydown="if(event.key==='Enter')checkNum()"><span>${s.unit}</span></div><div class="small">g = 9.8 m/s². Within 2% counts as correct, so 3 significant figures is plenty.</div><div class="hz"></div><div class="fbz"><div class="btns"><button class="btn" onclick="checkNum()">Check</button>${hintBtn(s)}</div><div id="nfb"></div></div>`;
+  box.innerHTML = `${head}<div class="q">${s.prompt}</div><div class="numrow"><span class="m">${s.sym} =</span><input id="numin" type="text" inputmode="decimal" placeholder="number" onkeydown="if(event.key==='Enter')checkNum()"><span>${s.unit}</span></div><div class="small">g = 9.8 m/s². Within 2% counts as correct, so 3 significant figures is plenty. Type powers of ten like 6.5e15.</div><div class="hz"></div><div class="fbz"><div class="btns"><button class="btn" onclick="checkNum()">Check</button>${hintBtn(s)}</div><div id="nfb"></div></div>`;
   setTimeout(()=>{ const i=document.getElementById('numin'); if(i) i.focus({preventScroll:true}); },50);
 }
-function near(v, t, tol=0.02){ return Math.abs(v-t) <= Math.max(tol*Math.abs(t), 1e-6); }
+function near(v, t, tol=0.02){ return Math.abs(v-t) <= (t===0 ? 1e-6 : tol*Math.abs(t)); }
 function checkNum(){
   const s = cur.d.steps[cur.i]; if(s.st.solved) return;
-  const raw = document.getElementById('numin').value.replace(',', '.'); const v = parseFloat(raw);
+  const v = pnum(document.getElementById('numin').value);
   const fb = document.getElementById('nfb');
   if(!isFinite(v)){ fb.innerHTML = `<div class="fb bad">Type a number.</div>`; return; }
   if(near(v, s.ans)){ addChips([`${s.sym} = ${f3(s.ans)} ${s.unit}`]); document.getElementById('numin').disabled = true; solve(s, document.getElementById('step'), `${s.sym} = ${f3(s.ans)} ${s.unit}.`); return; }
@@ -1412,7 +1650,14 @@ function openNotebook(){
   <div class="formula">Incline: along slope mg sin θ, perpendicular mg cos θ</div>
   <div class="formula">Kinematics: Δy = v₀t + ½at², &nbsp; v = v₀ + at, &nbsp; v² = v₀² + 2aΔy</div>
   <h3>5. Newton's 3rd law</h3><p>A on B = −(B on A). Pairs act on <b>different</b> objects and are the same type. Forces that cancel on ONE object are balance (1st/2nd law), not a 3rd-law pair.</p>
-  <h3>6. Sanity checks</h3><p>a ↑ ⇒ T > mg · a ↓ ⇒ T < mg · Atwood: m₂g < T < m₁g · Units: N = kg·m/s².</p>`;
+  <h3>6. Circular motion (Chapter 8)</h3>
+  <div class="formula">v = 2πr / T = ωr, &nbsp; ω = 2π / T, &nbsp; rpm × 2π / 60 = rad/s</div>
+  <div class="formula">a = v² / r = ω² r, pointing toward the centre</div>
+  <div class="formula">Net force toward the centre = m v² / r &nbsp; (choose + toward the centre)</div>
+  <div class="formula">Vertical circle on a seat: bottom n − mg = mv²/r, &nbsp; top mg − n = mv²/r</div>
+  <div class="formula">Ball on a string: top T + mg = mv²/r, &nbsp; bottom T − mg = mv²/r, &nbsp; ω_min = √(g/L)</div>
+  <p class="small">"Centripetal force" is a name for the net inward force, never an extra arrow on the diagram. In two dimensions, treat x and y separately.</p>
+  <h3>7. Sanity checks</h3><p>a ↑ ⇒ T > mg · a ↓ ⇒ T < mg · Atwood: m₂g < T < m₁g · Units: N = kg·m/s².</p>`;
   document.getElementById('modal').classList.add('show');
 }
 function closeModal(){ document.getElementById('modal').classList.remove('show'); }
