@@ -491,6 +491,39 @@ function figRotor(){
   return svg(210,202,s);
 }
 
+/* ---------- figures for Chapter 11 ---------- */
+function figBars(pi, pf){
+  const Y = v => 100 - 12*v; let s = `<line x1="40" y1="20" x2="40" y2="156" stroke="#000"/>` + tx(14,14,'kg·m/s','font-size="11"');
+  for(let v=-4; v<=6; v+=2){ s += `<line x1="36" y1="${Y(v)}" x2="270" y2="${Y(v)}" stroke="${v===0?'#000':'#ddd'}"/>` + tx(32,Y(v)+4,v,'text-anchor="end" font-size="11"'); }
+  const bar = (x,v) => `<rect x="${x}" y="${Math.min(Y(0),Y(v))}" width="34" height="${Math.abs(12*v)}" fill="#7bbcb5" stroke="#333"/>`;
+  s += bar(60,pi) + tx(150,Y(0)-8,'?','text-anchor="middle" font-size="18"') + bar(214,pf);
+  s += tx(117,Y(0)+5,'+','text-anchor="middle" font-size="16"') + tx(190,Y(0)+5,'=','text-anchor="middle" font-size="16"');
+  s += tx(77,176,'p_ix','text-anchor="middle" font-style="italic" font-size="13"') + tx(150,176,'J_x','text-anchor="middle" font-style="italic" font-size="13"') + tx(231,176,'p_fx','text-anchor="middle" font-style="italic" font-size="13"');
+  return svg(280,184,s);
+}
+function figFt(o){
+  const x0=o.xmin||0, X=x=>50+(x-x0)/(o.xmax-x0)*190, Y=y=>140-(y-o.ymin)/(o.ymax-o.ymin)*110, ya=(o.yax!=null?o.yax:x0);
+  let s = `<line x1="${X(x0)}" y1="${Y(0)}" x2="${X(o.xmax)+14}" y2="${Y(0)}" stroke="#000"/><line x1="${X(ya)}" y1="${Y(o.ymin)}" x2="${X(ya)}" y2="18" stroke="#000"/>`;
+  (o.xt||[]).forEach(t => s += `<line x1="${X(t)}" y1="${Y(0)}" x2="${X(t)}" y2="${Y(0)+4}" stroke="#000"/>` + tx(X(t),Y(0)+16,t,'text-anchor="middle" font-size="11"'));
+  (o.yt||[]).forEach(([v,l]) => s += `<line x1="${X(ya)-4}" y1="${Y(v)}" x2="${X(ya)}" y2="${Y(v)}" stroke="#000"/>` + tx(X(ya)-7,Y(v)+4,l,'text-anchor="end" font-size="11"'));
+  s += `<polyline points="${o.pts.map(p=>X(p[0]).toFixed(1)+','+Y(p[1]).toFixed(1)).join(' ')}" fill="none" stroke="${o.col||'#c0506a'}" stroke-width="2.5"/>`;
+  s += tx(X(o.xmax)+16,Y(0)+4,o.xl,'font-size="12" font-style="italic"') + tx(X(ya)+6,14,o.yl,'font-size="12" font-style="italic"');
+  return svg(300,160,s);
+}
+function figBA(rows){
+  let s='';
+  rows.forEach((r,k)=>{ const y=30+k*66; s += tx(6,y-12,r.t,'font-size="12" font-weight="bold"') + `<line x1="4" y1="${y+26}" x2="316" y2="${y+26}" stroke="#999" stroke-width="2"/>`;
+    r.o.forEach(b=>{ s += `<rect x="${b.x}" y="${y}" width="${b.w}" height="26" fill="#f4dcd2" stroke="#555"/>` + tx(b.x+b.w/2,y+17,b.l,'text-anchor="middle" font-size="11"');
+      if(b.d){ const cx=b.x+b.w/2; s += ar(cx-(b.d<0?0:0),y-6,cx+38*b.d,y-6,'B') + tx(cx+38*b.d+(b.d>0?4:-4),y-2,b.v,`font-size="11" font-style="italic" fill="#2a7ab0" text-anchor="${b.d>0?'start':'end'}"`); }
+      else if(b.v) s += tx(b.x+b.w/2,y-6,b.v,'text-anchor="middle" font-size="11" fill="#555"'); }); });
+  return svg(320, rows.length*66+6, s);
+}
+function figPackages(){
+  let s = `<path d="M30,40 Q60,150 170,150 L270,150" fill="none" stroke="#9bb" stroke-width="6"/><g transform="translate(36,30) rotate(50)"><rect x="-11" y="-11" width="22" height="22" fill="#f4dcd2" stroke="#555"/></g>` + tx(56,28,'m','font-size="13" font-style="italic"');
+  s += `<rect x="218" y="122" width="28" height="28" fill="#f4dcd2" stroke="#555"/>` + tx(252,140,'2m','font-size="13" font-style="italic"') + `<line x1="16" y1="42" x2="16" y2="150" stroke="#333" marker-end="url(#arK)" marker-start="url(#arK)"/>` + tx(20,100,'6.0 m','font-size="11"') + tx(150,174,'frictionless chute','text-anchor="middle" font-size="11" fill="#555"');
+  return svg(280,180,s);
+}
+
 /* ================= thinking-routine phases ================= */
 const PH = [
  ['info','Gather the information','m, g, a, direction of motion, other forces, rope/pulley setup'],
@@ -524,12 +557,16 @@ const LEVELS = [
  {n:14, name:'Class Examples: the r-t-z Method', desc:'Radial and tangential acceleration; axes r, t and z; what produces the acceleration'},
  {n:15, name:'Class Example 2: Set Up the Diagram', desc:'Hill, penny on a ruler, banked curve, salad spinner: FBD in side view, then the r-t-z equations'},
  {n:16, name:'Class Examples 3 to 6: Full Solves', desc:'Conical pendulum, cannonball orbit, penny flying off, the spinning toy'},
- {n:17, name:'Chapter 8 Problem Set', desc:'Chute, turntable, test track, loop-the-loop, pole vs equator, the Roundup, the daredevil, the rocket block'}
+ {n:17, name:'Chapter 8 Problem Set', desc:'Chute, turntable, test track, loop-the-loop, pole vs equator, the Roundup, the daredevil, the rocket block'},
+ {n:18, name:'Basic Concepts of Momentum', desc:'p = mv with signs, impulse = area under F vs t, bar charts, conservation, types of collisions'},
+ {n:19, name:'Impulse and Force Graphs', desc:'Bar chart, triangle and curved force graphs, the wall bounce, the rocket'},
+ {n:20, name:'Conservation of Momentum and Collisions', desc:'Archer, dart, football player, train cars, packages, proton and carbon'}
 ];
 
 const CHAPTERS = [
  {n:7, title:"Newton's Laws: Ropes, Pulleys and Inclines", levels:[1,2,3,4,5,6,7,8,9]},
- {n:8, title:'Circular Motion and Motion in a Plane', levels:[10,11,12,13,14,15,16,17]}
+ {n:8, title:'Circular Motion and Motion in a Plane', levels:[10,11,12,13,14,15,16,17]},
+ {n:11, title:'Impulse and Momentum', levels:[18,19,20]}
 ];
 const MS = [
 /* ---------- LEVEL 1: CLUE HUNT ---------- */
@@ -1421,6 +1458,169 @@ const MS = [
   {type:'eq', ph:'law', prompt:'ΣF along r (+ = toward the pivot):', lhs:2, tiles:['T','F cos70°','F sin70°','f_k','mω²r'], rhs:['mω²r','0'], ans:['+T,+F cos70°=mω²r']},
   bl('solve','Substitute.',['m ω² r = 0.500 × {}² × 2.0 = {} N','F cos 70° = {} N'],[nb(9.544),nb(91.08),nb(1.334)]),
   {type:'num', ph:'solve', prompt:'Tension in the rod after 10 rev:', sym:'T', unit:'N', ans:89.75, slips:[{v:91.08,msg:'The thrust also pushes inward: subtract F cos 70°.'},{v:92.41,msg:'The radial part of the thrust points INWARD, helping the rod, so subtract it.'}]}
+ ]})},
+/* ---------- CHAPTER 11, LEVEL 18: BASIC CONCEPTS ---------- */
+{id:'18a', lv:18, title:'Momentum and Impulse', rnd:true, make:()=>{ const m=R(0.1,0.5,0.05), vi=R(5,15,1), vf=R(4,12,1), dt=R(5,20,5), J=m*(vf+vi), F=J/(dt/1000); return {
+ text:`A [[${m} kg|m = ${m} kg]] ball moving [[to the left|v_ix is negative|hidden]] at [[${vi} m/s|v_ix = −${vi} m/s]] hits a wall and [[bounces back|v_fx is positive|hidden]] to the right at [[${vf} m/s|v_fx = +${vf} m/s]]. The contact lasts [[${dt} ms|Δt = ${dt} ms = ${dt/1000} s|hidden]]. Take + to the right.`,
+ fig: figBA([{t:'Before',o:[{x:150,w:40,l:'ball',d:-1,v:'−'+vi+' m/s'}]},{t:'After',o:[{x:150,w:40,l:'ball',d:1,v:'+'+vf+' m/s'}]}]),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues. Two are about direction.', explain:'Momentum is a vector. In one dimension its SIGN tells the direction.'},
+  bl('info','Momentum p = m v, with its sign.',['p_ix = {} × (−{}) = {} kg·m/s','p_fx = {} × {} = {} kg·m/s'],[nb(m),nb(vi),nb(-m*vi),nb(m),nb(vf),nb(m*vf)]),
+  bl('law','The impulse-momentum theorem: J = Δp = p_f − p_i.',['J_x = {} − ({}) = {} N·s','1 kg·m/s is the same unit as 1 {}'],[nb(m*vf),nb(-m*vi),nb(J),sl('N·s',['N','J','kg·m'])]),
+  pr('check','The size of Δp is bigger than the size of p_i or of p_f. Why?',[o('The ball reverses direction',1),o('A mistake: Δp is always smaller'),o('The wall adds mass')],[o('subtracting a negative momentum adds the two sizes together',1,'Stopping AND sending back takes more impulse than just stopping.'),o('momentum is lost in every collision'),o('only the speeds matter, not the directions')]),
+  bl('solve','Average force from the impulse.',['Δt = {} s','F_avg = J / Δt'],[nb(dt/1000)]),
+  {type:'num', ph:'solve', prompt:'Average force of the wall on the ball:', sym:'F_avg', unit:'N', ans:F, slips:[{v:J/dt,msg:'Convert ms to seconds first.'},{v:m*(vf-vi)/(dt/1000),msg:'Keep the signs: p_i is negative, so Δp = m(v_f + |v_i|).'}]},
+  pr('check','A padded wall makes the contact last twice as long, with the same bounce. The average force…',[o('is cut in half',1),o('doubles'),o('stays the same')],[o('the impulse is the same, and F_avg = J/Δt',1,'This is how airbags and helmets work.'),o('a longer push means a bigger force'),o('the ball still bounces at the same speed, so nothing changes')])
+ ]};}},
+{id:'18b', lv:18, title:'Reading a Momentum Bar Chart', make:()=>({
+ text:`A momentum bar chart shows <b>p_i + J = p_f</b> as bars. A bar above the line is positive; below the line is negative. Take + to the right. In this chart, the object starts with p_ix = +3 kg·m/s and ends with p_fx = −2 kg·m/s.`,
+ fig: figBars(3,-2),
+ steps:[
+  bl('info','Read the chart.',['p_ix = {} kg·m/s','p_fx = {} kg·m/s'],[nb(3),nb(-2)]),
+  {type:'mcq', ph:'info', prompt:'What happened to the object?', opts:[o('It was moving right and ended up moving left',1,'The momentum changed sign.'),o('It sped up to the right',0,'p_f is negative, so it moves left at the end.'),o('It stopped',0,'p_f is −2, not 0.')]},
+  bl('law','Find the impulse bar.',['J = p_f − p_i = {} − {} = {} N·s','The impulse bar points {}','So the average force on the object points {}'],[nb(-2),nb(3),nb(-5),sl('down (negative)',['up (positive)']),sl('left',['right'])]),
+  bl('solve','Three quick charts.',['p_i = +5, J = −2:  p_f = {}','p_i = −4, p_f = −1:  J = {}','An object stops completely from p_i = +6:  J = {}'],[nb(3),nb(3),nb(-6)]),
+  pr('check','In the chart above, could the average force have been zero?',[o('No',1),o('Yes')],[o('the momentum changed, and Δp = F_avg Δt',1,'Zero force means zero change in momentum.'),o('the object ended up slower, so no force was needed'),o('forces cancel in a collision')])
+ ]})},
+{id:'18c', lv:18, title:'Conservation of Momentum', make:()=>({
+ text:`Two ice skaters, A ([[60 kg|m_A = 60 kg]]) and B ([[40 kg|m_B = 40 kg]]), stand [[at rest|total momentum before = 0|hidden]] on [[frictionless ice|no horizontal external force|hidden]]. They push off each other, and A moves [[left at 2.0 m/s|v_A = −2.0 m/s]]. Take + to the right.`,
+ fig: figBA([{t:'Before',o:[{x:120,w:36,l:'A',v:'rest'},{x:160,w:36,l:'B',v:'rest'}]},{t:'After',o:[{x:110,w:36,l:'A',d:-1,v:'2.0 m/s'},{x:210,w:36,l:'B',d:1,v:'?'}]}]),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  {type:'fbd', ph:'system', prompt:'Choose the system A + B. Click every force that is EXTERNAL to this system.', forces:[{l:'Weight of A',a:-90,ok:1,why:'Earth is outside the system.'},{l:'Weight of B',a:-90,ok:1,why:'Earth is outside the system.'},{l:'Ice pushing up on A',a:90,ok:1,why:'The ice is outside the system.'},{l:'Ice pushing up on B',a:90,ok:1,why:'The ice is outside the system.'},{l:'A pushing on B',a:0,ok:0,why:'Internal: both skaters are inside the system.'},{l:'B pushing on A',a:180,ok:0,why:'Internal, and the 3rd-law partner of A pushing on B.'},{l:'Friction from the ice',a:0,ok:0,why:'The ice is frictionless.'}]},
+  {type:'mcq', ph:'law', prompt:'Why is the total horizontal momentum conserved?', opts:[o('All the external forces are vertical and cancel, so the net external force is zero',1,'An isolated system keeps its total momentum.'),o('Because the push forces are equal and opposite',0,'Those are internal. They cancel in the TOTAL, but the reason momentum is conserved is that no net EXTERNAL force acts.'),o('Momentum is always conserved for each skater',0,'Each skater\'s momentum changes. Only the total stays the same.')]},
+  bl('solve','Before = after.',['Total momentum before: {} kg·m/s','After:  60 × (−2.0) + 40 × v_B = {}','v_B = {} m/s, moving {}'],[nb(0),nb(0),nb(3),sl('right',['left'])]),
+  {type:'multi', ph:'law', prompt:'Which statements about collisions are true? Select all.', opts:[o('Momentum is conserved in every collision of an isolated system',1,'Elastic or not.'),o('In a perfectly inelastic collision the objects stick together and move with one final velocity',1,'That is the definition.'),o('In a perfectly elastic collision kinetic energy is also conserved',1,'Nothing is lost to heat or sound.'),o('In an inelastic collision momentum is lost',0,'Kinetic ENERGY is lost; momentum is still conserved.'),o('An explosion from rest has total momentum zero afterward',1,'It was zero before.')]},
+  bl('law','Elastic collision with the target (object 2) initially at rest.',['v_1f = (m₁ − m₂) / (m₁ + m₂) × v_1i','v_2f = 2m₁ / (m₁ + m₂) × v_1i','Equal masses:  v_1f = {} × v_1i,  v_2f = {} × v_1i'],[nb(0),nb(1)]),
+  pr('check','A light ball hits a much heavier ball at rest, elastically. The light ball…',[o('bounces back',1),o('keeps going forward'),o('stops')],[o('m₁ − m₂ is negative, so v_1f has the opposite sign to v_1i',1),o('momentum must keep pointing forward'),o('a heavy ball absorbs all the momentum')])
+ ]})},
+/* ---------- LEVEL 19: IMPULSE AND FORCE GRAPHS ---------- */
+{id:'19a', lv:19, title:'Incomplete Momentum Bar Chart', make:()=>({
+ text:`The figure is an incomplete momentum bar chart for a collision that lasts [[10 ms|Δt = 10 ms = 0.010 s]]. Assume that the object is [[initially moving to the left|p_ix is negative|hidden]]. What are the magnitude and direction of the average collision force exerted on the object? Enter a positive value if the force is to the right.`,
+ fig: figBars(-4,6),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues in the text. The momenta are in the chart.'},
+  bl('info','Read the chart (kg·m/s).',['p_ix = {}','p_fx = {}'],[nb(-4),nb(6)]),
+  bl('law','Momentum principle: p_ix + J_x = p_fx.',['J_x = p_fx − p_ix = {} − ({}) = {} N·s','J_x is {}, so the force points to the {}'],[nb(6),nb(-4),nb(10),sl('positive',['negative','zero']),sl('right',['left'])]),
+  pr('check','Could the average force be zero?',[o('No',1),o('Yes')],[o('the momentum changed during the collision, and Δp = F_avg Δt',1,'A zero force gives zero change in momentum.'),o('the final and initial speeds are similar'),o('the impulse is already accounted for in the chart')]),
+  bl('solve','Average force.',['Δt = {} s','F_avg = J_x / Δt = {} / {}'],[nb(0.01),nb(10),nb(0.01)]),
+  {type:'num', ph:'solve', prompt:'Average collision force (+ = right):', sym:'F_avg', unit:'N', ans:1000, slips:[{v:0,msg:'The momentum changed, so the force cannot be zero.'},{v:1,msg:'Convert 10 ms to 0.010 s.'},{v:200,msg:'p_ix is −4, so J = 6 − (−4) = 10 N·s, not 2.'},{v:10,msg:'That is the impulse. Divide by Δt.'}], explain:'F_avg = +1.0 × 10³ N, to the right.'}
+ ]})},
+{id:'19b', lv:19, title:'Impulse from a Triangle Graph', make:()=>({
+ text:`In the figure, [[F₁ = 1100 N|peak force F₁ = 1100 N]]. The time axis is in [[milliseconds|6 ms = 0.006 s|hidden]]. What impulse does the force shown exert on a [[250 g|m = 0.250 kg]] particle?`,
+ fig: figFt({pts:[[0,0],[2,1],[6,0]], xmax:7, ymin:0, ymax:1.25, xt:[0,2,4,6], yt:[[1,'F₁']], xl:'t (ms)', yl:'F_x (N)'}),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues. One hides in the axis label.'},
+  {type:'mcq', ph:'law', prompt:'How do you get the impulse from an F vs t graph?', opts:[o('The area under the curve',1,'J = ∫F dt.'),o('The peak force times the total time',0,'That would be a rectangle. This force is not constant.'),o('The slope of the graph',0,'The slope is the rate of change of the force.')]},
+  {type:'mcq', ph:'info', prompt:'Which given value is NOT needed to find the impulse?', opts:[o('The mass, 250 g',1,'J depends only on the force and time. The mass matters for the change in VELOCITY.'),o('F₁',0,'It is the height of the triangle.'),o('The time axis',0,'It is the base of the triangle.')]},
+  bl('solve','Area of the triangle.',['Base: 6 ms = {} s','J = ½ × base × height = ½ × {} × {}'],[nb(0.006),nb(0.006),nb(1100)]),
+  {type:'num', ph:'solve', prompt:'Impulse:', sym:'J', unit:'N·s', ans:3.3, slips:[{v:3300,msg:'The time axis is in ms: use 0.006 s.'},{v:6.6,msg:'It is a triangle: multiply by ½.'},{v:0.825,msg:'Do not multiply by the mass. J is the area under F vs t.'},{v:19800,msg:'Use area = ½ × 0.006 s × 1100 N.'}]},
+  bl('check','Use the answer.',['Change in the particle\'s velocity: Δv = J / m = {} m/s'],[nb(13.2)])
+ ]})},
+{id:'19c', lv:19, title:'Ball Bouncing Off a Wall', rnd:true, make:()=>{ const Fm=R(800,1200,100), dt=R(8,12,2), J=0.5*Fm*dt/1000, vf=-10+J/0.28; return {
+ text:`A [[280 g|m = 0.280 kg|hidden]] ball collides with a wall. The velocity graph shows it arrives at [[−10 m/s|v_ix = −10 m/s (moving left)]] and leaves at v_fx. The force of the wall on the ball is a triangle that peaks at [[${Fm} N|F_max = ${Fm} N]] and lasts [[${dt} ms|Δt = ${dt} ms = ${dt/1000} s|hidden]]. What is v_fx, the ball's rebound velocity?`,
+ fig: figFt({pts:[[0,-10],[1.2,-10],[3,6],[4.5,6]], xmax:4.6, ymin:-12, ymax:9, yt:[[-10,'−10'],[0,'0'],[6,'v_fx']], xl:'t', yl:'v_x (m/s)', col:'#4caf50'}) + figFt({pts:[[0,0],[dt/2,1],[dt,0],[dt+1.5,0]], xmax:dt+1.5, ymin:0, ymax:1.25, yt:[[1,Fm+' N']], xt:[0,dt], xl:'t (ms)', yl:'F_x (N)'}),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues. Watch the units.'},
+  dr('Draw the free-body diagram of the ball DURING the collision. It moves left, so the wall is on its LEFT.',[fo('n','wall pushing on the ball',0,1,'The wall pushes away from itself, to the right.'),fo('mg','weight',-90,1,'Gravity still acts.'),fo('F mot','"force of the motion"',180,0,'Motion is not a force.')],[['n','>','mg','the wall force reaches hundreds of newtons; mg is only 2.7 N']]),
+  {type:'mcq', ph:'law', prompt:'Why can you ignore gravity during the collision?', opts:[o('It is tiny compared with the wall force and acts for only milliseconds',1,'This is the impulse approximation.'),o('Gravity stops acting during a collision',0,'It always acts.'),o('Gravity is vertical and this is about vertical motion',0,'The motion here is horizontal, and gravity is vertical, but it is also tiny.')]},
+  bl('solve','Impulse = area of the force triangle.',['J = ½ × {} N × {} s = {} N·s'],[nb(Fm),nb(dt/1000),nb(J)]),
+  bl('law','Momentum principle.',['m v_fx = m v_ix + J','v_fx = {} + {} / {}'],[nb(-10),nb(J),nb(0.28)]),
+  {type:'num', ph:'solve', prompt:'Rebound velocity:', sym:'v_fx', unit:'m/s', ans:vf, slips:[{v:10+J/0.28,msg:'v_ix is −10 m/s, not +10.'},{v:-10+0.5*Fm*dt/0.28,msg:'Convert ms to seconds.'}]},
+  pr('check','v_fx is positive. What does that mean?',[o('The ball bounces back to the right',1),o('The ball keeps moving left'),o('A mistake: velocities after a bounce are negative')],[o('a positive velocity points to the right, opposite to how it arrived',1),o('the wall pushes it further left'),o('speeds are always positive')])
+ ]};}},
+{id:'19d', lv:19, title:'Force That Changes With Time', make:()=>({
+ text:`A [[500 g|m = 0.500 kg|hidden]] particle has velocity [[v_x = −8.0 m/s|v_ix = −8.0 m/s]] at [[t = −2 s|start time]]. A force [[F_x = (4 − t²) N|F changes with t: the impulse is an integral (area)|hidden]], with t in s, acts between t = −2 s and [[t = 2 s|end time]]. It rises from 0 N at t = −2 s to 4 N at t = 0 and back to 0 N at t = 2 s. What is the particle's velocity at t = 2 s?`,
+ fig: figFt({pts:Array.from({length:41},(_,k)=>{const t=-2+k*0.1; return [t,4-t*t];}), xmin:-2.6, xmax:2.6, yax:0, ymin:0, ymax:5, xt:[-2,-1,1,2], yt:[[4,'4']], xl:'t (s)', yl:'F_x (N)'}),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  {type:'mcq', ph:'law', prompt:'How do you find the impulse of this force?', opts:[o('J = ∫F dt from −2 s to 2 s',1,'The area under the curve.'),o('J = 4 N × 4 s',0,'The force is only 4 N at one instant. That overestimates the area.'),o('J = F at t = 2 s times 4 s',0,'F is 0 there.')]},
+  bl('solve','Integrate.',['∫(4 − t²) dt = 4t − t³/3','At t = 2:  {}','At t = −2:  {}','J = {} N·s'],[nb(16/3),nb(-16/3),nb(32/3)]),
+  bl('law','Momentum principle.',['v_fx = v_ix + J / m = {} + {} / {}'],[nb(-8),nb(32/3),nb(0.5)]),
+  {type:'num', ph:'solve', prompt:'Velocity at t = 2 s:', sym:'v_fx', unit:'m/s', ans:-8+64/3, slips:[{v:24,msg:'The force is not 4 N the whole time. Integrate.'},{v:-8+32/3,msg:'Divide the impulse by the mass, 0.500 kg.'},{v:8+64/3,msg:'v_ix is −8.0 m/s.'}]},
+  pr('check','The velocity went from −8.0 m/s to about +13 m/s. So the particle…',[o('reversed direction',1),o('kept moving left, only faster'),o('stopped')],[o('the sign changed from negative to positive',1),o('the speed increased'),o('the force was zero at the end')])
+ ]})},
+{id:'19e', lv:19, title:'Rocket Thrust in Deep Space', make:()=>({
+ text:`Far in space, where [[gravity is negligible|thrust is the only force|hidden]], a [[425 kg|m = 425 kg]] rocket traveling at [[65 m/s|v_ix = 65 m/s]] fires its engines. The thrust [[drops steadily from 1000 N to 0 over 30 s|the F–t graph is a triangle|hidden]]. The [[mass lost is negligible|m stays 425 kg|hidden]].`,
+ fig: figFt({pts:[[0,1000],[30,0],[34,0]], xmax:34, ymin:0, ymax:1150, xt:[0,10,20,30], yt:[[1000,'1000']], xl:'t (s)', yl:'F_x (N)'}),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  bl('solve','Impulse = area under the graph.',['J = ½ × {} s × {} N'],[nb(30),nb(1000)]),
+  {type:'num', ph:'solve', prompt:'Impulse from the engine:', sym:'J_x', unit:'N·s', ans:15000, slips:[{v:30000,msg:'It is a triangle: multiply by ½.'}]},
+  pr('sign','When does the rocket reach its MAXIMUM speed?',[o('At t = 30 s',1),o('At t = 0'),o('At t = 15 s')],[o('the thrust points forward the whole time, so the rocket keeps speeding up until the thrust stops',1,'The acceleration gets smaller, but it never turns negative.'),o('the force is largest at the start'),o('halfway through, the force is half')]),
+  bl('law','Momentum principle.',['v_max = v_ix + J / m = {} + {} / {}'],[nb(65),nb(15000),nb(425)]),
+  {type:'num', ph:'solve', prompt:'Maximum speed:', sym:'v_fx', unit:'m/s', ans:65+15000/425, slips:[{v:15000/425,msg:'That is the CHANGE in speed. Add the starting 65 m/s.'}]}
+ ]})},
+/* ---------- LEVEL 20: CONSERVATION AND COLLISIONS ---------- */
+{id:'20a', lv:20, title:'Archer on the Ice', make:()=>({
+ text:`A [[70.0 kg|m_A = 70.0 kg]] archer, standing [[at rest|total momentum before = 0|hidden]] on [[frictionless ice|no horizontal external force|hidden]], shoots a [[200 g|m_arrow = 0.200 kg|hidden]] arrow at a speed of [[100 m/s|v_arrow = 100 m/s]]. What is the recoil speed of the archer?`,
+ fig: figBA([{t:'Before',o:[{x:130,w:44,l:'archer',v:'rest'}]},{t:'After',o:[{x:90,w:44,l:'archer',d:-1,v:'v = ?'},{x:200,w:30,l:'arrow',d:1,v:'100 m/s'}]}]),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  {type:'fbd', ph:'system', prompt:'System: archer + arrow. Click every force that is EXTERNAL.', forces:[{l:'Weight of the archer',a:-90,ok:1,why:'Earth is outside the system.'},{l:'Weight of the arrow',a:-90,ok:1,why:'Earth is outside the system.'},{l:'Ice pushing up on the archer',a:90,ok:1,why:'The ice is outside.'},{l:'Bow pushing the arrow forward',a:0,ok:0,why:'Internal: both are in the system.'},{l:'Arrow pushing back on the bow',a:180,ok:0,why:'Internal.'},{l:'Friction from the ice',a:0,ok:0,why:'The ice is frictionless.'}]},
+  bl('solve','Before = after (+ = direction of the arrow).',['Before: {} kg·m/s','After:  70.0 × v_A + {} × {} = 0','v_A = {} m/s'],[nb(0),nb(0.2),nb(100),nb(-20/70)]),
+  {type:'num', ph:'solve', prompt:'Recoil SPEED of the archer:', sym:'v', unit:'m/s', ans:20/70, slips:[{v:20000/70,msg:'Convert 200 g to 0.200 kg.'}]},
+  pr('check','The recoil speed is small because…',[o('the archer is 350 times heavier than the arrow',1),o('the ice is frictionless'),o('the arrow is fast')],[o('equal and opposite momenta: the bigger mass gets the smaller speed',1),o('friction would make the recoil bigger'),o('a fast arrow always gives a slow recoil, whatever the masses')])
+ ]})},
+{id:'20b', lv:20, title:'Dart Sticks in a Toy Car', make:()=>({
+ text:`A [[39 g|m_d = 0.039 kg|hidden]] dart traveling horizontally hits and [[sticks|perfectly inelastic: they move together|hidden]] in the back of a [[500 g|m_c = 0.500 kg|hidden]] toy car [[at rest|v_car,i = 0|hidden]], causing the car to roll forward at [[1.4 m/s|v_f = 1.4 m/s]]. What was the speed of the dart?`,
+ fig: figBA([{t:'Before',o:[{x:60,w:30,l:'dart',d:1,v:'v = ?'},{x:180,w:60,l:'car',v:'rest'}]},{t:'After',o:[{x:180,w:60,l:'car + dart',d:1,v:'1.4 m/s'}]}]),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues. Watch the units.'},
+  {type:'mcq', ph:'link', prompt:'What kind of collision is this?', opts:[o('Perfectly inelastic: they stick and share one final velocity',1,'So the final mass is m_d + m_c.'),o('Perfectly elastic',0,'Elastic objects bounce apart.'),o('An explosion',0,'Nothing flies apart.')]},
+  bl('solve','Before = after.',['m_d v_d = (m_d + m_c) v_f','v_d = ({} + {}) × 1.4 / {}'],[nb(0.039),nb(0.5),nb(0.039)]),
+  {type:'num', ph:'solve', prompt:'Speed of the dart:', sym:'v_d', unit:'m/s', ans:0.539*1.4/0.039, slips:[{v:0.5*1.4/0.039,msg:'After the collision the dart moves too: use m_d + m_c.'}]},
+  bl('check','Was kinetic energy conserved?',['K before = ½ × 0.039 × {}² = {} J','K after = ½ × 0.539 × 1.4² = {} J','Fraction of K kept: {}'],[nb(19.35),nb(7.30),nb(0.528),nb(0.0723)],'Momentum is conserved, but more than 90% of the kinetic energy turned into heat and deformation.')
+ ]})},
+{id:'20c', lv:20, title:'Football Player on Ice', make:()=>({
+ text:`A [[67.0 kg|m_p = 67.0 kg]] football player is gliding across [[very smooth ice|no horizontal external force|hidden]] at [[1.95 m/s|v_i = 1.95 m/s (player and ball together)]]. He throws a [[0.430 kg|m_b = 0.430 kg]] football [[straight forward|+ = forward|hidden]]. Find his speed afterward if the ball is thrown at [[13.5 m/s|v_b = 13.5 m/s]] (a) relative to the ground, (b) relative to the player.`,
+ fig: figBA([{t:'Before',o:[{x:120,w:50,l:'player+ball',d:1,v:'1.95 m/s'}]},{t:'After',o:[{x:100,w:44,l:'player',d:1,v:'v = ?'},{x:220,w:30,l:'ball',d:1,v:'faster'}]}]),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  bl('info','Momentum before.',['p_before = ({} + {}) × 1.95 = {} kg·m/s'],[nb(67),nb(0.43),nb(131.49)]),
+  bl('solve','(a) Ball at 13.5 m/s relative to the GROUND.',['131.49 = 67.0 v + 0.430 × {}','v = {} m/s'],[nb(13.5),nb(1.876)]),
+  {type:'num', ph:'solve', prompt:'(a) Player\'s speed:', sym:'v', unit:'m/s', ans:(67.43*1.95-0.43*13.5)/67, slips:[{v:(67*1.95-0.43*13.5)/67,msg:'Before the throw the ball moves with him: include its momentum.'}]},
+  {type:'mcq', ph:'link', prompt:'(b) Now the ball leaves at 13.5 m/s relative to the PLAYER. Its velocity relative to the ground is…', opts:[o('v + 13.5, where v is the player\'s final velocity',1,'Velocities relative to the player add on top of his own velocity.'),o('13.5 m/s',0,'That is relative to the player, not the ground.'),o('1.95 + 13.5',0,'The player\'s velocity changes during the throw: use his FINAL velocity.')]},
+  bl('solve','(b) Solve.',['131.49 = 67.0 v + 0.430 (v + 13.5)','131.49 − {} = 67.43 v','v = {} m/s'],[nb(5.805),nb(1.864)]),
+  {type:'num', ph:'solve', prompt:'(b) Player\'s speed:', sym:'v', unit:'m/s', ans:(67.43*1.95-0.43*13.5)/67.43, slips:[{v:(67.43*1.95-0.43*13.5)/67,msg:'Put the ball\'s velocity as (v + 13.5): the v terms combine into 67.43 v.'}]}
+ ]})},
+{id:'20d', lv:20, title:'Train Cars Coupling', make:()=>({
+ text:`Three [[identical|each car has mass m]] train cars, coupled together, are rolling east at speed [[v₀|3 cars at v₀]]. A fourth identical car traveling east at [[2v₀|1 car at 2v₀]] catches up and [[couples|perfectly inelastic: they move together|hidden]] to make a four-car train. A moment later the train hits a fifth identical car [[at rest|5th car: v = 0|hidden]], and it couples to make a five-car train. What is the speed of the five-car train?`,
+ fig: figBA([{t:'Collision 1',o:[{x:20,w:30,l:'4',d:1,v:'2v₀'},{x:120,w:30,l:'1'},{x:152,w:30,l:'2'},{x:184,w:30,l:'3',d:1,v:'v₀'}]},{t:'Collision 2',o:[{x:60,w:120,l:'4-car train',d:1,v:'v₄'},{x:250,w:30,l:'5',v:'rest'}]},{t:'After',o:[{x:110,w:150,l:'5-car train',d:1,v:'v₅ = ?'}]}]),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  {type:'mcq', ph:'system', prompt:'How should you organise this problem?', opts:[o('Two collisions, one after the other, each conserving momentum',1,'Or one step: total momentum never changes.'),o('Use energy conservation',0,'Coupling is perfectly inelastic: kinetic energy is lost.'),o('Use Newton\'s 2nd law with the coupling forces',0,'You do not know those forces.')]},
+  bl('solve','Collision 1.',['Before:  3m v₀ + m (2v₀) = {} m v₀','After:  4m v₄','v₄ = {} v₀'],[nb(5),nb(1.25)]),
+  bl('solve','Collision 2.',['Before:  4m × v₄ = {} m v₀','After:  5m v₅','v₅ = {} v₀'],[nb(5),nb(1)]),
+  {type:'num', ph:'solve', prompt:'v₅ as a multiple of v₀ (the number in front of v₀):', sym:'v₅ / v₀', unit:'', ans:1, explain:'v₅ = v₀. Type v_0 in Mastering.'},
+  pr('check','Shortcut: why can you skip the middle step?',[o('The total momentum, 5m v₀, never changes',1),o('The middle step is always zero'),o('Each car keeps its own momentum')],[o('only internal coupling forces act between the cars',1,'Final: 5m v₅ = 5m v₀.'),o('the fifth car was at rest'),o('identical cars always share speeds equally')])
+ ]})},
+{id:'20e', lv:20, title:'Packages on the Chute', make:()=>({
+ text:`A package of mass [[m|m]] is [[released from rest|v₀ = 0|hidden]] at a loading dock and slides down a [[6.0 m-high|h = 6.0 m]], [[frictionless|mechanical energy is conserved on the chute|hidden]] chute. At the bottom sits a package of mass [[2m|m₂ = 2m, at rest]]. Find (a) their common speed if they stick together, and (b) the rebound height of package m if the collision is perfectly elastic.`,
+ fig: figPackages(),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  {type:'mcq', ph:'system', prompt:'Is momentum conserved while package m slides DOWN the chute?', opts:[o('No: gravity (an external force) speeds it up. Use energy for this part',1,'Momentum is only conserved during the brief collision.'),o('Yes, always',0,'Gravity is an external force that changes its momentum.')]},
+  dr('Draw the free-body diagram of package m on the chute (a slope descending to the RIGHT).',[fo('n','chute pushing perpendicular to it',60,1,'Contact.'),fo('mg','weight',-90,1,'Gravity.'),fo('f','friction',150,0,'The chute is frictionless.')],[],{slope:-30}),
+  bl('solve','Stage 1: speed at the bottom from energy.',['m g h = ½ m v²','v = √(2 × 9.8 × {}) = {} m/s'],[nb(6),nb(10.84)]),
+  bl('solve','(a) Perfectly inelastic.',['m v = (m + 2m) V','V = v / {} = {} m/s'],[nb(3),nb(3.614)]),
+  {type:'num', ph:'solve', prompt:'(a) Common speed:', sym:'V', unit:'m/s', ans:Math.sqrt(117.6)/3, slips:[{v:Math.sqrt(117.6)/2,msg:'The total mass is m + 2m = 3m.'}]},
+  bl('solve','(b) Perfectly elastic, target at rest.',['v_1f = (m − 2m)/(m + 2m) × v = {} × v = {} m/s','Rebound height: h = v_1f² / (2g) = {} m'],[nb(-1/3),nb(-3.614),nb(0.6667)]),
+  {type:'num', ph:'solve', prompt:'(b) Rebound height of package m:', sym:'h', unit:'m', ans:6/9, slips:[{v:6/3,msg:'Height goes with v²: (1/3)² = 1/9 of 6.0 m.'}]},
+  pr('check','In (b), package m comes back up the chute because…',[o('it is lighter than the package it hits',1),o('elastic collisions always reverse both objects'),o('the chute pushes it back')],[o('m₁ − m₂ < 0, so v_1f is negative',1),o('kinetic energy must be shared equally'),o('momentum must point backward afterwards')])
+ ]})},
+{id:'20f', lv:20, title:'Proton Hits a Carbon Atom', make:()=>({
+ text:`A proton is traveling [[to the right|+ = right]] at [[2.0 × 10⁷ m/s|v_1i = 2.0e7 m/s]]. It has a head-on [[perfectly elastic|momentum AND kinetic energy conserved|hidden]] collision with a carbon atom [[at rest|v_2i = 0|hidden]]. The mass of the carbon atom is [[12 times the mass of the proton|m₂ = 12 m₁]].`,
+ fig: figBA([{t:'Before',o:[{x:60,w:26,l:'p',d:1,v:'2.0e7 m/s'},{x:200,w:50,l:'C (12m)',v:'rest'}]},{t:'After',o:[{x:60,w:26,l:'p',d:-1,v:'?'},{x:220,w:50,l:'C',d:1,v:'?'}]}]),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  {type:'mcq', ph:'law', prompt:'Why can you use the elastic-collision formulas here?', opts:[o('The collision is perfectly elastic, head-on, and the target starts at rest',1,'Those are exactly the formulas\' conditions.'),o('Because the proton is small',0,'Size is not the reason.'),o('Every atomic collision uses them',0,'Only perfectly elastic ones.')]},
+  bl('solve','Proton after the collision.',['(m₁ − m₂)/(m₁ + m₂) = (1 − 12)/13 = {}','v_1f = {} × 2.0e7 = {} m/s'],[nb(-11/13),nb(-11/13),nb(-1.692e7)]),
+  {type:'num', ph:'solve', prompt:'Speed of the proton after the collision:', sym:'v_p', unit:'m/s', ans:1.692e7, slips:[{v:2e7*13/11,msg:'The fraction is (1 − 12)/(1 + 12) = −11/13.'}]},
+  bl('solve','Carbon atom after the collision.',['2m₁ / (m₁ + m₂) = 2/13 = {}','v_2f = {} × 2.0e7 = {} m/s'],[nb(2/13),nb(2/13),nb(3.077e6)]),
+  {type:'num', ph:'solve', prompt:'Speed of the carbon atom:', sym:'v_C', unit:'m/s', ans:3.077e6, slips:[{v:2e7/12,msg:'Use v_2f = 2m₁/(m₁ + m₂) × v_1i.'}]},
+  {type:'mcq', ph:'check', prompt:'Which way does the proton go after the collision?', opts:[o('To the left: it bounces back',1,'v_1f is negative.'),o('To the right',0,'Check the sign of v_1f.'),o('It stops',0,'Only for equal masses.')]},
+  bl('check','Check that momentum is conserved (in units of m₁ × 10⁶ m/s).',['Before: {}','After: 1 × (−16.92) + 12 × 3.077 = {}'],[nb(20),nb(20)])
  ]})}
 ];
 
@@ -1999,7 +2199,13 @@ function openNotebook(){
   <div class="formula">ΣF_r = m v²/r = m ω² r, &nbsp; ΣF_t = m a_t, &nbsp; ΣF_z = 0</div>
   <div class="formula">Banked curve (no friction): tan θ = v²/(g r). &nbsp; Conical pendulum: a_r = g tan θ, r = L sin θ</div>
   <p class="small">"Centripetal force" is a name for the net inward force, never an extra arrow on the diagram. In two dimensions, treat x and y separately.</p>
-  <h3>7. Sanity checks</h3><p>a ↑ ⇒ T > mg · a ↓ ⇒ T < mg · Atwood: m₂g < T < m₁g · Units: N = kg·m/s².</p>`;
+  <h3>7. Impulse and momentum (Chapter 11)</h3>
+  <div class="formula">p = m v (a vector: keep the sign), &nbsp; J = ∫F dt = area under F vs t</div>
+  <div class="formula">Momentum principle: p_i + J = p_f, &nbsp; F_avg = J / Δt</div>
+  <div class="formula">Isolated system (no net external force): total p before = total p after</div>
+  <div class="formula">Perfectly inelastic: m₁v₁ + m₂v₂ = (m₁ + m₂)V</div>
+  <div class="formula">Elastic, target at rest: v_1f = (m₁ − m₂)/(m₁ + m₂) v_1i, &nbsp; v_2f = 2m₁/(m₁ + m₂) v_1i</div>
+  <h3>8. Sanity checks</h3><p>a ↑ ⇒ T > mg · a ↓ ⇒ T < mg · Atwood: m₂g < T < m₁g · Units: N = kg·m/s².</p>`;
   document.getElementById('modal').classList.add('show');
 }
 function closeModal(){ document.getElementById('modal').classList.remove('show'); }
