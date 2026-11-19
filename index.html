@@ -445,6 +445,52 @@ function figToy(th){
   return svg(300,202,s);
 }
 
+/* ---------- figures for the Chapter 8 problem set ---------- */
+function figChute(){
+  let s = `<rect x="10" y="190" width="250" height="8" fill="#b9c4c9"/><path d="M90,30 A80,80 0 0 0 90,190" fill="none" stroke="#999" stroke-width="12"/><circle cx="100" cy="30" r="8" fill="#e0a070" stroke="#555"/>`;
+  s += `<line x1="96" y1="34" x2="96" y2="188" stroke="#333" marker-end="url(#arK)" marker-start="url(#arK)"/>` + tx(76,116,'2R','font-size="13" font-style="italic"');
+  s += `<path d="M108,30 Q170,34 214,186" fill="none" stroke="#2a7ab0" stroke-width="1.5" stroke-dasharray="5 4"/>` + ar(110,22,150,22,'B') + tx(154,20,'v',IT('B'));
+  s += `<line x1="96" y1="204" x2="214" y2="204" stroke="#333" marker-end="url(#arK)" marker-start="url(#arK)"/>` + tx(155,218,'D = ?','text-anchor="middle" font-size="13" fill="#b03a36" font-weight="bold"');
+  return svg(270,224,s);
+}
+function figTurntable(rl){
+  let s = `<line x1="20" y1="80" x2="200" y2="80" stroke="#555" stroke-width="5"/><line x1="110" y1="80" x2="110" y2="120" stroke="#555" stroke-width="5"/><line x1="110" y1="20" x2="110" y2="80" stroke="#333" stroke-dasharray="5 4"/><rect x="160" y="60" width="18" height="20" fill="#d9a057" stroke="#555"/>`;
+  s += `<line x1="112" y1="94" x2="168" y2="94" stroke="#333" marker-end="url(#arK)" marker-start="url(#arK)"/>` + tx(140,108,rl||'0.15 m','text-anchor="middle" font-size="11"') + tx(110,14,'axis','text-anchor="middle" font-size="11"') + tx(110,138,'side view','text-anchor="middle" font-size="12" fill="#555"');
+  return svg(220,144,s);
+}
+function figTrack(){
+  let s = `<circle cx="100" cy="95" r="66" fill="none" stroke="#999" stroke-width="10"/><circle cx="100" cy="95" r="3" fill="#333"/><line x1="100" y1="95" x2="166" y2="95" stroke="#333" stroke-dasharray="4 3"/>` + tx(126,88,'r = ?','font-size="12" font-style="italic"');
+  s += `<rect x="157" y="84" width="18" height="24" rx="4" fill="#b9b3d6" stroke="#555"/>` + ar(166,82,166,40,'O') + tx(172,54,'aₜ',IT('O')) + ar(154,100,124,100,'O') + tx(128,116,'aᵣ',IT('O'));
+  s += `<line x1="34" y1="174" x2="166" y2="174" stroke="#333" marker-end="url(#arK)" marker-start="url(#arK)"/>` + tx(100,190,'diameter 280 m','text-anchor="middle" font-size="12"') + tx(100,206,'top view','text-anchor="middle" font-size="12" fill="#555"');
+  return svg(210,212,s);
+}
+function figLoop(){
+  let s = `<circle cx="110" cy="100" r="66" fill="none" stroke="#999" stroke-width="7"/><path d="M20,172 L110,172" stroke="#999" stroke-width="7"/><circle cx="110" cy="100" r="3" fill="#333"/><rect x="96" y="40" width="28" height="14" rx="4" fill="#b9b3d6" stroke="#555"/>`;
+  s += ar(126,40,172,40,'B') + tx(176,44,'v = 2 × critical',IT('B')) + tx(116,96,'r','font-size="13" font-style="italic"') + tx(110,192,'the car is upside down at the top','text-anchor="middle" font-size="11" fill="#555"');
+  return svg(290,198,s);
+}
+function figEarth(){
+  let s = `<circle cx="110" cy="100" r="66" fill="#d5e3ee" stroke="#556"/><line x1="110" y1="20" x2="110" y2="180" stroke="#333" stroke-dasharray="5 4"/><line x1="44" y1="100" x2="176" y2="100" stroke="#888" stroke-dasharray="2 3"/>`;
+  s += `<rect x="104" y="20" width="12" height="14" fill="#f4dcd2" stroke="#555"/>` + tx(124,26,'north pole','font-size="11"') + `<rect x="176" y="93" width="12" height="14" fill="#f4dcd2" stroke="#555"/>` + tx(160,124,'equator','font-size="11"');
+  s += `<path d="M70,14 A44,10 0 1 0 150,14" fill="none" stroke="#333" marker-end="url(#arK)"/>` + tx(110,196,'R = 6.37 × 10⁶ m, one turn every 24 h','text-anchor="middle" font-size="11" fill="#555"');
+  return svg(220,202,s);
+}
+function figRamp(){
+  let s = `<rect x="5" y="150" width="70" height="8" fill="#b9c4c9"/><polygon points="20,150 75,150 75,130" fill="#cfd4d8" stroke="#777"/><rect x="75" y="150" width="150" height="20" fill="#7fb2d8"/><rect x="225" y="150" width="70" height="8" fill="#b9c4c9"/>`;
+  s += tx(150,166,'pool: 10 m','text-anchor="middle" font-size="12" fill="#fff"') + tx(34,146,'20°','font-size="11"') + `<line x1="82" y1="130" x2="82" y2="148" stroke="#333" marker-end="url(#arK)" marker-start="url(#arK)"/>` + tx(86,122,'2.0 m','font-size="11"');
+  s += `<path d="M75,130 Q150,90 206,150" fill="none" stroke="#2a7ab0" stroke-width="1.5" stroke-dasharray="5 4"/>` + tx(20,186,'not to scale: the ramp is drawn short','font-size="10" fill="#555"');
+  return svg(300,192,s);
+}
+function figRotor(){
+  const a=45*Math.PI/180, cx=90, cy=110, Rr=72, bx=cx+Rr*Math.cos(a), by=cy-Rr*Math.sin(a);
+  let s = `<circle cx="${cx}" cy="${cy}" r="${Rr}" fill="none" stroke="#5b8fd0" stroke-width="1.5"/><circle cx="${cx}" cy="${cy}" r="3" fill="#111"/><line x1="${cx}" y1="${cy}" x2="${bx}" y2="${by}" stroke="#333" stroke-width="2.5"/>` + tx(cx-36,cy+18,'pivot','font-size="11"') + tx(cx+12,cy-34,'2.0 m','font-size="11"');
+  s += `<line x1="${bx}" y1="${by}" x2="${bx+46*Math.cos(a)}" y2="${by-46*Math.sin(a)}" stroke="#333" stroke-dasharray="4 3"/>`;
+  const ex=a-70*Math.PI/180; s += `<g transform="translate(${bx},${by}) rotate(${-45})"><rect x="-9" y="-7" width="18" height="14" fill="#f4dcd2" stroke="#555"/></g>`;
+  s += `<line x1="${bx}" y1="${by}" x2="${bx+40*Math.cos(ex)}" y2="${by-40*Math.sin(ex)}" stroke="#999" stroke-width="2" stroke-dasharray="2 2"/>` + tx(bx+40*Math.cos(ex)+2,by-40*Math.sin(ex)+10,'air out','font-size="11"') + tx(bx+16,by-14,'70°','font-size="11"');
+  s += ar(bx,by,bx-40*Math.cos(ex),by+40*Math.sin(ex),'R') + tx(bx-40*Math.cos(ex)-18,by+40*Math.sin(ex)-4,'thrust',IT('R')) + tx(cx,196,'top view','text-anchor="middle" font-size="12" fill="#555"');
+  return svg(210,202,s);
+}
+
 /* ================= thinking-routine phases ================= */
 const PH = [
  ['info','Gather the information','m, g, a, direction of motion, other forces, rope/pulley setup'],
@@ -477,12 +523,13 @@ const LEVELS = [
  {n:13, name:'Motion in a Plane', desc:'Treat x and y separately, each with its own acceleration'},
  {n:14, name:'Class Examples: the r-t-z Method', desc:'Radial and tangential acceleration; axes r, t and z; what produces the acceleration'},
  {n:15, name:'Class Example 2: Set Up the Diagram', desc:'Hill, penny on a ruler, banked curve, salad spinner: FBD in side view, then the r-t-z equations'},
- {n:16, name:'Class Examples 3 to 6: Full Solves', desc:'Conical pendulum, cannonball orbit, penny flying off, the spinning toy'}
+ {n:16, name:'Class Examples 3 to 6: Full Solves', desc:'Conical pendulum, cannonball orbit, penny flying off, the spinning toy'},
+ {n:17, name:'Chapter 8 Problem Set', desc:'Chute, turntable, test track, loop-the-loop, pole vs equator, the Roundup, the daredevil, the rocket block'}
 ];
 
 const CHAPTERS = [
  {n:7, title:"Newton's Laws: Ropes, Pulleys and Inclines", levels:[1,2,3,4,5,6,7,8,9]},
- {n:8, title:'Circular Motion and Motion in a Plane', levels:[10,11,12,13,14,15,16]}
+ {n:8, title:'Circular Motion and Motion in a Plane', levels:[10,11,12,13,14,15,16,17]}
 ];
 const MS = [
 /* ---------- LEVEL 1: CLUE HUNT ---------- */
@@ -1267,6 +1314,113 @@ const MS = [
   bl('solve','Solve for ω.',['ω² = 9.8 × {} / 0.15 = {}','ω = {} rad/s'],[nb(2.249),nb(146.9),nb(12.12)]),
   {type:'num', ph:'solve', prompt:'Period: T = 2π / ω.', sym:'T', unit:'s', ans:0.5184, slips:[{v:12.12,msg:'That is ω. The period is 2π / ω.'}]},
   {type:'mcq', ph:'check', prompt:'The mass of the block never appeared in the answer. Why?', opts:[o('Every term in both equations is proportional to m, so it cancels',1,'Weight, normal force, friction and mω²r all scale with m.'),o('The block is too small to matter',0,'Any size of block gives the same period.'),o('It was forgotten',0,'It cancelled exactly.')]}
+ ]})},
+/* ---------- LEVEL 17: CHAPTER 8 PROBLEM SET ---------- */
+{id:'17a', lv:17, title:'Ball Leaving the Semicircular Chute', make:()=>({
+ text:`A ball is launched up a [[semicircular chute|radius R; the top is 2R above the ground (figure)|hidden]] so that at the top of the chute, [[just before it goes into free fall|after the top, gravity is the only force: projectile|hidden]], the ball has a centripetal acceleration of magnitude [[2g|a_r = v²/R = 2g]]. At the top it moves [[horizontally|v₀ is horizontal, v_y0 = 0|hidden]]. How far from the bottom of the chute does the ball land?`,
+ fig: figChute(),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues. The height comes from the figure.', explain:'Two stages: circular motion tells you the speed at the top; projectile motion tells you how far it flies.'},
+  {type:'mcq', ph:'info', prompt:'How high above the ground is the ball when it leaves the chute?', opts:[o('2R, the diameter',1,'The figure labels it.'),o('R',0,'The top of a semicircle is a full diameter above the bottom.'),o('It is not given',0,'Look at the figure.')], add:['h = 2R']},
+  bl('solve','Stage 1: the speed at the top from the centripetal acceleration.',['a_r = v² / R = {} g','So v² = {} g R'],[nb(2),nb(2)]),
+  pr('sign','Right after leaving the chute, the ball\'s acceleration is…',[o('g, straight down',1),o('2g, toward the centre of the chute'),o('zero')],[o('the chute no longer touches it, so gravity is the only force',1),o('it keeps the centripetal acceleration it had'),o('it was moving horizontally, so nothing pulls it')]),
+  bl('solve','Stage 2: time to fall 2R from rest vertically.',['2R = ½ g t²','t² = {} R / g'],[nb(4)]),
+  bl('solve','Horizontal distance.',['D = v t, so D² = v² t² = (2gR) × (4R/g) = {} R²','D = √{} × R = {} R'],[nb(8),nb(8),nb(2.828)]),
+  {type:'num', ph:'solve', prompt:'Enter D as a multiple of R (the number in front of R).', sym:'D / R', unit:'', ans:2*Math.SQRT2, slips:[{v:2,msg:'That would be a fall of only R. The drop is 2R.'},{v:Math.sqrt(2)*2*2,msg:'Check: D² = 8R², so D = √8 R.'}], explain:'D = 2√2 R ≈ 2.83 R. Type 2*sqrt(2)*R in Mastering.'},
+  pr('check','Notice that g cancelled out. On the moon the ball would land…',[o('at the same distance',1),o('farther away'),o('closer')],[o('with a_r = 2g fixed, a weaker g means a slower launch AND a slower fall, and the two effects cancel',1),o('weaker gravity always means a longer flight'),o('weaker gravity means a shorter flight')])
+ ]})},
+{id:'17b', lv:17, title:'Cylinder on a Turntable', rnd:true, make:()=>{ const mu=R(0.06,0.12,0.01), r=R(0.1,0.25,0.05), v=Math.sqrt(mu*9.8*r); return {
+ text:`A small metal cylinder rests on a circular turntable rotating at [[constant speed|a_t = 0; a = v²/r toward the centre|hidden]]. The cylinder has a mass of [[0.20 kg|m = 0.20 kg]], the coefficient of [[static friction|the cylinder does not slip, and at v_max friction is at its limit μₛn|hidden]] between the cylinder and the turntable is [[${mu}|μₛ = ${mu}]], and the cylinder is [[${r} m from the center|r = ${r} m]]. Take g = 9.8 m/s². What is the maximum speed the cylinder can have without slipping off?`,
+ fig: figTurntable(r+' m') + figTop({ar:true}),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  dr('Draw the free-body diagram in the SIDE VIEW. The axis (centre) is to the LEFT.',[fo('n','turntable pushing up',90,1,'Contact.'),fo('mg','weight',-90,1,'Gravity.'),fo('fₛ','static friction toward the centre',180,1,'The only horizontal force: it turns the cylinder.'),fo('f out','friction pointing outward',0,0,'Without friction the cylinder would slide outward, so friction points inward.'),fo('Fc','"centripetal force"',180,0,'Not a separate force. Friction is the centripetal force.')],[['n','=','mg','no acceleration along z']]),
+  bl('law',"Newton's 2nd law with the r-t-z axes.",['r:  fₛ = m v² / {}','z:  n − mg = {}','At v_max:  fₛ = μₛ × {}'],[sl('r',['m','g']),nb(0),sl('n',['mg','m'])]),
+  bl('solve','Combine.',['μₛ m g = m v² / r, so the {} cancels','v_max = √(μₛ g r) = √({} × 9.8 × {})'],[sl('mass',['radius','speed']),nb(mu),nb(r)]),
+  {type:'num', ph:'solve', prompt:'Calculate v_max (two significant figures).', sym:'v_max', unit:'m/s', ans:v, slips:[{v:mu*9.8*r,msg:'That is v². Take the square root.'}]},
+  {type:'mcq', ph:'check', prompt:'Which given value was NOT needed?', opts:[o('The mass, 0.20 kg',1,'It cancels: both the friction available and the force needed are proportional to m.'),o('The radius',0,'v_max depends on r.'),o('μₛ',0,'μₛ sets how much friction is available.')]}
+ ]};}},
+{id:'17c', lv:17, title:'Car Speeding Up on a Round Track', rnd:true, make:()=>{ const at=R(0.8,2,0.2), v=Math.sqrt(at*140), t=v/at; return {
+ text:`A new car is tested on a [[280 m-diameter|r = 140 m, half the diameter|hidden]] track. It [[starts from rest|v₀ = 0|hidden]] and speeds up at a [[steady ${at} m/s²|a_t = ${at} m/s², constant|hidden]]. How long after starting is the magnitude of its centripetal acceleration equal to its tangential acceleration?`,
+ fig: figTrack(),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues. One of them is a trap.', explain:'The track gives the DIAMETER; circular-motion formulas need the radius.'},
+  bl('law','The two parts of the acceleration.',['Tangential:  a_t = {} m/s², and it stays the {}','Centripetal:  a_r = v² / {}, and it {} as the car speeds up'],[nb(at),sl('same',['zero','growing']),sl('r',['t','a_t']),sl('grows',['stays the same','shrinks'])]),
+  bl('solve','Find the speed when the two are equal.',['v² / r = a_t, so v = √(a_t × r) = √({} × {})'],[nb(at),nb(140)]),
+  {type:'num', ph:'solve', prompt:'Speed at that moment:', sym:'v', unit:'m/s', ans:v, slips:[{v:Math.sqrt(at*280),msg:'Use the radius, 140 m.'}]},
+  bl('solve','Kinematics along the track.',['v = v₀ + a_t t,  with v₀ = {}','t = v / a_t = {} / {}'],[nb(0),nb(v),nb(at)]),
+  {type:'num', ph:'solve', prompt:'Time after starting:', sym:'Δt', unit:'s', ans:t, slips:[{v:Math.sqrt(280/at),msg:'Use r = 140 m, not the diameter.'}]},
+  pr('check','At that moment, the total acceleration points…',[o('45° between "forward" and "toward the centre"',1),o('straight at the centre'),o('straight forward')],[o('the two perpendicular parts are equal in size',1),o('in circular motion a always points at the centre'),o('the car is speeding up, so a is along v')])
+ ]};}},
+{id:'17d', lv:17, title:'Loop-the-Loop at Twice the Critical Speed', make:()=>({
+ text:`A roller coaster car crosses the [[top of a circular loop-the-loop|upside down: the track is ABOVE the car, the centre is BELOW|hidden]] at [[twice the critical speed|v = 2v_c|hidden]]. What is the ratio of the normal force to the gravitational force?`,
+ fig: figLoop(),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Find the two hidden clues.'},
+  {type:'mcq', ph:'info', prompt:'What does "critical speed" mean at the top of a loop?', opts:[o('The slowest speed that still makes it around: there, n = 0 and gravity alone gives mv²/r',1,'So v_c² = g r.'),o('The fastest safe speed',0,'It is the slowest speed that keeps the car on the track.'),o('The speed at which n = mg',0,'At the critical speed the track does not push at all.')], add:['v_c² = g r']},
+  dr('Draw the free-body diagram of the car at the top. The centre of the loop is BELOW the car.',[fo('n','track pushing on the car',-90,1,'The track is above the car, so it pushes DOWN, toward the centre.'),fo('mg','weight',-90,1,'Gravity.'),fo('n↑','track pushing up',90,0,'The car is upside down: the track can only push it toward the centre, which is down.')],[['n','>','mg','the answer below shows n = 3mg']]),
+  {type:'eq', ph:'law', prompt:'ΣF along r (+ = down, toward the centre):', lhs:2, tiles:['n','mg','mv²/r','0'], ans:['+n,+mg=mv²/r']},
+  bl('solve','Put in v = 2v_c.',['v² = (2v_c)² = {} v_c² = {} g r','So m v² / r = {} mg','n = 4mg − mg = {} mg'],[nb(4),nb(4),nb(4),nb(3)]),
+  {type:'mcq', ph:'solve', prompt:'The ratio n / F_G is…', opts:[o('3',1,'n = 3mg.'),o('4',0,'That is mv²/r. Part of it is supplied by gravity.'),o('2',0,'The speed doubles, but v is squared.'),o('5',0,'At the top, n and mg point the same way, so subtract mg from 4mg.')]},
+  pr('check','At exactly the critical speed, the riders feel…',[o('weightless for a moment',1),o('three times their weight'),o('their normal weight')],[o('n = 0: nothing pushes on them',1),o('they are upside down'),o('the speed is the slowest possible')])
+ ]})},
+{id:'17e', lv:17, title:'Weighing Yourself at the Pole and the Equator', make:()=>({
+ text:`An [[83 kg|m = 83 kg]] man weighs himself at the north pole and at the equator. Assume the Earth is [[perfectly spherical|the same g and R everywhere|hidden]]. The Earth [[turns once a day|T = 24 h = 86 400 s|hidden]], so at the equator he moves in a circle of radius R = 6.37 × 10⁶ m, while at the pole he just turns on the spot.`,
+ fig: figEarth(),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  {type:'mcq', ph:'info', prompt:'Two numbers you need are not in the original problem. Which?', opts:[o("The Earth's radius and its rotation period (24 h)",1,'Look them up: R = 6.37 × 10⁶ m, T = 86 400 s.'),o('His height and the scale model',0,'Neither matters.'),o('g at the equator and g at the pole',0,'A perfect sphere has the same gravity everywhere.')]},
+  dr('Draw his free-body diagram at the EQUATOR. The centre of the Earth is straight DOWN.',[fo('n','scale pushing up',90,1,'This is the reading.'),fo('mg','gravity',-90,1,'Toward the centre of the Earth.'),fo('F out','centrifugal force',90,0,'Not a real force.')],[['mg','>','n','he moves in a circle, so the net force points down, toward the centre']]),
+  {type:'eq', ph:'law', prompt:'ΣF along r at the equator (+ = down, toward the centre):', lhs:2, tiles:['mg','n','mω²R','0'], ans:['+mg,-n=mω²R']},
+  {type:'mcq', ph:'solve', prompt:'Which scale reading is higher?', opts:[o('At the north pole',1,'There r = 0, so no centripetal force is needed and n = mg.'),o('At the equator',0,'At the equator part of gravity is used up turning him: n = mg − mω²R.')]},
+  bl('solve','How much smaller is the equator reading?',['ω = 2π / 86 400 = {} rad/s','ω² R = {} m/s²'],[nb(7.272e-5),nb(0.0337)]),
+  {type:'num', ph:'solve', prompt:'Difference in scale reading: Δw = m ω² R.', sym:'Δw', unit:'N', ans:83*Math.pow(2*Math.PI/86400,2)*6.37e6, slips:[{v:83*Math.pow(2*Math.PI/24,2)*6.37e6,msg:'Convert 24 hours to seconds.'}]},
+  pr('check','Δw is about 0.3% of his weight. Why so small?',[o('ω²R = 0.034 m/s² is tiny compared with g',1),o('the Earth spins too fast to notice'),o('the scale cannot measure such a small difference')],[o('the Earth turns only once a day, so ω is very small',1),o('a large radius always makes the effect small'),o('scales are calibrated at the equator')])
+ ]})},
+{id:'17f', lv:17, title:'The Roundup Ride', rnd:true, make:()=>{ const Tp=R(3.2,4.2,0.1), m=57, om=2*Math.PI/Tp, a=om*om*9, top=m*(a-9.8), bot=m*(a+9.8), Tmax=2*Math.PI/Math.sqrt(9.8/9); return {
+ text:`In an amusement park ride called The Roundup, passengers stand inside an [[18.0 m-diameter|r = 9.0 m|hidden]] rotating ring. After the ring has acquired sufficient speed, it [[tilts into a vertical plane|a vertical circle: the centre is BELOW the rider at the top and ABOVE at the bottom|hidden]]. The ring rotates [[once every ${Tp} s|T = ${Tp} s]], and a rider's mass is [[57.0 kg|m = 57.0 kg]]. With how much force does the ring push on her at the top and at the bottom? What is the longest rotation period that keeps riders from falling off at the top?`,
+ fig: figFerris('9.0 m'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues. Watch the diameter.'},
+  bl('info','Get the circular-motion numbers ready.',['r = {} m','ω = 2π / T = {} rad/s','a_r = ω² r = {} m/s²'],[nb(9),nb(om),nb(a)]),
+  dr('Draw her free-body diagram at the TOP. She stands against the ring, which is ABOVE her; the centre is BELOW.',[fo('n','ring pushing on her, toward the centre',-90,1,'At the top the ring is outside her, so it pushes down.'),fo('mg','weight',-90,1,'Gravity.'),fo('n↑','ring pushing up',90,0,'The ring is above her head at the top.')],[['n','>','mg',`a_r = ${f3(a)} m/s² is bigger than 2g here, so n = m(a_r − g) > mg`]]),
+  {type:'eq', ph:'law', prompt:'ΣF along r at the top (+ = down, toward the centre):', lhs:2, tiles:['n','mg','mω²r','0'], ans:['+n,+mg=mω²r']},
+  {type:'num', ph:'solve', prompt:'Force of the ring at the top: n = m(ω²r − g).', sym:'n_top', unit:'N', ans:top, slips:[{v:bot,msg:'At the top, gravity helps: subtract mg.'}]},
+  {type:'eq', ph:'law', prompt:'ΣF along r at the bottom (+ = up, toward the centre):', lhs:2, tiles:['n','mg','mω²r','0'], ans:['+n,-mg=mω²r']},
+  {type:'num', ph:'solve', prompt:'Force of the ring at the bottom: n = m(ω²r + g).', sym:'n_bottom', unit:'N', ans:bot},
+  bl('solve','The longest period that still works at the top.',['Riders start to fall when n = {}','Then mg = m ω² r, so ω_min = √(g / r) = {} rad/s','T_max = 2π / ω_min = {} s'],[nb(0),nb(Math.sqrt(9.8/9)),nb(Tmax)]),
+  {type:'num', ph:'solve', prompt:'Longest rotation period:', sym:'T_max', unit:'s', ans:Tmax, slips:[{v:2*Math.PI/Math.sqrt(9.8/18),msg:'Use the radius, 9.0 m.'}]},
+  pr('check','A heavier rider needs a different T_max.',[o('False: the same T_max works for everyone',1),o('True: heavier riders need a faster spin')],[o('the mass cancels: ω_min = √(g/r)',1),o('a heavier rider needs more force to stay up')])
+ ]};}},
+{id:'17g', lv:17, title:'Motorcycle Over the Crocodile Pool', make:()=>({
+ text:`A motorcycle daredevil rides up a [[2.0 m-high|ramp top is h = 2.0 m above the ground|hidden]], [[20°|θ = 20°]] ramp, to sail across a [[10 m-wide pool|he must travel at least 10 m in the air|hidden]] and land at [[ground level|lands 2.0 m below the launch point|hidden]]. The engine [[dies just as he starts up the ramp|no thrust on the ramp: only gravity, n and rolling friction|hidden]]. He is going [[11.4 m/s|v₀ = 11.4 m/s at the bottom of the ramp]] at that instant, and the rolling friction coefficient is [[0.02|μ_r = 0.02]]. Does he survive?`,
+ fig: figRamp(),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues. There are several hidden ones.', explain:'Two stages: slowing down on the ramp (1D along the slope), then projectile motion from 2.0 m up.'},
+  bl('info','Ramp geometry.',['Ramp length: L = h / sin θ = 2.0 / sin 20° = {} m'],[nb(5.848)]),
+  dr('Draw his free-body diagram on the ramp. He rides UP the slope, which rises to the RIGHT.',[fo('n','ramp pushing perpendicular to it',110,1,'Contact.'),fo('mg','weight',-90,1,'Straight down.'),fo('f_r','rolling friction, down the slope',200,1,'Opposes the motion up the ramp.'),fo('thrust','engine thrust',20,0,'The engine has died.')],[['mg','>','n','n = mg cos θ']],{slope:20}),
+  bl('law','Along the slope (+ = up the ramp).',['ΣF = −mg sin θ − μ_r mg cos θ = m a','a = −g(sin 20° + 0.02 cos 20°) = −{} m/s²'],[nb(3.536)]),
+  bl('solve','Speed at the top of the ramp.',['v² = v₀² + 2 a L = 11.4² − 2 × 3.536 × 5.848 = {}','v = {} m/s'],[nb(88.6),nb(9.413)]),
+  pr('sign','After leaving the ramp, his acceleration is…',[o('g, straight down',1),o('the same as on the ramp'),o('zero')],[o('he is a projectile: gravity is the only force',1),o('friction keeps slowing him'),o('nothing pushes him any more')]),
+  bl('solve','Launch components.',['v_x = v cos 20° = {} m/s','v_y = v sin 20° = {} m/s, upward'],[nb(8.845),nb(3.219)]),
+  bl('solve','Time to fall to the ground, 2.0 m below the launch.',['y = 2.0 + v_y t − 4.9 t² = 0','t = {} s (the positive root)'],[nb(1.047)]),
+  {type:'num', ph:'solve', prompt:'Horizontal distance he travels in the air: x = v_x t.', sym:'x', unit:'m', ans:9.26, slips:[{v:11.4*Math.cos(20*Math.PI/180)*1.31,msg:'Use the speed at the TOP of the ramp, after slowing down.'}]},
+  {type:'mcq', ph:'check', prompt:'The pool is 10 m wide. Does he survive?', opts:[o('No: he lands about 0.7 m short. Looks like crocodile food.',1,'He comes down at about 9.3 m.'),o('Yes: he clears the pool',0,'9.3 m is less than 10 m.')]}
+ ]})},
+{id:'17h', lv:17, title:'Rocket Block on a Rod', make:()=>({
+ text:`A [[500 g|m = 0.500 kg|hidden]] steel block rotates on a [[steel table|kinetic friction steel on steel: μₖ = 0.60 (from the table)|hidden]] while attached to a [[2.0 m-long|r = 2.0 m]] massless rod. Compressed air ejected from a nozzle on the back of the block exerts a thrust of [[3.9 N|F = 3.9 N]]. The nozzle is [[70° from the radial line|thrust has a tangential part F sin 70° and a radial part F cos 70°|hidden]]. The block [[starts from rest|ω₀ = 0|hidden]]. Find the angular velocity and the rod tension after [[10 rev|Δθ = 10 × 2π = 20π rad|hidden]].`,
+ fig: figRotor(),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues. Several are hidden.', explain:'The coefficient of friction is not in the problem: steel on steel, kinetic, is μₖ = 0.60 in the textbook table.'},
+  {type:'mcq', ph:'system', prompt:'The thrust points 70° from the radial line, forward and inward. How does it split?', opts:[o('Along t: F sin 70° (speeds it up). Along r: F cos 70°, toward the pivot',1,'70° from radial means mostly tangential.'),o('Along t: F cos 70°. Along r: F sin 70°',0,'The angle is measured from the RADIAL line, so the radial part uses cos.'),o('All of it is tangential',0,'Only part of it.')]},
+  bl('info','Forces along t.',['Thrust along t: 3.9 sin 70° = {} N','Kinetic friction: μₖ m g = 0.60 × 0.500 × 9.8 = {} N, pointing {} the motion'],[nb(3.665),nb(2.94),sl('against',['along','perpendicular to'])]),
+  bl('law','Tangential motion.',['ΣF_t = 3.665 − 2.94 = {} N = m a_t','a_t = {} m/s²','α = a_t / r = {} rad/s²'],[nb(0.725),nb(1.45),nb(0.725)]),
+  bl('solve','Angular kinematics after 10 rev.',['Δθ = 10 × 2π = {} rad','ω² = ω₀² + 2αΔθ, with ω₀ = {}'],[nb(62.83),nb(0)]),
+  {type:'num', ph:'solve', prompt:'Angular velocity after 10 rev:', sym:'ω', unit:'rad/s', ans:9.544, slips:[{v:Math.sqrt(2*0.725*10),msg:'Convert 10 rev to radians: × 2π.'},{v:Math.sqrt(2*7.33/2*62.83),msg:'Include friction: subtract it from the tangential thrust.'}]},
+  {type:'fbd', ph:'fbd', prompt:'Forces on the block in the plane of the table (top view). Click those that have a part along r, toward the pivot.', forces:[{l:'Rod tension T, toward the pivot',a:180,ok:1,why:'The rod pulls the block inward.'},{l:'Radial part of the thrust, F cos 70°, toward the pivot',a:180,ok:1,why:'The nozzle points partly outward, so the thrust is partly inward.'},{l:'Friction',a:90,ok:0,why:'Friction is along the motion (tangential), not radial.'},{l:'Centrifugal force, outward',a:0,ok:0,why:'Not a real force.'}]},
+  {type:'eq', ph:'law', prompt:'ΣF along r (+ = toward the pivot):', lhs:2, tiles:['T','F cos70°','F sin70°','f_k','mω²r'], rhs:['mω²r','0'], ans:['+T,+F cos70°=mω²r']},
+  bl('solve','Substitute.',['m ω² r = 0.500 × {}² × 2.0 = {} N','F cos 70° = {} N'],[nb(9.544),nb(91.08),nb(1.334)]),
+  {type:'num', ph:'solve', prompt:'Tension in the rod after 10 rev:', sym:'T', unit:'N', ans:89.75, slips:[{v:91.08,msg:'The thrust also pushes inward: subtract F cos 70°.'},{v:92.41,msg:'The radial part of the thrust points INWARD, helping the rod, so subtract it.'}]}
  ]})}
 ];
 
