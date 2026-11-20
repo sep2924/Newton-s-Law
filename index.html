@@ -524,6 +524,21 @@ function figPackages(){
   return svg(280,180,s);
 }
 
+/* ---------- figures for the Chapter 11 class problems ---------- */
+function figClay(){
+  let s = `<line x1="20" y1="110" x2="300" y2="110" stroke="#ccc"/><line x1="160" y1="10" x2="160" y2="200" stroke="#ccc"/>` + tx(296,124,'+x','font-size="11" fill="#777"') + tx(166,18,'+y','font-size="11" fill="#777"');
+  s += `<circle cx="70" cy="40" r="10" fill="#eee" stroke="#555"/>` + tx(50,24,'40 g','font-size="12"') + ar(78,48,118,88,'G') + tx(90,92,'4.0 m/s','font-size="11"') + `<line x1="80" y1="40" x2="110" y2="40" stroke="#777" stroke-dasharray="3 3"/>` + tx(108,56,'45°','font-size="11"');
+  s += `<circle cx="280" cy="80" r="10" fill="#eee" stroke="#555"/>` + tx(266,104,'30 g','font-size="12"') + ar(268,80,214,80,'G') + tx(222,72,'3.0 m/s','font-size="11"');
+  s += `<circle cx="150" cy="190" r="10" fill="#eee" stroke="#555"/>` + tx(166,204,'20 g','font-size="12"') + ar(150,178,150,138,'G') + tx(156,160,'2.0 m/s','font-size="11"');
+  return svg(320,212,s);
+}
+function figPendulum(){
+  return svg(220,170, CEIL(60,100) + `<line x1="110" y1="12" x2="160" y2="110" stroke="#555" stroke-width="2"/><line x1="110" y1="12" x2="110" y2="130" stroke="#bbb" stroke-dasharray="4 3"/><circle cx="160" cy="110" r="12" fill="#f4dcd2" stroke="#555"/><path d="M110,142 A110,110 0 0 0 176,118" fill="none" stroke="#2a7ab0" stroke-dasharray="4 3"/>` + ar(168,100,182,74,'B') + tx(186,80,'v',IT('B')) + tx(110,164,'swinging up: slowing down','text-anchor="middle" font-size="11" fill="#555"'));
+}
+function figDrop(){
+  return svg(150,190, `<rect x="10" y="168" width="130" height="8" fill="#b9c4c9"/><circle cx="60" cy="22" r="10" fill="#e0a070" stroke="#555"/><line x1="96" y1="22" x2="96" y2="166" stroke="#333" marker-end="url(#arK)" marker-start="url(#arK)"/>` + tx(102,98,'2.0 m','font-size="12"') + `<line x1="60" y1="36" x2="60" y2="150" stroke="#2a7ab0" stroke-dasharray="4 3" marker-end="url(#arB)"/>` + tx(75,186,'h = ? after the bounce','text-anchor="middle" font-size="11" fill="#b03a36"'));
+}
+
 /* ================= thinking-routine phases ================= */
 const PH = [
  ['info','Gather the information','m, g, a, direction of motion, other forces, rope/pulley setup'],
@@ -560,13 +575,14 @@ const LEVELS = [
  {n:17, name:'Chapter 8 Problem Set', desc:'Chute, turntable, test track, loop-the-loop, pole vs equator, the Roundup, the daredevil, the rocket block'},
  {n:18, name:'Basic Concepts of Momentum', desc:'p = mv with signs, impulse = area under F vs t, bar charts, conservation, types of collisions'},
  {n:19, name:'Impulse and Force Graphs', desc:'Bar chart, triangle and curved force graphs, the wall bounce, the rocket'},
- {n:20, name:'Conservation of Momentum and Collisions', desc:'Archer, dart, football player, train cars, packages, proton and carbon'}
+ {n:20, name:'Conservation of Momentum and Collisions', desc:'Archer, dart, football player, train cars, packages, proton and carbon'},
+ {n:21, name:'Class Problems: Momentum', desc:'Rubber ball bounce, is momentum conserved?, sticking cars, explosion, bullet in a block, 2-D clay, door, snow'}
 ];
 
 const CHAPTERS = [
  {n:7, title:"Newton's Laws: Ropes, Pulleys and Inclines", levels:[1,2,3,4,5,6,7,8,9]},
  {n:8, title:'Circular Motion and Motion in a Plane', levels:[10,11,12,13,14,15,16,17]},
- {n:11, title:'Impulse and Momentum', levels:[18,19,20]}
+ {n:11, title:'Impulse and Momentum', levels:[18,19,20,21]}
 ];
 const MS = [
 /* ---------- LEVEL 1: CLUE HUNT ---------- */
@@ -1621,7 +1637,97 @@ const MS = [
   {type:'num', ph:'solve', prompt:'Speed of the carbon atom:', sym:'v_C', unit:'m/s', ans:3.077e6, slips:[{v:2e7/12,msg:'Use v_2f = 2m₁/(m₁ + m₂) × v_1i.'}]},
   {type:'mcq', ph:'check', prompt:'Which way does the proton go after the collision?', opts:[o('To the left: it bounces back',1,'v_1f is negative.'),o('To the right',0,'Check the sign of v_1f.'),o('It stops',0,'Only for equal masses.')]},
   bl('check','Check that momentum is conserved (in units of m₁ × 10⁶ m/s).',['Before: {}','After: 1 × (−16.92) + 12 × 3.077 = {}'],[nb(20),nb(20)])
- ]})}
+ ]})},
+/* ---------- LEVEL 21: CHAPTER 11 CLASS PROBLEMS ---------- */
+{id:'21a', lv:21, title:'Problem 2: Rubber Ball Bounce', make:()=>({
+ text:`A [[200 g|m = 0.200 kg|hidden]] rubber ball is [[released|v₀ = 0|hidden]] from a height of [[2.0 m|h₁ = 2.0 m]]. It collides with the floor and bounces back up. The graph shows the force on the ball by the floor: a triangle from [[10 ms to 20 ms|Δt = 10 ms = 0.010 s|hidden]] with a peak of [[480 N|F_max = 480 N]]. How high does the ball rebound?`,
+ fig: figDrop() + figFt({pts:[[0,0],[10,0],[15,480],[20,0],[25,0]], xmax:25, ymin:0, ymax:540, xt:[10,20], yt:[[480,'480']], xl:'t (ms)', yl:'F_BF (N)'}),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.', explain:'Three stages: fall (energy or kinematics), bounce (impulse), rise (energy or kinematics).'},
+  bl('solve','Stage 1: speed just before hitting the floor.',['v = √(2 g h) = √(2 × 9.8 × {}) = {} m/s, pointing {}'],[nb(2),nb(6.261),UD('down')]),
+  dr('Draw the free-body diagram of the ball WHILE it is squashed against the floor.',[fo('F_BF','floor pushing up',90,1,'The floor pushes up on the ball.'),fo('mg','weight',-90,1,'Gravity.'),fo('F↓','ball pushing down on the floor',-90,0,'That force acts on the floor, not the ball.')],[['F_BF','>','mg','the floor force reaches 480 N; mg is only 1.96 N']]),
+  bl('solve','Stage 2: the bounce (+ = up). Ignore gravity during the 10 ms (impulse approximation).',['p_i = 0.200 × (−{}) = {} kg·m/s','J = area of the triangle = ½ × {} s × 480 N = {} N·s','p_f = p_i + J = {} kg·m/s','v_f = p_f / m = {} m/s'],[nb(6.261),nb(-1.252),nb(0.01),nb(2.4),nb(1.148),nb(5.739)]),
+  bl('solve','Stage 3: rise to the top, where v = 0.',['h = v_f² / (2g) = {}² / 19.6'],[nb(5.739)]),
+  {type:'num', ph:'solve', prompt:'Rebound height (impulse approximation):', sym:'h', unit:'m', ans:5.739*5.739/19.6, slips:[{v:1.62,msg:'Close: you included gravity\'s impulse (−0.0196 N·s). That is more exact, but this problem uses the impulse approximation, which gives 1.68 m.'},{v:2.4*2.4/0.04/19.6,msg:'Start from p_i = −1.25 kg·m/s, not from rest: the ball was already moving down.'},{v:2,msg:'A real ball loses some energy: use the impulse from the graph.'}]},
+  pr('check','The ball rebounds lower than 2.0 m. Is that reasonable?',[o('Yes',1),o('No, it should return to 2.0 m')],[o('the impulse 2.4 N·s is less than the 2 × 1.25 = 2.5 N·s a perfect bounce needs',1,'Some energy goes into heat and sound.'),o('momentum is conserved, so it must return to the same height')])
+ ]})},
+{id:'21b', lv:21, title:'Problem 5: Is Momentum Conserved?', make:()=>({
+ text:`Momentum of a SYSTEM is conserved only when the net external force on that system is zero. Decide for each scenario, and say which system you mean.`,
+ fig: figPendulum() + figBA([{t:'Before',o:[{x:50,w:40,l:'car 1',d:1,v:'v'},{x:230,w:40,l:'car 2',d:-1,v:'v'}]},{t:'After',o:[{x:140,w:80,l:'stuck together',v:'v_f = ?'}]}]),
+ steps:[
+  pr('system','a. An apple falls from a tree. System = the apple. Is its momentum conserved?',[o('No',1),o('Yes')],[o('gravity is an external force on the apple, so its momentum grows downward',1,'Look at the arrows: v_f is longer than v_i.'),o('nothing touches the apple while it falls'),o('momentum is always conserved')]),
+  pr('system','Same apple, but now the system is the apple + the Earth.',[o('Conserved',1),o('Not conserved')],[o('gravity is now internal: the Earth pulls the apple and the apple pulls the Earth equally',1,'The Earth moves up an immeasurably tiny amount.'),o('the Earth is too big to move'),o('the apple still speeds up')]),
+  pr('system','b. A pendulum bob swings up. System = the bob. Is its momentum conserved?',[o('No',1),o('Yes')],[o('gravity and the tension are external and do not cancel; the bob slows down and changes direction',1),o('the string holds it, so nothing changes'),o('the speed is the same at both ends of the swing')]),
+  {type:'fbd', ph:'system', prompt:'c. Two identical cars collide head-on and stick. System = both cars. Click the EXTERNAL forces.', forces:[{l:'Weight of car 1',a:-90,ok:1,why:'Earth is outside.'},{l:'Weight of car 2',a:-90,ok:1,why:'Earth is outside.'},{l:'Road pushing up on car 1',a:90,ok:1,why:'The road is outside.'},{l:'Road pushing up on car 2',a:90,ok:1,why:'The road is outside.'},{l:'Car 2 pushing car 1 (N₁₂)',a:180,ok:0,why:'Internal.'},{l:'Car 1 pushing car 2 (N₂₁)',a:0,ok:0,why:'Internal, the 3rd-law partner of N₁₂.'}]},
+  pr('law','c. Is the momentum of the two-car system conserved?',[o('Yes',1),o('No')],[o('the external forces are all vertical and cancel: the net force on the system is zero',1),o('the cars stop, so momentum is lost'),o('the collision forces are huge')]),
+  bl('solve','c. Find the final velocity (+ = car 1\'s direction).',['Before: m v + m (−v) = {}','After: 2m v_f = 0, so v_f = {}'],[nb(0),nb(0)]),
+  pr('check','The cars stop dead. Where did the momentum go?',[o('Nowhere: the total was already zero',1),o('It was destroyed in the crash')],[o('equal and opposite momenta add to zero before and after',1),o('kinetic energy and momentum are the same thing')])
+ ]})},
+{id:'21c', lv:21, title:'Problem 7: Cars Stick Together', make:()=>({
+ text:`A [[1000 kg|m₁ = 1000 kg]] car moving at [[2 m/s|v_1i = 2 m/s]] hits a [[2000 kg|m₂ = 2000 kg]] car that was [[initially not moving|v_2i = 0|hidden]]. After the collision they [[stick together|completely inelastic: one final velocity|hidden]].`,
+ fig: figBA([{t:'Before',o:[{x:40,w:60,l:'1000 kg',d:1,v:'2 m/s'},{x:190,w:80,l:'2000 kg',v:'rest'}]},{t:'After',o:[{x:150,w:140,l:'1000 + 2000 kg',d:1,v:'v_f = ?'}]}]),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  {type:'mcq', ph:'system', prompt:'a. What system do you choose?', opts:[o('Both cars',1,'Then the collision forces are internal.'),o('The 1000 kg car alone',0,'Then the unknown collision force is external and momentum is not conserved.'),o('The road',0,'The road is not moving.')]},
+  pr('law','c. Is momentum conserved for this system?',[o('Yes',1),o('No')],[o('weights and normal forces cancel, and friction is negligible during the short crash',1),o('the cars lose kinetic energy, so momentum must be lost too')]),
+  bl('solve','d. Before = after.',['1000 × 2 + 2000 × 0 = ({} + {}) v_f','v_f = {} m/s'],[nb(1000),nb(2000),nb(2/3)]),
+  {type:'num', ph:'solve', prompt:'d. Speed after the collision:', sym:'v_f', unit:'m/s', ans:2/3, slips:[{v:1,msg:'Use the combined mass, 3000 kg.'}]},
+  bl('solve','e. Impulse on each car: J = Δp.',['Car 1: 1000 × ({} − 2) = {} N·s','Car 2: 2000 × ({} − 0) = {} N·s'],[nb(2/3),nb(-1333.3),nb(2/3),nb(1333.3)]),
+  pr('check','The two impulses are equal and opposite because…',[o("of Newton's 3rd law: each car pushes the other equally, for the same time",1),o('the cars have different masses'),o('kinetic energy is conserved')],[o('that is exactly why the total momentum is conserved',1),o('it is a coincidence of these numbers')])
+ ]})},
+{id:'21d', lv:21, title:'Problem 8: Carts Pushed Apart', make:()=>({
+ text:`Two carts, 1 ([[m₁ = 0.5 kg|m₁ = 0.5 kg]]) and 2 (mass m₂), have repulsive magnets and are tied together with a string. They are [[initially at rest|total p = 0|hidden]]. After the string is cut, cart 1 moves at [[0.4 m/s to the right|v₁ = +0.4 m/s]] and cart 2 moves [[to the left at 0.2 m/s|v₂ = −0.2 m/s]]. Find m₂.`,
+ fig: figBA([{t:'Before',o:[{x:120,w:40,l:'1',v:'rest'},{x:166,w:40,l:'2',v:'rest'}]},{t:'After',o:[{x:220,w:40,l:'1',d:1,v:'0.4 m/s'},{x:120,w:40,l:'2',d:-1,v:'0.2 m/s'}]}]),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues, with signs.'},
+  {type:'mcq', ph:'law', prompt:'This is an "explosion". What is the total momentum afterward?', opts:[o('Zero, the same as before',1,'The magnet forces are internal.'),o('0.2 kg·m/s to the right',0,'That is only cart 1.'),o('It cannot be known',0,'It was zero before, so it is zero after.')]},
+  bl('solve','Before = after (+ = right).',['0 = 0.5 × ({}) + m₂ × ({})','m₂ = {} kg'],[nb(0.4),nb(-0.2),nb(1)]),
+  {type:'num', ph:'solve', prompt:'Mass of cart 2:', sym:'m₂', unit:'kg', ans:1, slips:[{v:0.25,msg:'Cart 2 is SLOWER, so it must be HEAVIER: m₂ = 0.5 × 0.4 / 0.2.'},{v:-1,msg:'A mass is positive. The minus sign belongs to the velocity.'}]},
+  pr('check','Cart 2 is twice as heavy and moves half as fast. That is because…',[o('both carts get equal and opposite momenta',1),o('both carts get the same speed'),o('heavier objects are pushed harder')],[o('m₁v₁ = −m₂v₂',1),o('the magnets push the lighter cart harder')])
+ ]})},
+{id:'21e', lv:21, title:'Problem 9: Bullet in a Sliding Block', make:()=>({
+ text:`A [[10 g|m_b = 0.010 kg|hidden]] bullet is fired into a [[1.0 kg|m_w = 1.0 kg]] wood block, where it [[lodges|completely inelastic: they move together|hidden]]. Afterward the block slides [[4.0 m|d = 4.0 m]] across a floor ([[μₖ = 0.20|μₖ = 0.20]] for wood on wood) and [[stops|v_final = 0|hidden]]. What was the bullet's speed?`,
+ fig: figBA([{t:'Before',o:[{x:30,w:20,l:'b',d:1,v:'v = ?'},{x:120,w:50,l:'block',v:'rest'}]},{t:'Just after',o:[{x:120,w:50,l:'block+b',d:1,v:'V'}]},{t:'Later',o:[{x:250,w:50,l:'block+b',v:'stopped 4.0 m later'}]}]),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.', explain:'Work BACKWARD: the slide tells you V just after the collision; the collision then tells you the bullet speed.'},
+  {type:'mcq', ph:'system', prompt:'Which stage conserves momentum?', opts:[o('Only the brief collision',1,'During the slide, friction (external) removes momentum.'),o('Only the slide',0,'Friction acts during the slide.'),o('Both',0,'Friction is an external force during the slide.')]},
+  dr('Draw the free-body diagram of block + bullet while SLIDING to the right.',[fo('n','floor pushing up',90,1,'Contact.'),fo('mg','weight',-90,1,'Gravity.'),fo('f_k','kinetic friction',180,1,'Opposes the sliding.'),fo('F_b','force of the bullet',0,0,'The bullet is now part of the block. Nothing pushes it forward.')],[['n','=','mg','no vertical acceleration']]),
+  bl('solve','Stage 2, the slide (backward).',['a = −μₖ g = −{} m/s²','0 = V² − 2 μₖ g d, so V = √(2 × 0.20 × 9.8 × {}) = {} m/s'],[nb(1.96),nb(4),nb(3.96)]),
+  bl('solve','Stage 1, the collision.',['m_b v = (m_b + m_w) V','v = ({} + {}) × {} / {}'],[nb(0.01),nb(1),nb(3.96),nb(0.01)]),
+  {type:'num', ph:'solve', prompt:'Bullet speed:', sym:'v', unit:'m/s', ans:1.01*Math.sqrt(15.68)/0.01, slips:[{v:Math.sqrt(15.68)/0.01,msg:'After lodging, the mass is 1.01 kg, not 1.0 kg.'},{v:Math.sqrt(2*0.2*4)*1.01/0.01,msg:'Include g in the friction deceleration: a = μₖ g.'}]}
+ ]})},
+{id:'21f', lv:21, title:'Problem 10: Three Clay Balls (2-D)', make:()=>({
+ text:`Three balls of clay move as shown: [[40 g at 4.0 m/s, 45° below the +x axis|40 g: v = 4.0 m/s at −45°]], [[30 g at 3.0 m/s to the left|30 g: v = −3.0 m/s along x]], and [[20 g at 2.0 m/s up|20 g: v = +2.0 m/s along y]]. They hit simultaneously and [[stick together|one final velocity, total mass 90 g|hidden]]. Find the velocity of the big blob.`,
+ fig: figClay(),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  {type:'mcq', ph:'law', prompt:'How do you conserve momentum in two dimensions?', opts:[o('Separately for x and for y',1,'Momentum is a vector: each component is conserved.'),o('Add the speeds',0,'Speeds do not add like that.'),o('Use only the biggest ball',0,'All three contribute.')]},
+  bl('solve','x-components (kg·m/s).',['40 g:  0.040 × 4.0 cos 45° = {}','30 g:  0.030 × (−3.0) = {}','20 g:  {}','P_x = {}'],[nb(0.1131),nb(-0.09),nb(0),nb(0.0231)]),
+  bl('solve','y-components (kg·m/s).',['40 g:  0.040 × (−4.0 sin 45°) = {}','30 g:  {}','20 g:  0.020 × 2.0 = {}','P_y = {}'],[nb(-0.1131),nb(0),nb(0.04),nb(-0.0731)]),
+  bl('solve','Final velocity components (M = 0.090 kg).',['v_x = P_x / M = {} m/s','v_y = P_y / M = {} m/s'],[nb(0.2571),nb(-0.8127)]),
+  {type:'num', ph:'solve', prompt:'Speed of the blob:', sym:'v', unit:'m/s', ans:0.8524, slips:[{v:0.2571+0.8127,msg:'Combine the components with Pythagoras.'}]},
+  {type:'num', ph:'solve', prompt:'Direction: angle BELOW the +x axis, tan θ = |v_y| / v_x.', sym:'θ', unit:'°', ans:72.44, slips:[{v:17.56,msg:'That is measured from the y-axis. Use tan θ = |v_y| / v_x.'}]}
+ ]})},
+{id:'21g', lv:21, title:'Problem 11: Clay Ball or Tennis Ball?', make:()=>({
+ text:`Which is better for closing your bedroom door without getting up: tossing a [[clay ball that sticks|clay: v goes from +v to 0|hidden]] to the door, or a [[tennis ball of equal mass that bounces back|tennis ball: v goes from +v to about −v|hidden]]? Assume the [[same throw speed|same v, same m|hidden]].`,
+ fig: figBA([{t:'Clay',o:[{x:60,w:30,l:'clay',d:1,v:'v'},{x:240,w:40,l:'door'}]},{t:'Tennis',o:[{x:60,w:30,l:'ball',d:1,v:'v'},{x:240,w:40,l:'door'}]}]),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Find the hidden clues.'},
+  bl('law','Change in momentum of each ball (+ = toward the door).',['Clay: Δp = 0 − mv = {} mv','Tennis: Δp = (−mv) − mv = {} mv'],[nb(-1),nb(-2)]),
+  pr('law','The impulse ON THE DOOR is…',[o('twice as big from the tennis ball',1),o('the same for both'),o('bigger from the clay ball')],[o("by the 3rd law the door gets −Δp of the ball, and the tennis ball's Δp is twice as big",1),o('both balls have the same momentum before they hit'),o('the clay stays on the door and keeps pushing')]),
+  {type:'mcq', ph:'check', prompt:'So which closes the door better?', opts:[o('The tennis ball',1,'Bouncing back means a bigger momentum change, so a bigger push on the door.'),o('The clay ball',0,'It only stops; the tennis ball stops AND reverses.')]},
+  pr('check','Follow-up: in a punch, which delivers the bigger impulse to the opponent, pulling the fist back quickly (karate) or following through (boxing)?',[o('Pulling back (karate)',1),o('Following through (boxing)')],[o('the fist reverses, like the bouncing tennis ball, so its momentum change is bigger, delivered in a very short time',1,'Following through pushes for longer, which moves the opponent more but with a smaller peak force.'),o('a longer contact always gives a bigger force')])
+ ]})},
+{id:'21h', lv:21, title:'Problem 12: Snow Fills a Railroad Car', rnd:true, make:()=>{ const v0=R(6,10,0.2), rate=R(2.5,4.5,0.5), t=R(60,120,10), ms=rate*t, vf=3800*v0/(3800+ms); return {
+ text:`A [[3800 kg|M = 3800 kg]] open railroad car coasts at a constant [[${v0} m/s|v_i = ${v0} m/s]] on a level track. Snow [[falls vertically|snow brings NO horizontal momentum|hidden]] and fills the car at a rate of [[${rate} kg/min|rate = ${rate} kg/min]]. [[Ignoring friction|no horizontal external force|hidden]], what is the speed of the car after [[${t} min|t = ${t} min]]?`,
+ fig: figBA([{t:'Before',o:[{x:110,w:100,l:'3800 kg',d:1,v:v0+' m/s'}]},{t:'After',o:[{x:110,w:100,l:'car + snow',d:1,v:'v = ?'}]}]),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  {type:'fbd', ph:'system', prompt:'System: car + snow. Click the external forces with a HORIZONTAL part.', forces:[{l:'Weight of the car',a:-90,ok:0,why:'Vertical.'},{l:'Normal force from the track',a:90,ok:0,why:'Vertical.'},{l:'Friction from the track',a:180,ok:0,why:'Ignored in this problem.'},{l:'Air drag',a:180,ok:0,why:'Not included.'}], explain:'None! So the horizontal momentum is conserved.'},
+  pr('law','The car slows down even though no horizontal force acts. Why?',[o('The same momentum is shared by more and more mass',1),o('The snow pushes it backward'),o('Friction')],[o('the snow arrives with zero horizontal velocity and must be sped up to the car\'s speed',1),o('falling snow hits the car from the front'),o('the track is not frictionless')]),
+  bl('solve','Before = after (horizontal).',['Snow mass: {} kg/min × {} min = {} kg','3800 × {} = (3800 + {}) v'],[nb(rate),nb(t),nb(ms),nb(v0),nb(ms)]),
+  {type:'num', ph:'solve', prompt:'Speed after the snowfall:', sym:'v', unit:'m/s', ans:vf, slips:[{v:v0,msg:'The car gains mass, so with the same momentum it must slow down.'},{v:3800*v0/(3800+rate),msg:'Multiply the rate by the time to get the total snow mass.'}]}
+ ]};}}
 ];
 
 /* ================= EXTRA: fill-in-the-blank and answer+reason steps ================= */
