@@ -166,6 +166,7 @@ a{color:#0000ee}.pv{border:2px solid #000;background:#fff}
 .chbar.soon{background:#c0c0c0;color:#555;border:1px dashed #000;margin-bottom:16px}
 .chbody{border:1px solid #000;border-top:0;padding:16px;margin-bottom:18px;background:#f4f4f4}
 .ctab{border-collapse:collapse;margin-left:14px;align-self:center}.ctab td,.ctab th{border:1px solid #000;padding:2px 10px;font-size:14px;text-align:center}
+.whybox{background:#eef3ff;border:1px solid #000080;padding:8px 11px;margin:0 0 12px;font-size:15px;line-height:1.45}
 .rnd{font-size:12px;color:#555;text-decoration:none;display:inline-block}
 </style>
 </head>
@@ -1911,6 +1912,147 @@ function checkPair(){
   fb.innerHTML = `<div class="fb bad">✗ ${s.st.tries===1 ? 'Your answer and your reason do not both hold up (−2 XP). Test the reason on its own: is it a true statement of physics? Then ask whether it really leads to your answer.' : (!A.ok && !Bq.ok ? 'Both the answer and the reason are wrong.' : !A.ok ? 'Your reason is correct physics. Follow it through: what answer does it lead to?' : 'Your answer is right, but that reason is not why. Which statement is actually true?')}</div>`;
 }
 
+/* ================= "why this step" notes, plan and recap steps ================= */
+const WHY = {
+'17a': {
+ plan: {type:'mcq', ph:'unknown', prompt:'Plan the route before calculating. The question asks for a DISTANCE D. Which chain of ideas gets you there?', opts:[
+  o('a_r = 2g gives the speed at the top → projectile motion: the drop 2R gives the time → D = speed × time',1,'Each link supplies exactly what the next one needs.'),
+  o('Use ΣF = ma to find the force, then the force gives D',0,'A force alone never gives a distance. You need a speed and a time.'),
+  o('D is the length of the chute, πR',0,'D is how far the ball flies AFTER it leaves the chute.')],
+  explain:'<b>Roadmap:</b> speed at the top (from circular motion) → time in the air (from the fall) → distance (speed × time).'},
+ why:[
+  'The clues tell you what you have. Here the "numbers" are mostly R and g, so the answer will be a multiple of R.',
+  'The fall height decides how long the ball is in the air. No height, no flight time.',
+  'Circular motion links speed to acceleration: a_r = v²/R. You know a_r = 2g, so this is the only way to get the launch speed v.',
+  'Once the chute stops touching the ball, the circle rules no longer apply. You must know the new acceleration before choosing projectile equations.',
+  'The horizontal speed alone cannot tell you how far it goes; you also need HOW LONG it flies. The vertical fall (from rest vertically) sets that time.',
+  'Horizontally nothing pushes the ball, so it keeps its speed: distance = speed × time. This combines the two earlier results.',
+  'This is the answer; the step checks you can read D off as a multiple of R.',
+  'Checking how the answer depends on g is a quick sanity test of the whole chain.'],
+ recap: {type:'mcq', ph:'check', prompt:'Recap: why did you need BOTH circular motion AND projectile motion?', opts:[o('Circular motion gave the launch speed; projectile motion turned that speed into a distance',1,'Two stages, each answering a different question.'),o('They are two ways of getting the same number',0,'They give different things: a speed, then a time and distance.'),o('Projectile motion was only a check',0,'Without it there is no time of flight, so no distance.')]}},
+'17b': {
+ plan: {type:'mcq', ph:'unknown', prompt:'Plan: the question asks for the MAXIMUM speed. What sets that limit?', opts:[
+  o('Friction can only supply up to μₛn. The speed at which mv²/r needs exactly that much friction is v_max',1,'Faster than that, friction cannot keep the cylinder on its circle.'),
+  o('The turntable motor',0,'The motor sets how fast it spins, not when the cylinder slips.'),
+  o('The mass: heavier objects slip sooner',0,'The mass will cancel.')],
+  explain:'<b>Roadmap:</b> force needed to turn (mv²/r) = largest friction available (μₛmg) → solve for v.'},
+ why:[
+  'Find μₛ, r and m now: friction and the circle size are what limit the speed.',
+  'You cannot write ΣF = ma until you know WHICH force points toward the centre. The diagram shows it is friction, the only horizontal force.',
+  'r: the inward force (friction) must equal m v²/r to keep it on the circle. z: tells you n = mg, which you need for the size of friction. The limit μₛn tells you the most friction can do.',
+  'Putting the limit into the r equation connects the speed to things you know (μₛ, g, r).',
+  'This is the answer.',
+  'Noticing which numbers cancel helps you see what really controls the result.'],
+ recap: {type:'mcq', ph:'check', prompt:'Recap: what single idea solved this problem?', opts:[o('At the maximum speed, the friction needed (mv²/r) equals the most friction available (μₛmg)',1,'Set "needed" equal to "available".'),o('Friction equals mg',0,'Friction is horizontal and limited by μₛn.'),o('v = ωr',0,'True, but it does not tell you when slipping starts.')]}},
+'17c': {
+ plan: {type:'mcq', ph:'unknown', prompt:'Plan: the question asks for a TIME. What do you need first?', opts:[
+  o('The SPEED at which v²/r equals a_t; then kinematics (v = a_t t) turns that speed into a time',1,'Condition → speed → time.'),
+  o('Set a_r = a_t and solve for t directly',0,'a_r depends on v, not on t. You need the speed first.'),
+  o('The distance around the track',0,'The distance is not asked and not needed.')],
+  explain:'<b>Roadmap:</b> a_r = v²/r grows as the car speeds up → find the v where it equals a_t → v = a_t t gives t.'},
+ why:[
+  'Notice the track gives a DIAMETER; circle formulas use the radius.',
+  'You need both parts of the acceleration and how each behaves: a_t is fixed, a_r grows with speed. That is why they become equal at some moment.',
+  'Setting v²/r = a_t turns the condition "equal accelerations" into a speed you can calculate.',
+  'This speed is the bridge to the time.',
+  'The car speeds up steadily from rest along the track, so v = a_t t links the speed you just found to the time.',
+  'This is the answer.',
+  'Thinking about the direction of the total acceleration checks that you understand what "equal parts" means.'],
+ recap: {type:'mcq', ph:'check', prompt:'Recap: why did you need TWO different formulas?', opts:[o('v²/r = a_t gave the speed; v = a_t t gave the time to reach that speed',1,'One for the condition, one for the timing.'),o('They are the same formula',0,'One is circular motion, the other is 1-D kinematics.'),o('To check each other',0,'Each gives a different quantity.')]}},
+'17d': {
+ plan: {type:'mcq', ph:'unknown', prompt:'Plan: the answer is a ratio n/F_G with no numbers given. How can that work?', opts:[
+  o('The critical speed links v² to g r, so everything ends up as a multiple of mg',1,'Then n/mg is just a number.'),
+  o('You need the radius and the mass first',0,'They cancel: the ratio is the same for any loop and any car.'),
+  o('Look it up',0,'You can derive it in three lines.')],
+  explain:'<b>Roadmap:</b> critical speed means v_c² = g r → ΣF along r at the top → put in v = 2v_c → n in units of mg.'},
+ why:[
+  'The key words are "top of the loop" and "twice the critical speed": both are hidden information.',
+  'The critical speed gives you v_c² = g r. That is the only link between the speed and g, which is what lets the numbers cancel.',
+  'At the top the car is upside down, so you must see which way n points before writing an equation. Here BOTH forces point toward the centre.',
+  'Newton\'s 2nd law along r is the equation that relates n to the speed.',
+  'Replacing v² by 4 g r turns the equation into multiples of mg.',
+  'This is the answer.',
+  'The special case n = 0 checks that your idea of "critical speed" is right.'],
+ recap: {type:'mcq', ph:'check', prompt:'Recap: why is n = 3mg and not 4mg?', opts:[o('Gravity already supplies mg of the 4mg needed toward the centre, so the track adds only 3mg',1,'At the top, n and mg work together.'),o('Because the speed is doubled',0,'Doubling the speed gives 4mg needed in total.'),o('It is a rounding difference',0,'It is exact.')]}},
+'17e': {
+ plan: {type:'mcq', ph:'unknown', prompt:'Plan: why would the scale reading differ at the equator at all?', opts:[
+  o('At the equator he moves in a big circle, so part of gravity is used up turning him and the scale pushes less',1,'n = mg − mω²R.'),
+  o('Gravity is weaker at the equator',0,'For a perfect sphere, g is the same everywhere.'),
+  o('He is farther from the sun',0,'That is not what changes here.')],
+  explain:'<b>Roadmap:</b> at the pole r = 0, so n = mg → at the equator ΣF along r gives n = mg − mω²R → the difference is mω²R.'},
+ why:[
+  'The text says almost nothing; the physics is in what is NOT said (the Earth spins).',
+  'To compute mω²R you need R and the spin period. Without them there is nothing to calculate.',
+  'The scale reading IS the normal force. The diagram shows which forces combine to make the inward net force.',
+  'ΣF along r gives the scale reading n in terms of mg and the circular-motion term.',
+  'Comparing the two places tells you which way the difference goes before you calculate it.',
+  'ω and ω²R are the pieces of the difference mω²R.',
+  'This is the answer.',
+  'Comparing the size of the effect with mg checks that the answer is sensible.'],
+ recap: {type:'mcq', ph:'check', prompt:'Recap: why is n smaller at the equator?', opts:[o('Some of the pull of gravity is needed as the centripetal force, so less is left for the scale to balance',1,'mg − n = mω²R.'),o('Because the man weighs less there',0,'His true weight mg is the same.'),o('Because the Earth is flatter there',0,'The problem assumes a perfect sphere.')]}},
+'17f': {
+ plan: {type:'mcq', ph:'unknown', prompt:'Plan: three questions (top force, bottom force, longest period). What do they share?', opts:[
+  o('All three come from ΣF along r = mω²r, written at the top or the bottom with the right signs',1,'One method, used three times.'),
+  o('Each needs a completely different formula',0,'It is the same law each time; only the signs change.'),
+  o('They need energy conservation',0,'The speed is constant, so energy is not needed.')],
+  explain:'<b>Roadmap:</b> get ω and a_r = ω²r → top: n + mg = mω²r → bottom: n − mg = mω²r → limit at the top: n = 0.'},
+ why:[
+  'The diameter is given; you need the radius. The period gives ω.',
+  'ω and a_r = ω²r appear in every later step, so it pays to compute them once.',
+  'At the top the ring is above her, so its push points DOWN. Getting this direction right decides the sign in the equation.',
+  'Newton\'s 2nd law along r relates the ring\'s push to the spin rate.',
+  'This is the force at the top.',
+  'At the bottom the centre is above her, so n points up and mg points down: the signs flip.',
+  'This is the force at the bottom.',
+  'The rider falls off when the ring no longer needs to push: n = 0. That condition gives the slowest spin, which is the longest period.',
+  'This is the answer to the last part.',
+  'Checking whether mass matters tells you if one ride setting is safe for everyone.'],
+ recap: {type:'mcq', ph:'check', prompt:'Recap: why is the push bigger at the bottom than at the top?', opts:[o('At the bottom gravity works against the centripetal direction, so the ring must push harder',1,'Top: n = m(a_r − g). Bottom: n = m(a_r + g).'),o('She is moving faster at the bottom',0,'The ring turns at a constant rate.'),o('Gravity is stronger at the bottom',0,'mg is the same everywhere.')]}},
+'17g': {
+ plan: {type:'mcq', ph:'unknown', prompt:'Plan: to decide whether he survives, what must you compare?', opts:[
+  o('How far he flies through the air with the 10 m width of the pool',1,'So you need his flight distance.'),
+  o('His speed at the bottom with 10 m/s',0,'Speed alone does not decide the landing point.'),
+  o('The height of the ramp with the pool width',0,'Height alone does not decide it either.')],
+  explain:'<b>Roadmap:</b> slow down on the ramp (Newton\'s law + kinematics) → launch speed → projectile motion: time in the air → distance → compare with 10 m.'},
+ why:[
+  'Two stages hide in the story: up the ramp without an engine, then through the air.',
+  'The ramp length is the distance over which he slows down; you need it for v² = v₀² + 2aL.',
+  'The diagram shows what slows him: the downhill part of gravity AND rolling friction.',
+  'ΣF along the slope gives his (negative) acceleration on the ramp.',
+  'Kinematics turns that acceleration and the ramp length into his launch speed.',
+  'After the ramp only gravity acts. You need this before choosing projectile equations.',
+  'Projectile motion treats x and y separately, so you need the launch speed split into components.',
+  'The vertical motion decides how long he is in the air.',
+  'Horizontal distance = horizontal speed × time in the air.',
+  'Compare with the pool width to answer the question.'],
+ recap: {type:'mcq', ph:'check', prompt:'Recap: what turned a "confident" stunt into a failure?', opts:[o('Losing speed on the ramp to gravity and friction lowered his launch speed, so he flew less far',1,'The ramp stage changed the input to the projectile stage.'),o('The pool was wider than he thought',0,'It was 10 m all along.'),o('Air resistance',0,'It was not included.')]}},
+'17h': {
+ plan: {type:'mcq', ph:'unknown', prompt:'Plan: two unknowns (ω and T). Which direction answers which?', opts:[
+  o('The tangential direction speeds the block up (gives ω); the radial direction tells you the rod tension (gives T)',1,'Split the problem along t and r.'),
+  o('Both come from the radial direction',0,'The radial direction does not change the speed.'),
+  o('Both come from energy',0,'Energy could give ω, but not T.')],
+  explain:'<b>Roadmap:</b> split the thrust → ΣF_t gives α → rotational kinematics gives ω after 10 rev → ΣF_r = mω²r gives T.'},
+ why:[
+  'The friction coefficient is hidden in a table, and "starts from rest" gives ω₀ = 0.',
+  'The thrust is tilted, so only part of it speeds the block up and part of it pushes toward the pivot. You must split it before using either direction.',
+  'Along t, the thrust part speeds the block up and friction slows it. You need both to get the net tangential force.',
+  'ΣF_t = m a_t gives the tangential acceleration; dividing by r gives the angular acceleration α.',
+  'With α constant, angular kinematics turns "10 revolutions" into an angular speed, just like v² = v₀² + 2ad.',
+  'This is the first answer.',
+  'Only forces with a radial part enter the r equation, so you must pick them out.',
+  'ΣF_r = mω²r connects the rod tension to the speed you just found.',
+  'Substituting numbers for each term keeps the radial thrust from being forgotten.',
+  'This is the second answer.'],
+ recap: {type:'mcq', ph:'check', prompt:'Recap: why did the problem need BOTH the t and the r equations?', opts:[o('The t equation tells how fast it spins up; the r equation tells how hard the rod must pull at that speed',1,'Each direction answers its own question.'),o('To check the same answer twice',0,'They give different quantities.'),o('Because the rod is massless',0,'That only means the rod has one tension.')]}}
+};
+function applyWhy(id, d){
+  const w = WHY[id]; if(!w) return;
+  d.steps.forEach((s,i)=>{ if(w.why[i]) s.why = w.why[i]; });
+  const plan = JSON.parse(JSON.stringify(w.plan)); plan.why = 'A physicist decides WHERE they are going before calculating. Each later step supplies one link of this chain.';
+  const recap = JSON.parse(JSON.stringify(w.recap)); recap.why = 'Saying the method in one sentence is what lets you solve the NEXT problem like this.';
+  d.steps.splice(1, 0, plan); d.steps.push(recap);
+}
+
 /* ================= tokenizer for clue text ================= */
 function tokens(text){
   const out=[]; const re=/\[\[(.+?)\]\]/g; let last=0, mm;
@@ -1987,6 +2129,7 @@ function startMission(id){
   if(sv && sv.d && sv.d.steps){ cur = {m, d:sv.d, i:sv.i, max:sv.i, chips:sv.chips, found:new Set(sv.found), gained:sv.gained, newChip:-1}; renderMission(); window.scrollTo(0,0); toast(`Resumed from your saved spot (step ${sv.i+1}). Press Reset to start over.`); return; }
   const d = m.make();
   if(EXTRA[m.id]){ const ex = EXTRA[m.id](d.v||{}), out = []; d.steps.forEach((st,i)=>{ ex.filter(e=>e[0]===i).forEach(e=>out.push(e[1])); out.push(st); }); ex.filter(e=>e[0]>=d.steps.length).forEach(e=>out.push(e[1])); d.steps = out; }
+  applyWhy(m.id, d);
   d.steps.forEach(s=>{ s.st={tries:0,hint:false,solved:false}; });
   cur = {m, d, i:0, max:0, chips:[...(d.chips||[])].map(t=>({t})), found:new Set(), gained:0, newChip:-1};
   if(!d.steps.some(s=>s.type==='clue')) tokens(d.text).filter(t=>t.clue).forEach((t,i)=>{ cur.found.add(i); cur.chips.push({t:t.mean}); });
@@ -2045,6 +2188,7 @@ function renderStep(){
   const box = document.getElementById('step');
   const head = `<div class="phase">Step ${cur.i+1}/${d.steps.length} · ${PH[PHI[s.ph]][1]}</div>`;
   ({clue:stepClue, mcq:stepMcq, multi:stepMulti, num:stepNum, eq:stepEq, fbd:stepFbd, blank:stepBlank, pair:stepPair, draw:stepDraw})[s.type](s, box, s.st.solved && cur.i<cur.max ? head.replace('<div class="phase">','<div class="phase" style="background:#fff3d6;color:#8a6200"> Reviewing · ') : head);
+  if(s.why){ const ph = box.querySelector('.phase'); if(ph) ph.insertAdjacentHTML('afterend', `<div class="whybox"><b>Why this step?</b> ${s.why}</div>`); }
   if(s.st.solved) review(s, box);
   document.getElementById('stepnav').innerHTML = cur.i>0 && !s.st.solved ? `<a href="#" onclick="goStep(${cur.i-1});return false">← Look back at the previous step</a> &nbsp;·&nbsp; or click any ✓ step in the bar above. Your place is kept.` : '';
 }
