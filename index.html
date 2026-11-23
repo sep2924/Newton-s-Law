@@ -546,6 +546,14 @@ function figDrop(){
   return svg(150,190, `<rect x="10" y="168" width="130" height="8" fill="#b9c4c9"/><circle cx="60" cy="22" r="10" fill="#e0a070" stroke="#555"/><line x1="96" y1="22" x2="96" y2="166" stroke="#333" marker-end="url(#arK)" marker-start="url(#arK)"/>` + tx(102,98,'2.0 m','font-size="12"') + `<line x1="60" y1="36" x2="60" y2="150" stroke="#2a7ab0" stroke-dasharray="4 3" marker-end="url(#arB)"/>` + tx(75,186,'h = ? after the bounce','text-anchor="middle" font-size="11" fill="#b03a36"'));
 }
 
+function figStackTied(P){
+  let s = `<rect x="6" y="20" width="12" height="100" fill="#b9c4c9"/><rect x="6" y="108" width="300" height="10" fill="#b9c4c9"/>`;
+  s += `<line x1="18" y1="46" x2="130" y2="46" ${ROPE}/>` + tx(60,40,'string','font-size="11" fill="#555"');
+  s += `<rect x="118" y="64" width="96" height="44" ${BLK}/>` + tx(166,91,'B  2.0 kg','text-anchor="middle" font-size="13"') + `<rect x="130" y="28" width="62" height="36" ${BLK}/>` + tx(161,51,'A  1.0 kg','text-anchor="middle" font-size="12"');
+  s += `<line x1="214" y1="86" x2="232" y2="86" ${ROPE}/>` + ar(232,86,286,86,'R') + tx(246,76,P,'font-size="13" fill="#d63c4a"');
+  return svg(312,124,s);
+}
+
 /* ================= thinking-routine phases ================= */
 const PH = [
  ['info','Gather the information','m, g, a, direction of motion, other forces, rope/pulley setup'],
@@ -991,6 +999,29 @@ const MS = [
   {type:'num', ph:'solve', prompt:'Calculate a.', sym:'a', unit:'m/s²', ans:a, slips:[{v:(P-2.94-8.82)/3,msg:'f_AB appears twice: once on A and once (its 3rd-law partner) on B.'},{v:(P-5.88-5.88)/3,msg:'The table supports both blocks: f_table = 0.30 × 29.4 N.'}]},
   {type:'num', ph:'solve', prompt:'From the A equation, T = f_AB + m_A a. Calculate T.', sym:'T', unit:'N', ans:T},
   bl('check','Compare the net forces.',['Net force on A = {} N, pointing {}','Net force on B = {} N, pointing {}'],[nb(a),sl('left',['right']),nb(2*a),sl('right',['left'])],'Same size of a, and B has twice the mass, so twice the net force.')
+ ]};}},
+{id:'9e2', lv:9, title:'Block A Tied to the Wall (String on the Upper Block Only)', rnd:true, make:()=>{ const P=R(16,30,2), fAB=0.3*9.8, ft=0.3*3*9.8, a=(P-fAB-ft)/2; return {
+ text:`Same blocks as before, but now the string is [[tied only to the upper block A|A is held by the string: it cannot move, a_A = 0|hidden]] and to the wall; there is no pulley. Block A ([[1.0 kg|m_A = 1.0 kg]]) sits on block B ([[2.0 kg|m_B = 2.0 kg]]). B is pulled to the right with [[P = ${P} N|P = ${P} N]] and [[slides|B slides under A AND on the table: both frictions are kinetic|hidden]]. The coefficient of kinetic friction is [[μₖ = 0.30|μₖ = 0.30]] between the blocks and [[the same between B and the table|μₖ = 0.30 at the table too|hidden]]. Find the tension in the string and the acceleration of B.`,
+ fig: figStackTied(P+' N'),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues. Two important ones are hidden.', why:'The setup looks like the pulley problem, but one small change (what the string is tied to) changes everything.'},
+  {type:'mcq', ph:'unknown', prompt:'Plan: how is this different from the pulley version?', why:'Spotting what changed tells you which equations change.', opts:[
+   o('A is held still by the string, so a_A = 0; only B accelerates, and the string does not touch B',1,'So A gives a balance equation (ΣF = 0) and B gives ΣF = m_B a.'),
+   o('Nothing changes: same equations, same answer',0,'Without the pulley the string no longer pulls on B, and A no longer moves.'),
+   o('Both blocks now move together',0,'The string holds A back while B slides out from under it.')],
+   explain:'<b>Roadmap:</b> A at rest → T balances the friction from B → B: P minus two frictions = m_B a.'},
+  pr('fbd','B slides to the right under A. The friction of B on A points…',[o('to the right',1),o('to the left'),o('there is no friction on A')],[o('friction opposes the sliding of A relative to B; relative to B, A slides LEFT, so friction on A points right',1,'B tries to drag A along with it.'),o('friction always opposes the pull P'),o('A is not moving, so there is no friction')]),
+  dr('Draw the free-body diagram of block A (at rest). The wall is to the LEFT.',[fo('T','string pulling toward the wall',180,1,'The string holds A back.'),fo('f_BA','friction from B',0,1,'B drags A to the right.'),fo('n','B pushing up on A',90,1,'A rests on B.'),fo('w','weight of A',-90,1,'Gravity.'),fo('P','the pull P',0,0,'P acts on B, not on A.')],[['T','=','f_BA','A is at rest, so the horizontal forces balance'],['n','=','w','no vertical acceleration']],{why:'A is in equilibrium. Drawing its forces shows that the string is what balances the friction from B.'}),
+  bl('solve','Block A: balance the forces (A is at rest).',['n_A = m_A g = {} N','f_BA = μₖ n_A = {} N','Horizontal: T − f_BA = {}, so T = {} N'],[nb(9.8),nb(fAB),nb(0),nb(fAB)],'The string tension equals the friction, whatever P is.'),
+  {type:'num', ph:'solve', prompt:'Tension in the string:', sym:'T', unit:'N', ans:fAB, why:'This is the first answer. Note that it does not depend on P.', slips:[{v:P,msg:'The string holds A; it only needs to balance the friction on A, not the pull on B.'},{v:ft,msg:'That is the friction from the TABLE on B. The string only holds A.'}]},
+  {type:'fbd', ph:'fbd', prompt:'Now block B. Click every force that acts on B.', why:'B is the block that accelerates, so you need all of its horizontal forces for ΣF = m_B a.', forces:[
+   {l:'P, the pull to the right', a:0, ok:1, why:'Applied to B.'},{l:'f_AB, friction from A, to the left', a:180, ok:1, why:'3rd-law partner of the friction on A, so it points left.'},{l:'f_table, friction from the table, to the left', a:180, ok:1, why:'B slides right on the table.'},{l:'n, table pushing up on B', a:90, ok:1, why:'Contact.'},{l:'n_A on B, A pressing down', a:-90, ok:1, why:'A rests on B.'},{l:'w_B, weight of B', a:-90, ok:1, why:'Gravity.'},
+   {l:'T, the string', a:180, ok:0, why:'The string is tied to A and the wall only. It does not touch B.'},{l:'w_A, weight of A', a:-90, ok:0, why:'Earth pulls on A, not on B. B feels A only through n_A on B.'}]},
+  bl('solve','Friction from the table.',['The table supports both blocks: n = ({} + {}) × 9.8 = {} N','f_table = 0.30 × {} = {} N'],[nb(1),nb(2),nb(29.4),nb(29.4),nb(ft)]),
+  {type:'eq', ph:'law', prompt:'ΣF = ma for B (+ = right):', why:'Newton\'s 2nd law on B turns its three horizontal forces into its acceleration.', lhs:3, tiles:['P','T','f_AB','f_table','m_Ba','m_Aa','0'], ans:['+P,-f_AB,-f_table=m_Ba']},
+  {type:'num', ph:'solve', prompt:'Acceleration of B:', sym:'a', unit:'m/s²', ans:a, slips:[{v:(P-fAB-ft-fAB)/2,msg:'No string pulls on B: there is only one friction from A (f_AB), not the tension too.'},{v:(P-fAB-ft)/3,msg:'Only B accelerates. Divide by m_B = 2.0 kg.'},{v:(P-fAB-0.3*2*9.8)/2,msg:'The table holds up BOTH blocks: f_table = 0.30 × 29.4 N.'}]},
+  pr('check','Compared with the pulley version (same P), B\'s acceleration here is…',[o('larger',1),o('smaller'),o('the same')],[o('B no longer has to drag A along or feel the rope pulling it back; only the two frictions resist it',1),o('a string always makes things accelerate faster'),o('the masses are the same, so the acceleration is the same')]),
+  {type:'mcq', ph:'check', prompt:'Recap: what single change made this problem easier?', why:'Saying the method in one sentence is what lets you solve the next problem like this.', opts:[o('Tying the string to the wall makes A an equilibrium problem (ΣF = 0), leaving only B to accelerate',1,'One block at rest, one block accelerating.'),o('Removing friction',0,'Both frictions are still there.'),o('Making B lighter',0,'The masses are the same.')]}
  ]};}},
 {id:'9f', lv:9, title:'Maximum Pull Without Slipping', rnd:true, make:()=>{ const us=R(0.4,0.7,0.1), uk=+(us-0.2).toFixed(2), fs=us*4*g, a=fs/3, F=7*a; return {
  text:`A [[4.0 kg|m_top = 4.0 kg]] block sits on a [[3.0 kg|m_bottom = 3.0 kg]] block. A rope pulls the TOP block with force F. The coefficient of static friction between the blocks is [[${us}|μₛ = ${us}]], the coefficient of kinetic friction between them is ${uk}, and there is [[no friction|the floor is frictionless|hidden]] between the 3.0 kg block and the floor. What is the maximum F such that the two blocks [[do not slip|same a for both; the friction is STATIC|hidden]]?`,
