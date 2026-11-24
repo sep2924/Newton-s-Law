@@ -1571,6 +1571,22 @@ const MS = [
   {type:'num', ph:'solve', prompt:'Impulse:', sym:'J', unit:'N·s', ans:3.3, slips:[{v:3300,msg:'The time axis is in ms: use 0.006 s.'},{v:6.6,msg:'It is a triangle: multiply by ½.'},{v:0.825,msg:'Do not multiply by the mass. J is the area under F vs t.'},{v:19800,msg:'Use area = ½ × 0.006 s × 1100 N.'}]},
   bl('check','Use the answer.',['Change in the particle\'s velocity: Δv = J / m = {} m/s'],[nb(13.2)])
  ]})},
+{id:'19b2', lv:19, title:'Force Growing From 0 to 9000 N', make:()=>({
+ text:`A force in the [[+x-direction|J is positive|hidden]] [[increases linearly|the F–t graph is a straight line: a triangle|hidden]] from [[0 N to 9000 N|F goes from 0 to F_max = 9000 N]] in [[7.0 s|Δt = 7.0 s]], then [[suddenly ends|F drops straight to 0 at t = 7.0 s|hidden]]. Find the average force, the impulse, and the change of momentum of a [[1500 kg|m = 1500 kg]] car [[initially at rest|v₀ = 0|hidden]].`,
+ fig: figFt({pts:[[0,0],[7,9000],[7,0],[8.5,0]], xmax:8.5, ymin:0, ymax:10500, xt:[0,7], yt:[[9000,'9000']], xl:'t (s)', yl:'F_x (N)'}),
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues. Sketching the graph is the key step.', why:'"Increases linearly then suddenly ends" describes a SHAPE. The impulse is the area of that shape.'},
+  {type:'mcq', ph:'unknown', prompt:'Plan: how are the three answers linked?', why:'Seeing the chain first tells you which answer feeds the next.', opts:[o('Impulse = area under F–t; F_avg = J / Δt; and Δp = J',1,'One area gives all three.'),o('Each needs a different formula with the car\'s mass',0,'The mass is not needed for any of the three.'),o('F_avg = F_max',0,'The force is only 9000 N at the very end.')], explain:'<b>Roadmap:</b> area of the triangle → J → divide by Δt for F_avg → Δp = J.'},
+  {type:'mcq', ph:'info', prompt:'What shape is the F–t graph?', why:'You need the shape to choose the area formula.', opts:[o('A right triangle: base 7.0 s, height 9000 N',1,'It rises in a straight line and then drops straight down.'),o('A rectangle',0,'The force is not constant.'),o('A symmetric triangle',0,'It rises the whole time, then stops suddenly.')]},
+  bl('solve','Average force of a force that grows linearly from zero.',['F_avg = (0 + {}) / 2 = {} N'],[nb(9000),nb(4500)],'For a straight-line change, the average is halfway between the start and end values.'),
+  {type:'num', ph:'solve', prompt:'Average force:', sym:'F_avg', unit:'N', ans:4500, why:'This is Part A.', slips:[{v:9000,msg:'That is the maximum. The force spends most of the time below 9000 N.'}]},
+  bl('solve','Impulse = area of the triangle.',['J = ½ × {} s × {} N = {} N·s','Check: J = F_avg × Δt = 4500 × 7.0 = {} N·s'],[nb(7),nb(9000),nb(31500),nb(31500)]),
+  {type:'num', ph:'solve', prompt:'Impulse:', sym:'J_x', unit:'N·s', ans:31500, why:'This is Part B.', slips:[{v:63000,msg:'It is a triangle: multiply by ½.'}]},
+  pr('law','Part C: the car\'s change of momentum is…',[o('31 500 kg·m/s, the same as J',1),o('J divided by 1500 kg'),o('zero, because it started at rest')],[o('the impulse-momentum theorem: Δp = J, whatever the mass',1,'The mass only matters if you want the VELOCITY.'),o('momentum is per kilogram'),o('the car had no momentum to change')]),
+  {type:'num', ph:'solve', prompt:'Change of momentum of the car:', sym:'Δp_x', unit:'kg·m/s', ans:31500, slips:[{v:21,msg:'That is the final speed. The question asks for Δp = J.'}]},
+  bl('check','Use it one more step.',['Final speed of the car: v = Δp / m = 31500 / 1500 = {} m/s'],[nb(21)]),
+  {type:'mcq', ph:'check', prompt:'Recap: what single idea answered all three parts?', why:'Saying the method in one sentence is what lets you solve the next problem like this.', opts:[o('The area under the F–t graph is the impulse, and the impulse equals the change in momentum',1,'J = area = Δp.'),o('F = ma',0,'That would need the acceleration at each moment.'),o('Energy conservation',0,'Not needed here.')]}
+ ]})},
 {id:'19c', lv:19, title:'Ball Bouncing Off a Wall', rnd:true, make:()=>{ const Fm=R(800,1200,100), dt=R(8,12,2), J=0.5*Fm*dt/1000, vf=-10+J/0.28; return {
  text:`A [[280 g|m = 0.280 kg|hidden]] ball collides with a wall. The velocity graph shows it arrives at [[−10 m/s|v_ix = −10 m/s (moving left)]] and leaves at v_fx. The force of the wall on the ball is a triangle that peaks at [[${Fm} N|F_max = ${Fm} N]] and lasts [[${dt} ms|Δt = ${dt} ms = ${dt/1000} s|hidden]]. What is v_fx, the ball's rebound velocity?`,
  fig: figFt({pts:[[0,-10],[1.2,-10],[3,6],[4.5,6]], xmax:4.6, ymin:-12, ymax:9, yt:[[-10,'−10'],[0,'0'],[6,'v_fx']], xl:'t', yl:'v_x (m/s)', col:'#4caf50'}) + figFt({pts:[[0,0],[dt/2,1],[dt,0],[dt+1.5,0]], xmax:dt+1.5, ymin:0, ymax:1.25, yt:[[1,Fm+' N']], xt:[0,dt], xl:'t (ms)', yl:'F_x (N)'}),
@@ -2090,6 +2106,45 @@ function applyWhy(id, d){
   d.steps.splice(1, 0, plan); d.steps.push(recap);
 }
 
+/* ================= finish every Chapter 7 problem to its final answer ================= */
+const FWHY = 'The earlier steps found the clues and the direction. This step turns them into the actual answer to the question.';
+const FINISH = {
+'1a': {ans:'T = 24.5 N', steps:[
+  {type:'eq', ph:'law', prompt:'Now finish the problem. ΣF = ma for the lamp (+ = up):', lhs:2, tiles:['T','mg','ma','0'], ans:['+T,-mg=0'], explain:'a = 0, so T − mg = 0 and T = mg.'},
+  {type:'num', ph:'solve', prompt:'Calculate the tension.', sym:'T', unit:'N', ans:24.5, slips:[{v:2.5,msg:'That is the mass. Multiply by g = 9.8 m/s².'},{v:29.4,msg:'The 3 m height is a story detail; it does not enter the answer.'}]}]},
+'1b': {ans:'n = 708 N', steps:[
+  {type:'eq', ph:'law', prompt:'Now finish the problem. ΣF = ma for the student (+ = up, the way a points):', lhs:2, tiles:['n','mg','ma','0'], ans:['+n,-mg=ma'], explain:'n − mg = ma, so n = m(g + a).'},
+  {type:'num', ph:'solve', prompt:'What does the scale read?', sym:'n', unit:'N', ans:708, slips:[{v:588,msg:'That is the weight. The elevator accelerates up, so the scale must push MORE.'},{v:468,msg:'a points up here, so n = m(g + a).'}]}]},
+'1c': {ans:'a = 0.0740 m/s², T = 973 N, m₁ = 98.5 kg', steps:[
+  bl('solve','Step 1: the acceleration from kinematics (v₀ = 0).',['Δy = ½ a t², so a = 2Δy / t² = 2 × {} / {}² = {} m/s²'],[nb(1),nb(5.2),nb(2/27.04)]),
+  {type:'eq', ph:'law', prompt:'Step 2: ΣF = ma for the 100 kg block (it moves down, + = down):', lhs:2, tiles:['m₂g','m₁g','T','m₂a','m₁a'], ans:['+m₂g,-T=m₂a']},
+  {type:'num', ph:'solve', prompt:'Tension: T = m₂(g − a).', sym:'T', unit:'N', ans:100*(9.8-2/27.04)},
+  {type:'eq', ph:'law', prompt:'Step 3: ΣF = ma for the left block (it moves up, + = up):', lhs:2, tiles:['m₂g','m₁g','T','m₂a','m₁a'], ans:['+T,-m₁g=m₁a']},
+  {type:'num', ph:'solve', prompt:'Mass of the left block: m₁ = T / (g + a).', sym:'m₁', unit:'kg', ans:100*(9.8-2/27.04)/(9.8+2/27.04), slips:[{v:100*(9.8-2/27.04)/9.8,msg:'The left block accelerates up: divide by (g + a), not g.'}]},
+  pr('check','m₁ is just under 100 kg. Does that fit the slow 5.2 s fall?',[o('Yes',1),o('No')],[o('nearly equal masses give a tiny acceleration, so the fall is slow',1),o('heavier blocks always fall slowly')])]},
+'1d': {ans:'a = 3.75 m/s², F = 4.50 N, T_AB = 1.50 N', steps:[
+  {type:'mcq', ph:'system', prompt:'Now finish the problem. Which system has T_BC = 3.00 N as its only horizontal force?', opts:[o('Blocks A + B together (0.800 kg)',1,'T_AB is internal to that system.'),o('Block C alone',0,'C also feels F, which is unknown.'),o('All three blocks',0,'For all three, T_BC is internal.')]},
+  {type:'num', ph:'solve', prompt:'Acceleration: a = T_BC / (2m).', sym:'a', unit:'m/s²', ans:3.75, slips:[{v:7.5,msg:'Two blocks are pulled by T_BC: divide by 2m = 0.800 kg.'}]},
+  {type:'num', ph:'solve', prompt:'F accelerates all three blocks: F = 3m × a.', sym:'F', unit:'N', ans:4.5},
+  {type:'num', ph:'solve', prompt:'T_AB is the only horizontal force on A: T_AB = m × a.', sym:'T_AB', unit:'N', ans:1.5}]},
+'1e': {ans:'a = 2.12 m/s², T = 0.61 N', steps:[
+  bl('solve','Now finish the problem. Step 1: treat both blocks as one system (T is internal).',['Gravity along the slope: (1.0 + 2.0) × 9.8 × sin 20° = {} N','Friction: (0.20 × 1.0 + 0.10 × 2.0) × 9.8 × cos 20° = {} N','a = (gravity part − friction) / 3.0 kg = {} m/s²'],[nb(3*9.8*sinD(20)),nb(0.4*9.8*cosD(20)),nb((3*9.8*sinD(20)-0.4*9.8*cosD(20))/3)]),
+  {type:'mcq', ph:'law', prompt:'Step 2: the lower 2.0 kg block (+ = down the slope). The string pulls it…', opts:[o('back UP the slope, so −T in its equation',1,'The upper block, with more friction, holds it back.'),o('down the slope, +T',0,'The string connects it to the slower upper block.')]},
+  bl('solve','Lower block: m₂ a = m₂ g sin θ − μ₂ m₂ g cos θ − T.',['m₂ g sin θ = {} N','μ₂ m₂ g cos θ = {} N','m₂ a = {} N'],[nb(2*9.8*sinD(20)),nb(0.2*9.8*cosD(20)),nb(2*(3*9.8*sinD(20)-0.4*9.8*cosD(20))/3)]),
+  {type:'num', ph:'solve', prompt:'Tension in the string:', sym:'T', unit:'N', ans:2*9.8*sinD(20)-0.2*9.8*cosD(20)-2*(3*9.8*sinD(20)-0.4*9.8*cosD(20))/3, slips:[{v:0,msg:'The string IS tight: the blocks have different μ.'}]},
+  pr('check','The tension is small. Why?',[o('the two friction coefficients differ only a little, so the string has little work to do',1),o('the string is weak')],[o('T only makes up the difference in how fast each block would slide alone',1),o('strings always carry small forces')])]},
+'2a': {ans:'T = 45.2 N', steps:[
+  {type:'num', ph:'solve', prompt:'Final answer: the tension in the rope.', sym:'T', unit:'N', ans:45.2, slips:[{v:39.2,msg:'That is the weight. The bucket speeds up going up, so T = m(g + a).'},{v:33.2,msg:'a points up: use g + a.'}]}]},
+'2b': {ans:'a = 2.45 m/s², T = 36.8 N', steps:[
+  {type:'eq', ph:'law', prompt:'Now finish the problem. Block 1 (5.0 kg, moves down, + = down):', lhs:2, tiles:['m₁g','m₂g','T','m₁a','m₂a'], ans:['+m₁g,-T=m₁a']},
+  {type:'eq', ph:'law', prompt:'Block 2 (3.0 kg, moves up, + = up):', lhs:2, tiles:['m₁g','m₂g','T','m₁a','m₂a'], ans:['+T,-m₂g=m₂a']},
+  {type:'num', ph:'solve', prompt:'Add the equations (T cancels): a = (m₁ − m₂)g / (m₁ + m₂).', sym:'a', unit:'m/s²', ans:2.45},
+  {type:'num', ph:'solve', prompt:'Tension from block 2: T = m₂(g + a).', sym:'T', unit:'N', ans:36.75, slips:[{v:3*(9.8-2.45),msg:'Block 2 accelerates UP: use g + a.'}]},
+  pr('check','T = 36.8 N lies between 29.4 N and 49 N. Is that right?',[o('Yes',1),o('No')],[o('T must beat m₂g so block 2 rises, and lose to m₁g so block 1 falls',1),o('T should equal the average of the masses')])]},
+'3c': {ans:'a = 2.45 m/s², T = 36.8 N', steps:[
+  {type:'num', ph:'solve', prompt:'Finish: the tension, from the 3 kg block, T = m₂(g + a).', sym:'T', unit:'N', ans:36.75, slips:[{v:3*(9.8-2.45),msg:'The 3 kg block accelerates UP: use g + a.'}]}]}
+};
+
 /* ================= tokenizer for clue text ================= */
 function tokens(text){
   const out=[]; const re=/\[\[(.+?)\]\]/g; let last=0, mm;
@@ -2170,6 +2225,7 @@ function startMission(id){
   if(sv && sv.d && sv.d.steps){ cur = {m, d:sv.d, i:sv.i, max:sv.i, chips:sv.chips, found:new Set(sv.found), gained:sv.gained, newChip:-1}; renderMission(); window.scrollTo(0,0); toast(`Resumed from your saved spot (step ${sv.i+1}). Press Reset to start over.`); return; }
   const d = m.make();
   if(EXTRA[m.id]){ const ex = EXTRA[m.id](d.v||{}), out = []; d.steps.forEach((st,i)=>{ ex.filter(e=>e[0]===i).forEach(e=>out.push(e[1])); out.push(st); }); ex.filter(e=>e[0]>=d.steps.length).forEach(e=>out.push(e[1])); d.steps = out; }
+  if(FINISH[m.id]){ FINISH[m.id].steps.forEach((st,k)=>{ const c = Object.assign({}, st); if(k===0 && !c.why) c.why = FWHY; d.steps.push(c); }); d.answer = FINISH[m.id].ans; }
   applyWhy(m.id, d);
   d.steps.forEach(s=>{ s.st={tries:0,hint:false,solved:false}; });
   cur = {m, d, i:0, max:0, chips:[...(d.chips||[])].map(t=>({t})), found:new Set(), gained:0, newChip:-1};
@@ -2272,7 +2328,7 @@ function finish(){
   const m = cur.m; S.cnt = S.cnt || {}; S.last = S.last || {}; S.cnt[m.id] = timesDone(m.id) + 1; const _d = new Date(); S.last[m.id] = _d.getFullYear()+'-'+(_d.getMonth()+1)+'-'+_d.getDate(); S.done[m.id] = true; save(); try{ localStorage.removeItem(skey(m.id)); }catch(e){}
   const idx = MS.indexOf(m), nx = MS[idx+1];
   const canNext = nx && unlocked(nx.lv);
-  document.getElementById('app').innerHTML = `<div class="card end"><div class="big"></div><h2>Case closed: ${m.title}</h2><p class="lead">You earned <b>${cur.gained} XP</b> on this case. Best streak: ${S.best}.</p>
+  document.getElementById('app').innerHTML = `<div class="card end"><div class="big"></div><h2>Case closed: ${m.title}</h2>${cur.d.answer?`<div class="fb ok" style="max-width:640px;margin:0 auto 14px;text-align:left;font-size:17px"><b>Final answer:</b> ${cur.d.answer}</div>`:''}<p class="lead">You earned <b>${cur.gained} XP</b> on this case. Best streak: ${S.best}.</p>
   <div class="card" style="text-align:left;max-width:640px;margin:0 auto 16px"><h4 class="mt">Your final clue board</h4>${cur.chips.map(c=>`<span class="chip ${c.u?'u':''}">${c.t}</span>`).join('')}</div>
   <div class="btns" style="justify-content:center">${m.rnd?`<button class="btn g" onclick="startMission('${m.id}')"> Replay with new numbers</button>`:`<button class="btn g" onclick="startMission('${m.id}')">↻ Replay</button>`}
   ${canNext?`<button class="btn" onclick="startMission('${nx.id}')">Next case: ${nx.title} →</button>`:''}<button class="btn g" onclick="showMap()"> Map</button></div></div>`;
