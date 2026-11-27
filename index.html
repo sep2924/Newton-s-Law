@@ -1796,6 +1796,17 @@ const MS = [
   {type:'num', ph:'solve', prompt:'Final speed of the wreck: v_f = √(v_fx² + v_fy²).', sym:'v_f', unit:'m/s', ans:10, slips:[{v:14,msg:'Combine perpendicular components with Pythagoras, not by adding.'}], explain:'A 6-8-10 right triangle.'},
   pr('check','The wreck heads closer to north than east. Why?',[o('The car carries more momentum (20M) than the truck (15M)',1),o('The car is faster, and speed is what counts')],[o('momentum, not speed, decides the direction of the wreck',1),o('the lighter object always wins')])
  ]})},
+{id:'22a2', lv:22, title:'Car Hits a Truck: Final Speed', make:()=>({
+ text:`A car traveling [[north at 20.0 m/s|car: v = +20.0 m/s along y]] collides [[perfectly inelastically|they stick together|hidden]] with a truck moving [[10.0 m/s toward the east|truck: v = +10.0 m/s along x]]. The truck has [[1.50 times the mass of the car|m_truck = 1.50M, m_car = M]]. What is the final speed of the two vehicles just after the crash?`,
+ fig: MS.find(m=>m.id==='22a').make().fig,
+ steps:[
+  {type:'clue', ph:'info', prompt:'Collect the clues.'},
+  {type:'mcq', ph:'unknown', prompt:'Plan: why can\'t you just average the two speeds?', opts:[o('The velocities point in different directions and the masses differ: you must add momentum components',1,'Then combine the components.'),o('You can: (20 + 10) / 2 = 15 m/s',0,'Speeds at right angles do not average.'),o('Use energy conservation',0,'Kinetic energy is lost in a sticking collision.')]},
+  bl('solve','Momentum components, in units of M·m/s.',['East (x): 1.50 × 10.0 = {}','North (y): 1 × 20.0 = {}'],[nb(15),nb(20)]),
+  bl('solve','Divide by the total mass 2.50M.',['v_fx = {} m/s','v_fy = {} m/s'],[nb(6),nb(8)]),
+  {type:'num', ph:'solve', prompt:'Final speed: v_f = √(v_fx² + v_fy²).', sym:'v_f', unit:'m/s', ans:10, slips:[{v:14,msg:'Combine perpendicular components with Pythagoras, not by adding.'},{v:15,msg:'You cannot average speeds in different directions.'}], explain:'A 6-8-10 right triangle: twice the 3-4-5 triangle.'},
+  pr('check','The wreck is slower than the car was. Is momentum lost?',[o('No',1),o('Yes')],[o('the same momentum is now carried by 2.5 times the car\'s mass, in a direction between the two',1),o('crashes always destroy momentum')])
+ ]})},
 {id:'22b', lv:22, title:'Elastic Collision: M Hits 3M', make:()=>({
  text:`A ball of mass [[M|m₁ = M]] moving with [[velocity v₀ î|v_1i = +v₀]] collides [[elastically|perfectly elastic: momentum AND kinetic energy conserved|hidden]] with a ball of mass [[3M|m₂ = 3M]] [[at rest|v_2i = 0|hidden]]. What is the final velocity of the 3M ball?`,
  fig: figBA([{t:'Before',o:[{x:60,w:30,l:'M',d:1,v:'v₀'},{x:200,w:50,l:'3M',v:'rest'}]},{t:'After',o:[{x:60,w:30,l:'M',d:-1,v:'?'},{x:220,w:50,l:'3M',d:1,v:'?'}]}]),
@@ -1852,11 +1863,18 @@ const MS = [
   bl('solve','Kinetic energy afterward.',['K = ½ M (4.00)² + ½ (2M)(2.00)² = ({} + {}) M = {} M'],[nb(8),nb(4),nb(12)]),
   {type:'num', ph:'solve', prompt:'Set U = K and solve: M = 1.836 / 12.', sym:'M', unit:'kg', ans:1.836/12, slips:[{v:4080*9/2/12,msg:'Convert 3.00 cm to 0.0300 m.'},{v:1.836/18,msg:'The 4.00 m/s block is the LIGHT one: K = 8M + 4M = 12M.'}], explain:'M = 0.153 kg = 153 g.'}
  ]})},
-{id:'22h', lv:22, title:'Momentum Is a Vector', make:()=>({
- text:`Two [[identical|same mass m|hidden]] balls are about to collide head-on, both with the [[same speed|same v, opposite directions|hidden]]. The system is just the two balls.`,
+{id:'22h0', lv:22, title:'Momentum Is a Vector', make:()=>({
+ text:`Momentum ____.`,
+ fig:'',
+ steps:[
+  {type:'mcq', ph:'info', prompt:'Momentum ____.', opts:[o('is a vector, with a magnitude and a direction',1,'p = m v, and v is a vector.'),o('is a scalar, a number only',0,'It points the same way as the velocity.'),o('is always positive',0,'In 1-D its sign shows the direction; in 2-D and 3-D you need components.'),o('has a direction but no magnitude',0,'All vectors have both.')]},
+  pr('info','Two objects have momenta of the same size pointing in different directions. Are their momenta equal?',[o('No',1),o('Yes')],[o('vectors are equal only if both the size AND the direction match',1),o('only the size of momentum matters')]),
+  bl('check','Scalars and vectors.',['A scalar has only a {}','In 1-D the direction of a vector is shown by its {}'],[sl('numerical value',['direction','unit vector']),sl('sign (+ or −)',['size','unit'])])
+ ]})},
+{id:'22h', lv:22, title:'Identical Balls, Head-On', make:()=>({
+ text:`Two [[identical|same mass m|hidden]] balls are about to collide head-on, both with the [[same speed|same v, opposite directions|hidden]]. The system is just the two balls. Just before the collision, what is true?`,
  fig: figBA([{t:'Before',o:[{x:60,w:34,l:'1',d:1,v:'v'},{x:220,w:34,l:'2',d:-1,v:'v'}]}]),
  steps:[
-  {type:'mcq', ph:'info', prompt:'Momentum ____.', opts:[o('is a vector, with a magnitude and a direction',1,'p = m v, and v is a vector.'),o('is a scalar, a number only',0,'It points the same way as the velocity.'),o('is always positive',0,'In 1-D its sign shows the direction.')]},
   {type:'clue', ph:'info', prompt:'Find the two hidden clues in the text.'},
   bl('solve','Momenta just before the collision (+ = right).',['p₁ = {} mv','p₂ = {} mv','Total = {}'],[nb(1),nb(-1),nb(0)]),
   {type:'mcq', ph:'check', prompt:'Just before the collision…', opts:[o('the total momentum of the system is zero',1,'Equal sizes, opposite directions.'),o('the momenta of the two balls are the same',0,'Same SIZE, but opposite directions, so not the same vector.'),o('neither ball has momentum',0,'Each ball has momentum mv; they cancel only in the total.')]}
